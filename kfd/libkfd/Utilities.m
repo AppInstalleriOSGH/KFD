@@ -169,7 +169,7 @@ uint64_t getVnodeAtPath(u64 kfd, char* filename) {
     uint64_t filedesc_pac = kread64(kfd, proc + off_p_pfd);
     uint64_t filedesc = filedesc_pac | 0xffffff8000000000;
     uint64_t openedfile = kread64(kfd, filedesc + (8 * file_index));
-    uint64_t fileglob_pac = kread64(kfd, openedfile + off_fp_fglob);
+    uint64_t fileglob_pac = kread64(kfd, openedfile + off_fp_glob);
     uint64_t fileglob = fileglob_pac | 0xffffff8000000000;
     uint64_t vnode_pac = kread64(kfd, fileglob + off_fg_data);
     uint64_t to_vnode = vnode_pac | 0xffffff8000000000;
