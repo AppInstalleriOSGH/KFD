@@ -351,5 +351,11 @@ BOOL isFileReadable(u64 kfd, NSString* directoryPath, NSString* fileName) {
 }
 
 void testProc(uint64_t kfd) {
-    
+    uint64_t proc = getProc(kfd, getpid());
+    uint64_t ucred_pac = kread64(kfd, proc + 0xf0);
+    printf("ucred PAC: 0x%llx\n", ucred_pac);
+    uint64_t ucred = ucred_pac | 0xffffff8000000000;    
+    printf("Escaping sandbox.\n");
+    //uint64_t cr_label_pac = kread64(kfd, ucred + off_ucred_cr_label);
+    //uint64_t cr_label = cr_label_pac | 0xffffff8000000000;
 }
