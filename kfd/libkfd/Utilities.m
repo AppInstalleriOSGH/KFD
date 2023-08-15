@@ -91,7 +91,7 @@ uint32_t off_ipc_object_io_bits = 0;
 uint32_t off_ipc_object_io_references = 0x4;
 uint32_t off_ipc_port_ip_kobject = 0x48; 
 
-//Lines 14-182 are from https://github.com/wh1te4ever/kfund
+//Lines 95-263 are from https://github.com/wh1te4ever/kfund
 uint8_t kread8(u64 kfd, uint64_t where) {
     uint8_t out;
     kread(kfd, where, &out, sizeof(uint8_t));
@@ -245,6 +245,23 @@ uint64_t UnRedirectAndRemoveFolder(u64 kfd, uint64_t orig_to_v_data, NSString *m
     return 0;
 }
 
+void funVnodeHide(u64 kfd, uint64_t vnode) {
+    uint32_t usecount = kread32(kfd, vnode + off_vnode_v_usecount);
+    uint32_t iocount = kread32(kfd, vnode + off_vnode_v_iocount);
+    printf("[i] vnode->usecount: %d, vnode->iocount: %d\n", usecount, iocount);
+    kwrite32(kfd, vnode + off_vnode_v_usecount, usecount + 1);
+    kwrite32(kfd, vnode + off_vnode_v_iocount, iocount + 1);
+    uint32_t v_flags = kread32(kfd, vnode + off_vnode_v_flag);
+    printf("[i] vnode->v_flags: 0x%x\n", v_flags);
+    kwrite32(kfd, vnode + off_vnode_v_flag, (v_flags | 0x008000));
+    usecount = kread32(kfd, vnode + off_vnode_v_usecount);
+    iocount = kread32(kfd, vnode + off_vnode_v_iocount);
+    if(usecount > 0)
+        kwrite32(kfd, vnode + off_vnode_v_usecount, usecount - 1);
+    if(iocount > 0)
+        kwrite32(kfd, vnode + off_vnode_v_iocount, iocount - 1);
+}
+
 char* CStringFromNSString(NSString* string) {
     return string.UTF8String;
 }
@@ -348,65 +365,4 @@ BOOL isFileReadable(u64 kfd, NSString* directoryPath, NSString* fileName) {
     BOOL isReadable = [[NSFileManager defaultManager] isReadableFileAtPath:[NSString stringWithFormat:@"%@/%@", mntPath, fileName]];
     UnRedirectAndRemoveFolder(kfd, orig_to_v_data, mntPath);
     return isReadable;
-}
-
-void funVnodeHide(u64 kfd, uint64_t vnode) {
-    uint32_t usecount = kread32(kfd, vnode + off_vnode_v_usecount);
-    uint32_t iocount = kread32(kfd, vnode + off_vnode_v_iocount);
-    printf("[i] vnode->usecount: %d, vnode->iocount: %d\n", usecount, iocount);
-    kwrite32(kfd, vnode + off_vnode_v_usecount, usecount + 1);
-    kwrite32(kfd, vnode + off_vnode_v_iocount, iocount + 1);
-    uint32_t v_flags = kread32(kfd, vnode + off_vnode_v_flag);
-    printf("[i] vnode->v_flags: 0x%x\n", v_flags);
-    kwrite32(kfd, vnode + off_vnode_v_flag, (v_flags | 0x008000));
-    usecount = kread32(kfd, vnode + off_vnode_v_usecount);
-    iocount = kread32(kfd, vnode + off_vnode_v_iocount);
-    if(usecount > 0)
-        kwrite32(kfd, vnode + off_vnode_v_usecount, usecount - 1);
-    if(iocount > 0)
-        kwrite32(kfd, vnode + off_vnode_v_iocount, iocount - 1);
-}
-
-uint64_t findChildVnodeByVnode(u64 kfd, uint64_t vnode, NSString* childname) {
-    uint64_t vp_nameptr = kread64(kfd, vnode + off_vnode_v_name);
-    uint64_t vp_name = kread64(kfd, vp_nameptr);
-    uint64_t vp_namecache = kread64(kfd, vnode + off_vnode_v_ncchildren_tqh_first);
-    if(vp_namecache == 0)
-        return 0;
-    while(1) {
-        if(vp_namecache == 0)
-            break;
-        vnode = kread64(kfd, vp_namecache + off_namecache_nc_vp);
-        if(vnode == 0)
-            break;
-        vp_nameptr = kread64(kfd, vnode + off_vnode_v_name);
-        char vp_name[256];
-        kreadbuf(kfd, vp_nameptr, &vp_name, 256);
-        print(vp_name);
-        if(strcmp(vp_name, childname.UTF8String) == 0) {
-            return vnode;
-        }
-        vp_namecache = kread64(kfd, vp_namecache + off_namecache_nc_child_tqe_prev);
-    }
-    return 0;
-}
-
-void kreadbuf(u64 kfd, uint64_t kaddr, void* output, size_t size) {
-    uint64_t endAddr = kaddr + size;
-    uint32_t outputOffset = 0;
-    unsigned char* outputBytes = (unsigned char*)output;
-    
-    for(uint64_t curAddr = kaddr; curAddr < endAddr; curAddr += 4)
-    {
-        uint32_t k = kread32(kfd, curAddr);
-
-        unsigned char* kb = (unsigned char*)&k;
-        for(int i = 0; i < 4; i++)
-        {
-            if(outputOffset == size) break;
-            outputBytes[outputOffset] = kb[i];
-            outputOffset++;
-        }
-        if(outputOffset == size) break;
-    }
 }
