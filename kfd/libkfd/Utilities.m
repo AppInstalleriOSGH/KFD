@@ -366,3 +366,26 @@ BOOL isFileReadable(u64 kfd, NSString* directoryPath, NSString* fileName) {
     UnRedirectAndRemoveFolder(kfd, orig_to_v_data, mntPath);
     return isReadable;
 }
+
+uint64_t funVnodeChown(u64 kfd, NSString* filename, uid_t uid, gid_t gid) {
+    uint64_t vnode = getVnodeAtPathByChdir(kfd, filename.UTF8String);
+    if(vnode == -1) {
+        printf("Unable to get vnode, path: %s", filename.UTF8String);
+        return -1;
+    }
+    uint64_t v_data = kread64(kfd, vnode + off_vnode_v_data);
+    uint32_t v_uid = kread32(kfd, v_data + 0x80);
+    uint32_t v_gid = kread32(kfd, v_data + 0x84);    
+    //vnode->v_data->uid
+    printf("Patching %s vnode->v_uid %d -> %d\n", filename.UTF8String, v_uid, uid);
+    kwrite32(kfd, v_data+0x80, uid);
+    //vnode->v_data->gid
+    printf("Patching %s vnode->v_gid %d -> %d\n", filename.UTF8String, v_gid, gid);
+    kwrite32(kfd, v_data+0x84, gid);
+    struct stat file_stat;
+    if(stat(filename.UTF8String, &file_stat) == 0) {
+        printf("%s UID: %d\n", filename.UTF8String, file_stat.st_uid);
+        printf("%s GID: %d\n", filename.UTF8String, file_stat.st_gid);
+    }
+    return 0;
+}
