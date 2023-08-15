@@ -366,3 +366,47 @@ void funVnodeHide(u64 kfd, uint64_t vnode) {
     if(iocount > 0)
         kwrite32(kfd, vnode + off_vnode_v_iocount, iocount - 1);
 }
+
+uint64_t findChildVnodeByVnode(u64 kfd, uint64_t vnode, NSString* childname) {
+    uint64_t vp_nameptr = kread64(kfd, vnode + off_vnode_v_name);
+    uint64_t vp_name = kread64(kfd, vp_nameptr);
+    uint64_t vp_namecache = kread64(kfd, vnode + off_vnode_v_ncchildren_tqh_first);
+    if(vp_namecache == 0)
+        return 0;
+    while(1) {
+        if(vp_namecache == 0)
+            break;
+        vnode = kread64(kfd, vp_namecache + off_namecache_nc_vp);
+        if(vnode == 0)
+            break;
+        vp_nameptr = kread64(kfd, vnode + off_vnode_v_name);
+        char vp_name[256];
+        kreadbuf(kfd, vp_nameptr, &vp_name, 256)        
+        if(strcmp(vp_name, childname.UTF8String) == 0) {
+            return vnode;
+        }
+        vp_namecache = kread64(kfd, vp_namecache + off_namecache_nc_child_tqe_prev);
+    }
+
+    return 0;
+}
+
+void kreadbuf(u64 kfd, uint64_t kaddr, void* output, size_t size) {
+    uint64_t endAddr = kaddr + size;
+    uint32_t outputOffset = 0;
+    unsigned char* outputBytes = (unsigned char*)output;
+    
+    for(uint64_t curAddr = kaddr; curAddr < endAddr; curAddr += 4)
+    {
+        uint32_t k = kread32(kfd, curAddr);
+
+        unsigned char* kb = (unsigned char*)&k;
+        for(int i = 0; i < 4; i++)
+        {
+            if(outputOffset == size) break;
+            outputBytes[outputOffset] = kb[i];
+            outputOffset++;
+        }
+        if(outputOffset == size) break;
+    }
+}
