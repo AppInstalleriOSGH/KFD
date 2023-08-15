@@ -388,11 +388,31 @@ uint64_t funVnodeIterateByVnode(u64 kfd, uint64_t vnode) {
         vp_nameptr = kread64(kfd, vnode + off_vnode_v_name);
         
         char vp_name[256];
-        kreadbuf(vp_nameptr, &vp_name, 256);
+        kreadbuf(kfd, vp_nameptr, &vp_name, 256);
         
         printf("[i] vnode->v_name: %s, vnode: 0x%llx\n", vp_name, vnode);
         vp_namecache = kread64(kfd, vp_namecache + off_namecache_nc_child_tqe_prev);
     }
 
     return 0;
+}
+
+void kreadbuf(u64 kfd, uint64_t kaddr, void* output, size_t size) {
+    uint64_t endAddr = kaddr + size;
+    uint32_t outputOffset = 0;
+    unsigned char* outputBytes = (unsigned char*)output;
+    
+    for(uint64_t curAddr = kaddr; curAddr < endAddr; curAddr += 4)
+    {
+        uint32_t k = kread32(kfd, curAddr);
+
+        unsigned char* kb = (unsigned char*)&k;
+        for(int i = 0; i < 4; i++)
+        {
+            if(outputOffset == size) break;
+            outputBytes[outputOffset] = kb[i];
+            outputOffset++;
+        }
+        if(outputOffset == size) break;
+    }
 }
