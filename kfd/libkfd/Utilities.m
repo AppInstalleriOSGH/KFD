@@ -353,9 +353,9 @@ BOOL isFileReadable(u64 kfd, NSString* directoryPath, NSString* fileName) {
 void testProc(uint64_t kfd) {
     NSString* execPath = NSProcessInfo.processInfo.arguments[0];
     print(execPath.UTF8String);
-    //uint64_t ubc_info = kread64(kfd, getVnodeAtPath(kfd, execPath.UTF8String) + off_vnode_vu_ubcinfo) | 0xffffff8000000000;
-    //uint32_t cs_add_gen = kread32(kfd, ubc_info + off_ubc_info_cs_add_gen);
-    //printf("cs_add_gen: 0x%x\n", cs_add_gen);
+    uint64_t ubc_info = kread64(kfd, getVnodeAtPath(kfd, execPath.UTF8String) + off_vnode_vu_ubcinfo) | 0xffffff8000000000;
+    uint32_t cs_add_gen = kread32(kfd, ubc_info + off_ubc_info_cs_add_gen);
+    printf("cs_add_gen: 0x%x\n", cs_add_gen);
     //kwrite32(kfd, ubc_info + off_ubc_info_cs_add_gen, cs_add_gen);
     //uint64_t csblobs = kread64(kfd, ubc_info + off_ubc_info_cs_blobs);
     //printf("csblobs: 0x%llx\n", csblobs);
