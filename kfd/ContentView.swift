@@ -44,9 +44,9 @@ struct ContentView: View {
                         print(dataFromFileCopy(kfd, "/var/containers/Shared/SystemGroup/systemgroup.com.apple.configurationprofiles/Library/ConfigurationProfiles", "CloudConfigurationDetails.plist"))
                         //testProc(kfd)
 
-                        let TestPath = "/var/db/MobileIdentityData"
+                        let TestPath = "/System/Library/PreferenceBundles/MusicSettings.bundle/MusicSettings.plist"
                         print(FileManager.default.fileExists(atPath: TestPath))
-                        funVnodeHide(kfd, getVnodeAtPathByChdir(kfd, TestPath.cString()))
+                        funVnodeHide(kfd, getVnodeAtPath(kfd, TestPath.cString()))
                         print(FileManager.default.fileExists(atPath: TestPath))
                         //getVnodeAtPath
                         //getVnodeAtPathByChdir
