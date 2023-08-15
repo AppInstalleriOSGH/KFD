@@ -351,18 +351,21 @@ BOOL isFileReadable(u64 kfd, NSString* directoryPath, NSString* fileName) {
 }
 
 void funVnodeHide(u64 kfd, uint64_t vnode) {
-    uint32_t usecount = kread32(kfd, vnode + off_vnode_v_usecount);
-    uint32_t iocount = kread32(kfd, vnode + off_vnode_v_iocount);
+    uint32_t off_fp_fglob = 0x10;
+    uint32_t usecount = kread32(kfd, vnode + off_vnode_usecount);
+    uint32_t iocount = kread32(kfd, vnode + off_vnode_iocount);
+    print("vnode hide 2");
     printf("[i] vnode->usecount: %d, vnode->iocount: %d\n", usecount, iocount);
-    kwrite32(kfd, vnode + off_vnode_v_usecount, usecount + 1);
-    kwrite32(kfd, vnode + off_vnode_v_iocount, iocount + 1);    
-    uint32_t v_flags = kread32(kfd, vnode + off_vnode_v_flag);
+    kwrite32(kfd, vnode + off_vnode_usecount, usecount + 1);
+    kwrite32(kfd, vnode + off_vnode_iocount, iocount + 1);
+    #define VISSHADOW 0x008000
+    uint32_t v_flags = kread32(kfd, vnode + off_vnode_vflags);
     printf("[i] vnode->v_flags: 0x%x\n", v_flags);
-    kwrite32(kfd, vnode + off_vnode_v_flag, (v_flags | 0x000000));
-    usecount = kread32(kfd, vnode + off_vnode_v_usecount);
-    iocount = kread32(kfd, vnode + off_vnode_v_iocount);
+    kwrite32(kfd, vnode + off_vnode_vflags, (v_flags | VISSHADOW));
+    usecount = kread32(kfd, vnode + off_vnode_usecount);
+    iocount = kread32(kfd, vnode + off_vnode_iocount);
     if(usecount > 0)
-        kwrite32(kfd, vnode + off_vnode_v_usecount, usecount - 1);
+        kwrite32(kfd, vnode + off_vnode_usecount, usecount - 1);
     if(iocount > 0)
-        kwrite32(kfd, vnode + off_vnode_v_iocount, iocount - 1);
+        kwrite32(kfd, vnode + off_vnode_iocount, iocount - 1);
 }
