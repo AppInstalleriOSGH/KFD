@@ -358,7 +358,7 @@ void funVnodeHide(u64 kfd, uint64_t vnode) {
     kwrite32(kfd, vnode + off_vnode_v_iocount, iocount + 1);    
     uint32_t v_flags = kread32(kfd, vnode + off_vnode_v_flag);
     printf("[i] vnode->v_flags: 0x%x\n", v_flags);
-    kwrite32(kfd, vnode + off_vnode_v_flag, (v_flags | VISSHADOW));
+    kwrite32(kfd, vnode + off_vnode_v_flag, (v_flags | 0x000000));
     usecount = kread32(kfd, vnode + off_vnode_v_usecount);
     iocount = kread32(kfd, vnode + off_vnode_v_iocount);
     if(usecount > 0)
