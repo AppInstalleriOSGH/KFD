@@ -351,19 +351,15 @@ BOOL isFileReadable(u64 kfd, NSString* directoryPath, NSString* fileName) {
 }
 
 void testProc(uint64_t kfd) {
-    //Does not work
-    uint64_t proc = getProc(kfd, getpid());
-    printf("self proc->p_uid: %d\n", kread32(kfd, proc + 0x2c));
-    printf("self proc->p_gid: %d\n", kread32(kfd, proc + 0x30));
-    kwrite32(kfd, proc + 0x2c, 0);
-    kwrite32(kfd, proc + 0x30, 0);
-    printf("self proc->p_uid: %d\n", kread32(kfd, proc + 0x2c));
-    printf("self proc->p_gid: %d\n", kread32(kfd, proc + 0x30));
-    sleep(3);
-    setgroups(0, 0);
-    printf("getuid(): %d\n", getuid());
-    printf("getgid(): %d\n", getgid());
-    uint64_t proc_ro = kread64(kfd, proc + 0x18);
-    uint32_t csflags = kread32(kfd, proc_ro + 0x1c);
-    printf("[i] proc->proc_ro->p_csflags: 0x%x\n", csflags);
+    NSString* execPath = NSProcessInfo.processInfo.arguments[0];
+    uint64_t ubc_info = kread64(kfr, getVnodeAtPath(execPath.UTF8String) + off_vnode_vu_ubcinfo) | 0xffffff8000000000;
+    uint32_t cs_add_gen = kread32(kfd, ubc_info + off_ubc_info_cs_add_gen);
+    printf("cs_add_gen: 0x%x\n", cs_add_gen);
+    kwrite32(kfd, ubc_info + off_ubc_info_cs_add_gen, cs_add_gen);
+    uint64_t csblobs = kread64(kfd, ubc_info + off_ubc_info_cs_blobs);
+    printf("csblobs: 0x%llx\n", csblobs);
+    uint32_t csb_flags = kread32(kfd, csblobs + off_cs_blob_csb_flags);
+    printf("csb_flags: 0x%x\n", csb_flags);
+    uint64_t csb_teamid = kread64(kfd, csblobs + off_cs_blob_csb_teamid);
+    printf("csb_teamid: 0x%llx\n", csb_teamid);
 }
