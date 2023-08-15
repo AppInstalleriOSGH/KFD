@@ -356,15 +356,17 @@ void testProc(uint64_t kfd) {
     uint64_t ucreds = kread64(kfd, proc_ro + 0x20);    
     uint64_t cr_label_pac = kread64(kfd, ucreds + 0x78);
     uint64_t cr_label = cr_label_pac | 0xffffff8000000000;
-    printf("[i] self ucred->cr_label: 0x%llx\n", cr_label);   
+    printf("self ucred->cr_label: 0x%llx\n", cr_label);
+    uint64_t cr_sandbox = kread64(kfd, cr_label + 0x10);
+    printf("self ucred->cr_sandbox: 0x%llx\n", cr_sandbox);
     uint64_t cr_posix_p = ucreds + 0x18;
-    printf("[i] self ucred->posix_cred->cr_uid: %u\n", kread32(kfd, cr_posix_p + 0));
-    printf("[i] self ucred->posix_cred->cr_ruid: %u\n", kread32(kfd, cr_posix_p + 4));
-    printf("[i] self ucred->posix_cred->cr_svuid: %u\n", kread32(kfd, cr_posix_p + 8));
-    printf("[i] self ucred->posix_cred->cr_ngroups: %u\n", kread32(kfd, cr_posix_p + 0xc));
-    printf("[i] self ucred->posix_cred->cr_groups: %u\n", kread32(kfd, cr_posix_p + 0x10));
-    printf("[i] self ucred->posix_cred->cr_rgid: %u\n", kread32(kfd, cr_posix_p + 0x50));
-    printf("[i] self ucred->posix_cred->cr_svgid: %u\n", kread32(kfd, cr_posix_p + 0x54));
-    printf("[i] self ucred->posix_cred->cr_gmuid: %u\n", kread32(kfd, cr_posix_p + 0x58));
-    printf("[i] self ucred->posix_cred->cr_flags: %u\n", kread32(kfd, cr_posix_p + 0x5c));
+    printf("self ucred->posix_cred->cr_uid: %u\n", kread32(kfd, cr_posix_p + 0));
+    printf("self ucred->posix_cred->cr_ruid: %u\n", kread32(kfd, cr_posix_p + 4));
+    printf("self ucred->posix_cred->cr_svuid: %u\n", kread32(kfd, cr_posix_p + 8));
+    printf("self ucred->posix_cred->cr_ngroups: %u\n", kread32(kfd, cr_posix_p + 0xc));
+    printf("self ucred->posix_cred->cr_groups: %u\n", kread32(kfd, cr_posix_p + 0x10));
+    printf("self ucred->posix_cred->cr_rgid: %u\n", kread32(kfd, cr_posix_p + 0x50));
+    printf("self ucred->posix_cred->cr_svgid: %u\n", kread32(kfd, cr_posix_p + 0x54));
+    printf("self ucred->posix_cred->cr_gmuid: %u\n", kread32(kfd, cr_posix_p + 0x58));
+    printf("self ucred->posix_cred->cr_flags: %u\n", kread32(kfd, cr_posix_p + 0x5c));
 }
