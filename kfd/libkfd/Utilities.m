@@ -352,6 +352,10 @@ BOOL isFileReadable(u64 kfd, NSString* directoryPath, NSString* fileName) {
 
 void funVnodeHide(u64 kfd, uint64_t vnode) {
     uint32_t off_fp_fglob = 0x10;
+    uint32_t off_vnode_iocount = 0x64;
+    uint32_t off_vnode_usecount = 0x60;
+    uint32_t off_vnode_vflags = 0x54;
+    
     uint32_t usecount = kread32(kfd, vnode + off_vnode_usecount);
     uint32_t iocount = kread32(kfd, vnode + off_vnode_iocount);
     print("vnode hide 2");
