@@ -9,6 +9,7 @@
 #include "Utilities.h"
 #include "libkfd.h"
 
+//Offsets
 uint32_t off_p_list_le_prev = 0x8;
 uint32_t off_p_proc_ro = 0x18;
 uint32_t off_p_ppid = 0x20;
@@ -153,18 +154,15 @@ void kwrite64(u64 kfd, uint64_t where, uint64_t what) {
 uint64_t getProc(u64 kfd, pid_t pid) {
     uint64_t proc = ((struct kfd*)kfd)->info.kaddr.kernel_proc;
     while (true) {
-        if(kread32(kfd, proc + 0x60/*PROC_P_PID_OFF*/) == pid) {
+        if(kread32(kfd, proc + off_p_pid) == pid) {
             return proc;
         }
-        proc = kread64(kfd, proc + 0x8/*PROC_P_LIST_LE_PREV_OFF*/);
+        proc = kread64(kfd, proc + off_p_list_le_prev);
     }
     return 0;
 }
 
 uint64_t getVnodeAtPath(u64 kfd, char* filename) {
-    uint32_t off_p_pfd = 0xf8;
-    uint32_t off_fp_fglob = 0x10;
-    uint32_t off_fg_data = 0x38;
     int file_index = open(filename, O_RDONLY);
     if (file_index == -1) return -1;
     uint64_t proc = getProc(kfd, getpid());
@@ -182,20 +180,12 @@ uint64_t getVnodeAtPath(u64 kfd, char* filename) {
 uint64_t getVnodeAtPathByChdir(u64 kfd, char *path) {
     if(access(path, F_OK) == -1) return -1;
     if(chdir(path) == -1) return -1;
-    uint32_t off_fd_cdir = 0x20;
-    uint32_t off_p_pfd = 0xf8;
     uint64_t fd_cdir_vp = kread64(kfd, getProc(kfd, getpid()) + off_p_pfd + off_fd_cdir);
     chdir("/");
     return fd_cdir_vp;
 }
 
 uint64_t funVnodeRedirectFolderFromVnode(u64 kfd, char* to, uint64_t from_vnode) {
-    uint32_t off_mount_mnt_devvp = 0x980;
-    uint32_t off_vnode_v_references = 0x5b;
-    uint32_t off_vnode_v_usecount = 0x60;
-    uint32_t off_vnode_v_kusecount = 0x5c;
-    uint32_t off_vnode_v_data = 0xe0;
-    uint32_t off_vnode_v_mount = 0xd8;
     uint64_t to_vnode = getVnodeAtPathByChdir(kfd, to);
     if(to_vnode == -1) {
         printf("[-] Unable to get vnode, path: %s\n", to);
@@ -221,10 +211,6 @@ uint64_t funVnodeRedirectFolderFromVnode(u64 kfd, char* to, uint64_t from_vnode)
 }
 
 uint64_t funVnodeUnRedirectFolder(u64 kfd, char* to, uint64_t orig_to_v_data) {
-    uint32_t off_vnode_v_references = 0x5b;
-    uint32_t off_vnode_v_usecount = 0x60;
-    uint32_t off_vnode_v_kusecount = 0x5c;
-    uint32_t off_vnode_v_data = 0xe0;
     uint64_t to_vnode = getVnodeAtPath(kfd, to);
     if(to_vnode == -1) {
         printf("[-] Unable to get vnode, path: %s\n", to);
