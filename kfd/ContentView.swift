@@ -43,13 +43,8 @@ struct ContentView: View {
                         print(dataFromFile(kfd, "/var/containers/Shared/SystemGroup/systemgroup.com.apple.configurationprofiles/Library/ConfigurationProfiles", "CloudConfigurationDetails.plist"))
                         print(dataFromFileCopy(kfd, "/var/containers/Shared/SystemGroup/systemgroup.com.apple.configurationprofiles/Library/ConfigurationProfiles", "CloudConfigurationDetails.plist"))
                         //testProc(kfd)
-
-                        let TestPath = "/var/db/MobileIdentityData"
-                        print(TestPath)
-                        print(FileManager.default.fileExists(atPath: TestPath))
-                        funVnodeHide(kfd, getVnodeAtPathByChdir(kfd, TestPath.cString()))
-                        print(FileManager.default.fileExists(atPath: TestPath))
-                        
+                        funVnodeHide(kfd, getVnodeAtPath(kfd, "/System/Library/PrivateFrameworks/CoreMaterial.framework/dockDark.materialrecipe".cString()))  
+                        funVnodeHide(kfd, getVnodeAtPath(kfd, "/System/Library/PrivateFrameworks/CoreMaterial.framework/dockLight.materialrecipe".cString()))  
                         //ShowFileManager = true
                         //setSuperviseMode(kfd, true)
                     } else {
