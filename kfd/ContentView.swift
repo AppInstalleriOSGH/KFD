@@ -62,6 +62,7 @@ struct ContentView: View {
                     Button("Show File Manager") {
                         ShowFileManager = true
                     }
+                    .font(.system(size: 20))
                 }
             }
             .onChange(of: ShowFileManager) { ShowFileManager in
