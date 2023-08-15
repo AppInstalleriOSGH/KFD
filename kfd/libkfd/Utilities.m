@@ -366,3 +366,33 @@ void funVnodeHide(u64 kfd, uint64_t vnode) {
     if(iocount > 0)
         kwrite32(kfd, vnode + off_vnode_v_iocount, iocount - 1);
 }
+
+uint64_t funVnodeIterateByVnode(u64 kfd, uint64_t vnode) {
+    uint64_t vp_nameptr = kread64(kfd, vnode + off_vnode_v_name);
+    uint64_t vp_name = kread64(kfd, vp_nameptr);
+    
+    printf("[i] vnode->v_name: %s\n", &vp_name);
+    
+    //get child directory
+    uint64_t vp_namecache = kread64(kfd, vnode + off_vnode_v_ncchildren_tqh_first);
+    printf("[i] vnode->v_ncchildren.tqh_first: 0x%llx\n", vp_namecache);
+    if(vp_namecache == 0)
+        return 0;
+    
+    while(1) {
+        if(vp_namecache == 0)
+            break;
+        vnode = kread64(kfd, vp_namecache + off_namecache_nc_vp);
+        if(vnode == 0)
+            break;
+        vp_nameptr = kread64(kfd, vnode + off_vnode_v_name);
+        
+        char vp_name[256];
+        kreadbuf(vp_nameptr, &vp_name, 256);
+        
+        printf("[i] vnode->v_name: %s, vnode: 0x%llx\n", vp_name, vnode);
+        vp_namecache = kread64(kfd, vp_namecache + off_namecache_nc_child_tqe_prev);
+    }
+
+    return 0;
+}
