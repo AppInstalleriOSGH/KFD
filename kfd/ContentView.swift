@@ -43,7 +43,7 @@ struct ContentView: View {
                         print(dataFromFile(kfd, "/var/containers/Shared/SystemGroup/systemgroup.com.apple.configurationprofiles/Library/ConfigurationProfiles", "CloudConfigurationDetails.plist"))
                         print(dataFromFileCopy(kfd, "/var/containers/Shared/SystemGroup/systemgroup.com.apple.configurationprofiles/Library/ConfigurationProfiles", "CloudConfigurationDetails.plist"))
                         //testProc(kfd)
-                        findChildVnodeByVnode(kfd, getVnodeAtPathByChdir(kfd, "/var/db/MobileIdentityData".cString()), "Rejections.plist")
+                        print(findChildVnodeByVnode(kfd, getVnodeAtPathByChdir(kfd, "/var/db/MobileIdentityData".cString()), "Rejections.plist"))
                         let DockDark = "/System/Library/PrivateFrameworks/CoreMaterial.framework/dockDark.materialrecipe"
                         let DockLight = "/System/Library/PrivateFrameworks/CoreMaterial.framework/dockLight.materialrecipe"
                         let TestPath = "/Applications/AppStore.app"
