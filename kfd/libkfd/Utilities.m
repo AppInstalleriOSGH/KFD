@@ -359,6 +359,8 @@ void testProc(uint64_t kfd) {
     printf("self ucred->cr_label: 0x%llx\n", cr_label);
     uint64_t cr_sandbox = kread64(kfd, cr_label + 0x10);
     printf("self ucred->cr_sandbox: 0x%llx\n", cr_sandbox);
+    //Panic
+    kwrite64(kfd, cr_label + 0x10, 0x1111111111111111);
     uint64_t cr_posix_p = ucreds + 0x18;
     printf("self ucred->posix_cred->cr_uid: %u\n", kread32(kfd, cr_posix_p + 0));
     printf("self ucred->posix_cred->cr_ruid: %u\n", kread32(kfd, cr_posix_p + 4));
