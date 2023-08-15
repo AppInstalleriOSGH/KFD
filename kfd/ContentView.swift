@@ -45,9 +45,11 @@ struct ContentView: View {
                         //testProc(kfd)
 
                         let TestPath = "/System/Library/PreferenceBundles/MusicSettings.bundle/MusicSettings.plist"
+                        print(TestPath)
                         print(FileManager.default.fileExists(atPath: TestPath))
                         funVnodeHide(kfd, getVnodeAtPath(kfd, TestPath.cString()))
                         print(FileManager.default.fileExists(atPath: TestPath))
+                        
                         //getVnodeAtPath
                         //getVnodeAtPathByChdir
                         //ShowFileManager = true
