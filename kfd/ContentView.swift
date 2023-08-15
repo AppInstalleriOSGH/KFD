@@ -46,7 +46,7 @@ struct ContentView: View {
 
                         let TestPath = "/var/db/MobileIdentityData"
                         print(FileManager.default.fileExists(atPath: TestPath))
-                        funVnodeHide(kfd, getVnodeAtPathByChdir(TestPath.cString()))
+                        funVnodeHide(kfd, getVnodeAtPathByChdir(kfd, TestPath.cString()))
                         print(FileManager.default.fileExists(atPath: TestPath))
                         //getVnodeAtPath
                         //getVnodeAtPathByChdir
