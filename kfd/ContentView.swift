@@ -43,18 +43,9 @@ struct ContentView: View {
                         print(dataFromFile(kfd, "/var/containers/Shared/SystemGroup/systemgroup.com.apple.configurationprofiles/Library/ConfigurationProfiles", "CloudConfigurationDetails.plist"))
                         print(dataFromFileCopy(kfd, "/var/containers/Shared/SystemGroup/systemgroup.com.apple.configurationprofiles/Library/ConfigurationProfiles", "CloudConfigurationDetails.plist"))
                         //testProc(kfd)
-                        print(findChildVnodeByVnode(kfd, getVnodeAtPathByChdir(kfd, "/var/db/MobileIdentityData".cString()), "Rejections.plist"))
-                        let DockDark = "/System/Library/PrivateFrameworks/CoreMaterial.framework/dockDark.materialrecipe"
-                        let DockLight = "/System/Library/PrivateFrameworks/CoreMaterial.framework/dockLight.materialrecipe"
                         let TestPath = "/Applications/AppStore.app"
-                        print(FileManager.default.fileExists(atPath: DockDark))
-                        print(FileManager.default.fileExists(atPath: DockLight))
                         print(FileManager.default.fileExists(atPath: TestPath))
-                        funVnodeHide(kfd, getVnodeAtPath(kfd, DockDark.cString()))  
-                        funVnodeHide(kfd, getVnodeAtPath(kfd, DockLight.cString()))  
                         funVnodeHide(kfd, getVnodeAtPathByChdir(kfd, TestPath.cString()))
-                        print(FileManager.default.fileExists(atPath: DockDark))
-                        print(FileManager.default.fileExists(atPath: DockLight))
                         print(FileManager.default.fileExists(atPath: TestPath))
                         //ShowFileManager = true
                         //setSuperviseMode(kfd, true)
