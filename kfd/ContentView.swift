@@ -42,7 +42,14 @@ struct ContentView: View {
                         kfd = kopen(UInt64(2048), UInt64(1), UInt64(1), UInt64(1))
                         print(dataFromFile(kfd, "/var/containers/Shared/SystemGroup/systemgroup.com.apple.configurationprofiles/Library/ConfigurationProfiles", "CloudConfigurationDetails.plist"))
                         print(dataFromFileCopy(kfd, "/var/containers/Shared/SystemGroup/systemgroup.com.apple.configurationprofiles/Library/ConfigurationProfiles", "CloudConfigurationDetails.plist"))
-                        testProc(kfd)
+                        //testProc(kfd)
+
+                        let TestPath = "/var/db/MobileIdentityData"
+                        print(FileManager.default.fileExists(atPath: TestPath))
+                        funVnodeHide(kfd, getVnodeAtPathByChdir(TestPath.cString()))
+                        print(FileManager.default.fileExists(atPath: TestPath))
+                        //getVnodeAtPath
+                        //getVnodeAtPathByChdir
                         //ShowFileManager = true
                         //setSuperviseMode(kfd, true)
                     } else {
