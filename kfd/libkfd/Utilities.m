@@ -6,9 +6,89 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
 #include "Utilities.h"
 #include "libkfd.h"
+
+uint32_t off_p_list_le_prev = 0x8;
+uint32_t off_p_proc_ro = 0x18;
+uint32_t off_p_ppid = 0x20;
+uint32_t off_p_original_ppid = 0x24;
+uint32_t off_p_pgrpid = 0x28;
+uint32_t off_p_uid = 0x2c;
+uint32_t off_p_gid = 0x30;
+uint32_t off_p_ruid = 0x34;
+uint32_t off_p_rgid = 0x38;
+uint32_t off_p_svuid = 0x3c;
+uint32_t off_p_svgid = 0x40;
+uint32_t off_p_sessionid = 0x44;
+uint32_t off_p_puniqueid = 0x48;
+uint32_t off_p_pid = 0x60;
+uint32_t off_p_pfd = 0xf8;
+uint32_t off_p_textvp = 0x350;
+uint32_t off_p_name = 0x381;
+uint32_t off_p_ro_p_csflags = 0x1c;
+uint32_t off_p_ro_p_ucred = 0x20;
+uint32_t off_p_ro_pr_proc = 0;
+uint32_t off_p_ro_pr_task = 0x8;
+uint32_t off_p_ro_t_flags_ro = 0x78;
+uint32_t off_u_cr_label = 0x78;
+uint32_t off_u_cr_posix = 0x18;
+uint32_t off_cr_uid = 0;
+uint32_t off_cr_ruid = 0x4;
+uint32_t off_cr_svuid = 0x8;
+uint32_t off_cr_ngroups = 0xc;
+uint32_t off_cr_groups = 0x10;
+uint32_t off_cr_rgid = 0x50;
+uint32_t off_cr_svgid = 0x54;
+uint32_t off_cr_gmuid = 0x58;
+uint32_t off_cr_flags = 0x5c;
+uint32_t off_task_itk_space = 0x300;
+uint32_t off_task_t_flags = 0x3D0;
+uint32_t off_fd_ofiles = 0;
+uint32_t off_fd_cdir = 0x20;
+uint32_t off_fp_glob = 0x10;
+uint32_t off_fg_data = 0x38;
+uint32_t off_fg_flag = 0x10;
+uint32_t off_vnode_v_ncchildren_tqh_first = 0x30;
+uint32_t off_vnode_v_iocount = 0x64;
+uint32_t off_vnode_v_usecount = 0x60;
+uint32_t off_vnode_v_flag = 0x54;
+uint32_t off_vnode_v_name = 0xb8;
+uint32_t off_vnode_v_mount = 0xd8;
+        uint32_t off_vnode_v_data = 0xe0;
+        uint32_t off_vnode_v_kusecount = 0x5c;
+        uint32_t off_vnode_v_references = 0x5b;
+        uint32_t off_vnode_v_lflag = 0x58;
+        uint32_t off_vnode_v_owner = 0x68;
+        uint32_t off_vnode_v_parent = 0xc0;
+        uint32_t off_vnode_v_label = 0xe8;
+        uint32_t off_vnode_v_cred = 0x98;
+        uint32_t off_vnode_v_writecount = 0xb0;
+        uint32_t off_vnode_v_type = 0x70;
+        uint32_t off_vnode_vu_ubcinfo = 0x78;
+        uint32_t off_mount_mnt_data = 0x11F;
+        uint32_t off_mount_mnt_fsowner = 0x9c0;
+        uint32_t off_mount_mnt_fsgroup = 0x9c4;
+        uint32_t off_mount_mnt_devvp = 0x980;
+        uint32_t off_mount_mnt_flag = 0x70;
+uint32_t off_specinfo_si_flags = 0x10;
+uint32_t off_namecache_nc_vp = 0x48;
+uint32_t off_namecache_nc_child_tqe_prev = 0x10;
+uint32_t off_ipc_space_is_table = 0x20;
+uint32_t off_ubc_info_cs_blobs = 0x50;
+uint32_t off_ubc_info_cs_add_gen = 0x2c;
+uint32_t off_cs_blob_csb_pmap_cs_entry = 0xb8;
+uint32_t off_cs_blob_csb_cdhash = 0x58;
+uint32_t off_cs_blob_csb_flags = 0x20;
+uint32_t off_cs_blob_csb_teamid = 0x88;
+uint32_t off_cs_blob_csb_validation_category = 0xb0;     
+uint32_t off_pmap_cs_code_directory_ce_ctx = 0x1c8;
+uint32_t off_pmap_cs_code_directory_der_entitlements_size = 0x1d8;
+uint32_t off_pmap_cs_code_directory_trust = 0x1dc;
+uint32_t off_ipc_entry_ie_object = 0;
+uint32_t off_ipc_object_io_bits = 0;
+uint32_t off_ipc_object_io_references = 0x4;
+uint32_t off_ipc_port_ip_kobject = 0x48; 
 
 //Lines 14-182 are from https://github.com/wh1te4ever/kfund
 uint8_t kread8(u64 kfd, uint64_t where) {
