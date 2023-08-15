@@ -381,13 +381,12 @@ uint64_t findChildVnodeByVnode(u64 kfd, uint64_t vnode, NSString* childname) {
             break;
         vp_nameptr = kread64(kfd, vnode + off_vnode_v_name);
         char vp_name[256];
-        kreadbuf(kfd, vp_nameptr, &vp_name, 256)        
+        kreadbuf(kfd, vp_nameptr, &vp_name, 256);        
         if(strcmp(vp_name, childname.UTF8String) == 0) {
             return vnode;
         }
         vp_namecache = kread64(kfd, vp_namecache + off_namecache_nc_child_tqe_prev);
     }
-
     return 0;
 }
 
