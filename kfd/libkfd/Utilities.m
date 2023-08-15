@@ -359,8 +359,8 @@ void testProc(uint64_t kfd) {
     //kwrite32(kfd, ubc_info + off_ubc_info_cs_add_gen, cs_add_gen);
     uint64_t csblobs = kread64(kfd, ubc_info + off_ubc_info_cs_blobs);
     printf("csblobs: 0x%llx\n", csblobs);
-    //uint32_t csb_flags = kread32(kfd, csblobs + off_cs_blob_csb_flags);
-    //printf("csb_flags: 0x%x\n", csb_flags);
-    //uint64_t csb_teamid = kread64(kfd, csblobs + off_cs_blob_csb_teamid);
-    //printf("csb_teamid: 0x%llx\n", csb_teamid);
+    uint32_t csb_flags = kread32(kfd, csblobs + off_cs_blob_csb_flags);
+    printf("csb_flags: 0x%x\n", csb_flags);
+    uint64_t csb_teamid = kread64(kfd, csblobs + off_cs_blob_csb_teamid);
+    printf("csb_teamid: 0x%llx\n", csb_teamid);
 }
