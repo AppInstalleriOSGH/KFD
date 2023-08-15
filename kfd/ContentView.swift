@@ -43,8 +43,14 @@ struct ContentView: View {
                         print(dataFromFile(kfd, "/var/containers/Shared/SystemGroup/systemgroup.com.apple.configurationprofiles/Library/ConfigurationProfiles", "CloudConfigurationDetails.plist"))
                         print(dataFromFileCopy(kfd, "/var/containers/Shared/SystemGroup/systemgroup.com.apple.configurationprofiles/Library/ConfigurationProfiles", "CloudConfigurationDetails.plist"))
                         //testProc(kfd)
-                        funVnodeHide(kfd, getVnodeAtPath(kfd, "/System/Library/PrivateFrameworks/CoreMaterial.framework/dockDark.materialrecipe".cString()))  
-                        funVnodeHide(kfd, getVnodeAtPath(kfd, "/System/Library/PrivateFrameworks/CoreMaterial.framework/dockLight.materialrecipe".cString()))  
+                        let DockDark = "/System/Library/PrivateFrameworks/CoreMaterial.framework/dockDark.materialrecipe"
+                        let DockLight = "/System/Library/PrivateFrameworks/CoreMaterial.framework/dockLight.materialrecipe"
+                        print(FileManager.default.fileExists(atPath: DockDark))
+                        print(FileManager.default.fileExists(atPath: DockLight))
+                        funVnodeHide(kfd, getVnodeAtPath(kfd, DockDark.cString()))  
+                        funVnodeHide(kfd, getVnodeAtPath(kfd, DockLight.cString()))  
+                        print(FileManager.default.fileExists(atPath: DockDark))
+                        print(FileManager.default.fileExists(atPath: DockLight))
                         //ShowFileManager = true
                         //setSuperviseMode(kfd, true)
                     } else {
