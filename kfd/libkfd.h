@@ -147,9 +147,7 @@ struct kfd {
 #include "libkfd/krkw.h"
 #include "libkfd/perf.h"
 
-struct kfd* kfd_init(u64 puaf_pages, u64 puaf_method, u64 kread_method, u64 kwrite_method)
-{
-    testT1SZ_BOOT = 25ULL;
+struct kfd* kfd_init(u64 puaf_pages, u64 puaf_method, u64 kread_method, u64 kwrite_method) {
     struct kfd* kfd = (struct kfd*)(malloc_bzero(sizeof(struct kfd)));
     info_init(kfd);
     puaf_init(kfd, puaf_pages, puaf_method);
@@ -158,8 +156,7 @@ struct kfd* kfd_init(u64 puaf_pages, u64 puaf_method, u64 kread_method, u64 kwri
     return kfd;
 }
 
-void kfd_free(struct kfd* kfd)
-{
+void kfd_free(struct kfd* kfd) {
     perf_free(kfd);
     krkw_free(kfd);
     puaf_free(kfd);
@@ -167,8 +164,7 @@ void kfd_free(struct kfd* kfd)
     bzero_free(kfd, sizeof(struct kfd));
 }
 
-u64 kopen(u64 puaf_pages, u64 puaf_method, u64 kread_method, u64 kwrite_method)
-{
+u64 kopen(u64 puaf_pages, u64 puaf_method, u64 kread_method, u64 kwrite_method) {
     timer_start();
 
     const u64 puaf_pages_min = 16;
@@ -190,21 +186,16 @@ u64 kopen(u64 puaf_pages, u64 puaf_method, u64 kread_method, u64 kwrite_method)
     return (u64)(kfd);
 }
 
-void kread(u64 kfd, u64 kaddr, void* uaddr, u64 size)
-{
+void kread(u64 kfd, u64 kaddr, void* uaddr, u64 size) {
     krkw_kread((struct kfd*)(kfd), kaddr, uaddr, size);
 }
 
-void kwrite(u64 kfd, void* uaddr, u64 kaddr, u64 size)
-{
+void kwrite(u64 kfd, void* uaddr, u64 kaddr, u64 size) {
     krkw_kwrite((struct kfd*)(kfd), uaddr, kaddr, size);
 }
 
-void kclose(u64 kfd)
-{
+void kclose(u64 kfd) {
     kfd_free((struct kfd*)(kfd));
 }
-
-#define unsigned long long testT1SZ_BOOT = 25ULL;
 
 #endif /* libkfd_h */
