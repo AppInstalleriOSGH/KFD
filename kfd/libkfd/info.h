@@ -97,7 +97,7 @@ void info_init(struct kfd* kfd)
     printf("%s\n", systemInfo.release);
     printf("%s\n", systemInfo.version);
     char osVersonStrBuffer[256];
-    size_t size = sizeof(str);
+    size_t size = sizeof(osVersonStrBuffer);
     sysctlbyname("kern.osversion", osVersonStrBuffer, &size, NULL, 0);
     printf("%s\n", osVersonStrBuffer);
     for (u64 i = 0; i < number_of_kern_versions; i++) {
