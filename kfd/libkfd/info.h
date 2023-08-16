@@ -95,19 +95,14 @@ void info_init(struct kfd* kfd)
     size_t build_version_size = sizeof(build_version);
     sysctlbyname("kern.osversion", build_version, &build_version_size, NULL, 0);
     printf("%s\n", build_version);
-    unsigned long long t1sz_boot = 25ull;
     for (u64 i = 0; i < number_of_kern_versions; i++) {
         const char* current_kern_version = kern_versions[i].kern_version;
         const char* current_device_id = kern_versions[i].device_id;
         const char* current_build_version = kern_versions[i].build_version;
-        if (strcmp(current_device_id, systemInfo.machine) == 0) {
-            if (strcmp(current_kern_version, kfd->info.env.kern_version) == 0) {
-                if (strcmp(current_build_version, build_version) == 0) {
-                    kfd->info.env.vid = i;
-                    print_u64(kfd->info.env.vid);
-                    return;
-                }
-            }
+        if (strcmp(current_device_id, systemInfo.machine) == 0 && strcmp(current_kern_version, kfd->info.env.kern_version) == 0 && strcmp(current_build_version, build_version) == 0) {
+            kfd->info.env.vid = i;
+            print_u64(kfd->info.env.vid);
+            return;
         }
     }
     kfd->info.env.vid = 0;
