@@ -2,6 +2,8 @@
  * Copyright (c) 2023 Félix Poulin-Bélanger. All rights reserved.
  */
 
+#import <sys/utsname.h>
+
 #ifndef static_info_h
 #define static_info_h
 
