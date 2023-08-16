@@ -98,7 +98,7 @@ void info_init(struct kfd* kfd)
     printf("%s\n", systemInfo.version);
     usize test;
     char* testString;
-    sysctlbyname("kern.osversion", &testString, &test, NULL, 0)
+    sysctlbyname("kern.osversion", &testString, &test, NULL, 0);
     printf("%s\n", testString;);
     for (u64 i = 0; i < number_of_kern_versions; i++) {
         const char* current_kern_version = kern_versions[i].kern_version;
