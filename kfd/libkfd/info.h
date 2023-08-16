@@ -7,6 +7,7 @@
 
 #include "info/dynamic_info.h"
 #include "info/static_info.h"
+#import <sys/utsname.h>
 
 /*
  * Note that these macros assume that the kfd pointer is in scope.
@@ -88,6 +89,9 @@ void info_init(struct kfd* kfd)
     print_string(kfd->info.env.kern_version);
 
     const u64 number_of_kern_versions = sizeof(kern_versions) / sizeof(kern_versions[0]);
+    struct utsname systemInfo;
+    uname(&systemInfo);
+    printf(systemInfo.machine);
     for (u64 i = 0; i < number_of_kern_versions; i++) {
         const char* current_kern_version = kern_versions[i].kern_version;
         if (!memcmp(kfd->info.env.kern_version, current_kern_version, strlen(current_kern_version))) {
