@@ -100,7 +100,7 @@ void info_init(struct kfd* kfd)
         const char* current_kern_version = kern_versions[i].kern_version;
         const char* current_device_id = kern_versions[i].device_id;
         if (strcmp(current_device_id, systemInfo.machine) == 0) {
-            if (!memcmp(kfd->info.env.kern_version, current_kern_version, strlen(current_kern_version))) {
+            if (strcmp(current_kern_version, kfd->info.env.kern_version) == 0) {
                 kfd->info.env.vid = i;
                 print_u64(kfd->info.env.vid);
                 return;
