@@ -49,7 +49,6 @@ struct ContentView: View {
                         //ShowFileManager = true
                         //setSuperviseMode(kfd, true)
                     } else {
-                        test(kfd)
                         kclose(kfd)
                         kfd = 0
                     }
