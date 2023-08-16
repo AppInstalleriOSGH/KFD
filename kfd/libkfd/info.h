@@ -95,7 +95,7 @@ void info_init(struct kfd* kfd)
     size_t build_version_size = sizeof(build_version);
     sysctlbyname("kern.osversion", build_version, &build_version_size, NULL, 0);
     printf("%s\n", build_version);
-    int t1sz_boot = 25ull;
+    unsigned long long t1sz_boot = 25ull;
     for (u64 i = 0; i < number_of_kern_versions; i++) {
         const char* current_kern_version = kern_versions[i].kern_version;
         const char* current_device_id = kern_versions[i].device_id;
