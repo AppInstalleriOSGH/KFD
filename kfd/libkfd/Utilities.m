@@ -390,11 +390,11 @@ void test(u64 kfd) {
 
 uint64_t getProcByName(u64 kfd, char* nm) {
     uint64_t proc = ((struct kfd*)kfd)->info.kaddr.kernel_proc;
-    
     while (true) {
         uint64_t nameptr = proc + off_p_name;
         char name[32];
         kread(kfd, nameptr, &name, 32);
+        printf("test: %s", name);
         if(strcmp(name, nm) == 0) {
             return proc;
         }
