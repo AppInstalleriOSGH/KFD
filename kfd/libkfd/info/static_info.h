@@ -306,4 +306,8 @@ enum perfmon_ioctl {
 #define ARM_16K_TT_L3_SHIFT         14
 #define ARM_16K_TT_L3_INDEX_MASK    0x0000000001ffc000ull
 
+unsigned long long testT1SZ_BOOT(void) {
+    return 25ULL;
+}
+
 #endif /* static_info_h */
