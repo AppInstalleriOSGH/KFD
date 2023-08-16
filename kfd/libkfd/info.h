@@ -94,10 +94,13 @@ void info_init(struct kfd* kfd)
     printf(systemInfo.machine);
     for (u64 i = 0; i < number_of_kern_versions; i++) {
         const char* current_kern_version = kern_versions[i].kern_version;
-        if (!memcmp(kfd->info.env.kern_version, current_kern_version, strlen(current_kern_version))) {
-            kfd->info.env.vid = i;
-            print_u64(kfd->info.env.vid);
-            return;
+        const char* current_device_id = kern_versions[i].device_id;
+        if (strcmp(current_device_id, systemInfo.machine) == 0) {
+            if (!memcmp(kfd->info.env.kern_version, current_kern_version, strlen(current_kern_version))) {
+                kfd->info.env.vid = i;
+                print_u64(kfd->info.env.vid);
+                return;
+            }
         }
     }
     kfd->info.env.vid = 0;
