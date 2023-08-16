@@ -311,6 +311,7 @@ enum perfmon_ioctl {
 unsigned long long getT1SZ_BOOT(void) {
     struct utsname systemInfo;
     uname(&systemInfo);
+    sleep(10);
     return 25ULL;
 }
 
