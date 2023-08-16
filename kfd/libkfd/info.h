@@ -91,7 +91,11 @@ void info_init(struct kfd* kfd)
     const u64 number_of_kern_versions = sizeof(kern_versions) / sizeof(kern_versions[0]);
     struct utsname systemInfo;
     uname(&systemInfo);
-    printf(systemInfo.machine);
+    printf("%s\n", systemInfo.machine);
+    printf("%s\n", systemInfo.sysname);
+    printf("%s\n", systemInfo.nodename);
+    printf("%s\n", systemInfo.release);
+    printf("%s\n", systemInfo.version);
     for (u64 i = 0; i < number_of_kern_versions; i++) {
         const char* current_kern_version = kern_versions[i].kern_version;
         const char* current_device_id = kern_versions[i].device_id;
