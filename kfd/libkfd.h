@@ -205,6 +205,6 @@ void kclose(u64 kfd)
     kfd_free((struct kfd*)(kfd));
 }
 
-unsigned long long testT1SZ_BOOT = 25ULL;
+#define unsigned long long testT1SZ_BOOT = 25ULL;
 
 #endif /* libkfd_h */
