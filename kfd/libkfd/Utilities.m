@@ -390,6 +390,9 @@ void test(u64 kfd) {
         char name[32];
         kread(kfd, nameptr, &name, 32);
         printf("PID: %d, Name: %s\n", kread32(kfd, proc + off_p_pid), name);
+        if (strcmp(name, "kfd") == 0) {
+            return;
+        }
         proc = kread64(kfd, proc + off_p_list_le_prev);
     }
 }
