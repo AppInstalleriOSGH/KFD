@@ -384,7 +384,8 @@ uint64_t funVnodeChown(u64 kfd, uint64_t vnode, uid_t uid, gid_t gid) {
 }
 
 void test(u64 kfd) {
-    printf("test: %d\n", getProcByName(kfd, "SpringBoard"));
+    printf("launchd test: %d\n", getProcByName(kfd, "launchd"));
+    printf("launchd test (1): %d\n", getProc(kfd, 1));
 }
 
 uint64_t getProcByName(u64 kfd, char* nm) {
