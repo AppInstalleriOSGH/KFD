@@ -313,7 +313,7 @@ unsigned long long getT1SZ_BOOT(void) {
     uname(&systemInfo);
     if (strcmp(systemInfo.machine, "iPhone15,2") == 0 || strcmp(systemInfo.machine, "iPhone15,3") == 0) {
         print("T1SZ_BOOT: 17ULL");
-        return 17ULL;
+        return 25ULL;
     } else {
         print("T1SZ_BOOT: 25ULL");
         return 25ULL;
