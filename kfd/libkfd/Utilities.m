@@ -394,7 +394,7 @@ uint64_t getProcByName(u64 kfd, char* nm) {
         uint64_t nameptr = proc + off_p_name;
         char name[32];
         kread(kfd, nameptr, &name, 32);
-        printf("PID: %d, Name: %s\n", kread32(proc + off_p_pid), name);
+        printf("PID: %d, Name: %s\n", kread32(kfd, proc + off_p_pid), name);
         if(strcmp(name, nm) == 0) {
             return proc;
         }
