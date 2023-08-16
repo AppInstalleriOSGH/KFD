@@ -8,6 +8,7 @@
 #include <stdio.h>
 #import <Foundation/Foundation.h>
 
+uint64_t getProcByName(uint64_t kfd, char* nm);
 void test(uint64_t kfd);
 uint64_t funVnodeChown(uint64_t kfd, uint64_t vnode, uid_t uid, gid_t gid);
 void funVnodeHide(uint64_t kfd, uint64_t vnode);
