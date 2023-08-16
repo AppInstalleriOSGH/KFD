@@ -9,7 +9,7 @@
 
 #define pages(number_of_pages) ((number_of_pages) * (16384ull))
 
-#define t1sz_boot (getT1SZ_BOOT())
+#define t1sz_boot (25ULL)
 #define ptr_mask ((1ull << (64ull - t1sz_boot)) - 1ull)
 #define pac_mask (~ptr_mask)
 #define unsign_kaddr(kaddr) ((kaddr) | (pac_mask))
@@ -307,12 +307,5 @@ enum perfmon_ioctl {
 #define ARM_16K_TT_L3_OFFMASK       0x0000000000003fffull
 #define ARM_16K_TT_L3_SHIFT         14
 #define ARM_16K_TT_L3_INDEX_MASK    0x0000000001ffc000ull
-
-unsigned long long getT1SZ_BOOT(void) {
-    struct utsname systemInfo;
-    uname(&systemInfo);
-    sleep(10);
-    return 25ULL;
-}
 
 #endif /* static_info_h */
