@@ -92,7 +92,7 @@ uint32_t off_ipc_object_io_bits = 0;
 uint32_t off_ipc_object_io_references = 0x4;
 uint32_t off_ipc_port_ip_kobject = 0x48; 
 
-//Lines 95-263 are from https://github.com/wh1te4ever/kfund
+//Lines 96-279 are from https://github.com/wh1te4ever/kfund
 uint8_t kread8(u64 kfd, uint64_t where) {
     uint8_t out;
     kread(kfd, where, &out, sizeof(uint8_t));
@@ -263,6 +263,21 @@ void funVnodeHide(u64 kfd, uint64_t vnode) {
         kwrite32(kfd, vnode + off_vnode_v_iocount, iocount - 1);
 }
 
+uint64_t funVnodeChown(u64 kfd, uint64_t vnode, uid_t uid, gid_t gid) {
+    if(vnode == -1) {
+        printf("Invalid vnode");
+        return -1;
+    }
+    uint64_t v_data = kread64(kfd, vnode + off_vnode_v_data);
+    uint32_t v_uid = kread32(kfd, v_data + 0x80);
+    uint32_t v_gid = kread32(kfd, v_data + 0x84);    
+    printf("Patching vnode->v_uid %d -> %d\n", v_uid, uid);
+    kwrite32(kfd, v_data+0x80, uid);
+    printf("Patching vnode->v_gid %d -> %d\n", v_gid, gid);
+    kwrite32(kfd, v_data+0x84, gid);
+    return 0;
+}
+
 char* CStringFromNSString(NSString* string) {
     return string.UTF8String;
 }
@@ -366,43 +381,4 @@ BOOL isFileReadable(u64 kfd, NSString* directoryPath, NSString* fileName) {
     BOOL isReadable = [[NSFileManager defaultManager] isReadableFileAtPath:[NSString stringWithFormat:@"%@/%@", mntPath, fileName]];
     UnRedirectAndRemoveFolder(kfd, orig_to_v_data, mntPath);
     return isReadable;
-}
-
-uint64_t funVnodeChown(u64 kfd, uint64_t vnode, uid_t uid, gid_t gid) {
-    if(vnode == -1) {
-        printf("Invalid vnode");
-        return -1;
-    }
-    uint64_t v_data = kread64(kfd, vnode + off_vnode_v_data);
-    uint32_t v_uid = kread32(kfd, v_data + 0x80);
-    uint32_t v_gid = kread32(kfd, v_data + 0x84);    
-    printf("Patching vnode->v_uid %d -> %d\n", v_uid, uid);
-    kwrite32(kfd, v_data+0x80, uid);
-    printf("Patching vnode->v_gid %d -> %d\n", v_gid, gid);
-    kwrite32(kfd, v_data+0x84, gid);
-    return 0;
-}
-
-void test(u64 kfd) {
-    printf("launchd test: %d\n", getProcByName(kfd, "launchd"));
-    printf("launchd test (1): %d\n", getProc(kfd, 1));
-}
-
-uint64_t getProcByName(u64 kfd, char* nm) {
-    uint64_t proc = ((struct kfd*)kfd)->info.kaddr.kernel_proc;
-    while (true) {
-        uint64_t nameptr = proc + off_p_name;
-        char name[32];
-        kread(kfd, nameptr, &name, 32);
-        printf("test4: %d", strlen(name)); 
-        printf("PID: %d, Name: %s\n", kread32(kfd, proc + off_p_pid), name);
-        if(strcmp(name, nm) == 0) {
-            return proc;
-        }
-        proc = kread64(kfd, proc + off_p_list_le_prev);
-        if(!proc) {
-            return -1;
-        }
-    }
-    return 0;
 }
