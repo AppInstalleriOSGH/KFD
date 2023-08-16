@@ -96,10 +96,10 @@ void info_init(struct kfd* kfd)
     printf("%s\n", systemInfo.nodename);
     printf("%s\n", systemInfo.release);
     printf("%s\n", systemInfo.version);
-    char* testString = "000000";
-    usize test = sizeof(testString);
-    sysctlbyname("kern.osversion", &testString, &test, NULL, 0);
-    printf("%s\n", testString);
+    char osVersonStrBuffer[256];
+    size_t size = sizeof(str);
+    sysctlbyname("kern.osversion", osVersonStrBuffer, &size, NULL, 0);
+    printf("%s\n", osVersonStrBuffer);
     for (u64 i = 0; i < number_of_kern_versions; i++) {
         const char* current_kern_version = kern_versions[i].kern_version;
         const char* current_device_id = kern_versions[i].device_id;
