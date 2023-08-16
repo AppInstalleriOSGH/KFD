@@ -309,6 +309,8 @@ enum perfmon_ioctl {
 #define ARM_16K_TT_L3_INDEX_MASK    0x0000000001ffc000ull
 
 unsigned long long getT1SZ_BOOT(void) {
+    struct utsname systemInfo;
+    uname(&systemInfo);
     return 25ULL;
 }
 
