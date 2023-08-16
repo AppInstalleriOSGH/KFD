@@ -153,10 +153,10 @@ struct kfd* kfd_init(u64 puaf_pages, u64 puaf_method, u64 kread_method, u64 kwri
     struct utsname systemInfo;
     uname(&systemInfo);
     if (strcmp(systemInfo.machine, "iPhone15,2") == 0 || strcmp(systemInfo.machine, "iPhone15,3") == 0) {
-        print("T1SZ_BOOT: 17ULL");
+        print("T1SZ_BOOT: 17ULL\n");
         t1sz_boot = 17ULL;
     } else {
-        print("T1SZ_BOOT: 25ULL");
+        print("T1SZ_BOOT: 25ULL\n");
         t1sz_boot = 25ULL;
     }
     struct kfd* kfd = (struct kfd*)(malloc_bzero(sizeof(struct kfd)));
