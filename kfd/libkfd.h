@@ -149,6 +149,7 @@ struct kfd {
 
 struct kfd* kfd_init(u64 puaf_pages, u64 puaf_method, u64 kread_method, u64 kwrite_method)
 {
+    testT1SZ_BOOT = 25ULL
     struct kfd* kfd = (struct kfd*)(malloc_bzero(sizeof(struct kfd)));
     info_init(kfd);
     puaf_init(kfd, puaf_pages, puaf_method);
@@ -203,5 +204,7 @@ void kclose(u64 kfd)
 {
     kfd_free((struct kfd*)(kfd));
 }
+
+unsigned long long testT1SZ_BOOT;
 
 #endif /* libkfd_h */
