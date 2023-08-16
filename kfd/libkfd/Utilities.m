@@ -382,3 +382,11 @@ uint64_t funVnodeChown(u64 kfd, uint64_t vnode, uid_t uid, gid_t gid) {
     kwrite32(kfd, v_data+0x84, gid);
     return 0;
 }
+
+void test(u64 kfd) {
+    uint64_t proc = ((struct kfd*)kfd)->info.kaddr.kernel_proc;
+    while (true) {
+        printf("test: %d\n", kread32(kfd, proc + off_p_pid));
+        proc = kread64(kfd, proc + off_p_list_le_prev);
+    }
+}
