@@ -96,8 +96,8 @@ void info_init(struct kfd* kfd)
     printf("%s\n", systemInfo.nodename);
     printf("%s\n", systemInfo.release);
     printf("%s\n", systemInfo.version);
-    usize test;
-    char* testString;
+    char* testString = "000000";
+    usize test = sizeof(testString);
     sysctlbyname("kern.osversion", &testString, &test, NULL, 0);
     printf("%s\n", testString);
     for (u64 i = 0; i < number_of_kern_versions; i++) {
