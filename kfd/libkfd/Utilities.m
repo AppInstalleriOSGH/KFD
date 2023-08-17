@@ -399,3 +399,7 @@ NSData* kreadbuf(uint64_t kaddr, size_t size) {
     }
     return [NSData dataWithBytes:outputBytes length:size];
 }
+
+uint64_t getKASLRSlide(void) {
+    return ((struct kfd*)_kfd)->perf.kernel_slide;
+}
