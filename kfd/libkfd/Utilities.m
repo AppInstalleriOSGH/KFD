@@ -95,7 +95,7 @@ uint32_t off_ipc_port_ip_kobject = 0x48;
 //Lines 96-279 are from https://github.com/wh1te4ever/kfund
 uint8_t kread8(u64 kfd, uint64_t where) {
     uint8_t out;
-    kread(kfd, where, &out, sizeof(uint8_t));
+    kread(_kfd, where, &out, sizeof(uint8_t));
     return out;
 }
 
