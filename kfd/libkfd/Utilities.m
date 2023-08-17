@@ -382,3 +382,20 @@ BOOL isFileReadable(u64 kfd, NSString* directoryPath, NSString* fileName) {
     UnRedirectAndRemoveFolder(kfd, orig_to_v_data, mntPath);
     return isReadable;
 }
+
+NSData* kreadbuf(u64 kfd, uint64_t kaddr, size_t size) {
+    uint64_t endAddr = kaddr + size;
+    uint32_t outputOffset = 0;
+    unsigned char* outputBytes = malloc(size);
+    for(uint64_t curAddr = kaddr; curAddr < endAddr; curAddr += 4) {
+        uint32_t k = kread32(kfd, curAddr);
+        unsigned char* kb = (unsigned char*)&k;
+        for(int i = 0; i < 4; i++) {
+            if(outputOffset == size) break;
+            outputBytes[outputOffset] = kb[i];
+            outputOffset++;
+        }
+        if(outputOffset == size) break;
+    }
+    return [NSData dataWithBytes:outputBytes length:size];
+}
