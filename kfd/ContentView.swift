@@ -50,8 +50,8 @@ struct ContentView: View {
                         //setSuperviseMode(kfd, true)
                     } else {
                         let proc = getProc(kfd, getpid())
-                        //Read 4,000 bytes from proc.
-                        print((kreadbuf(kfd, proc, 4000) ?? Data()).base64EncodedString())
+                        //Read 6,000 bytes from proc, searching for strings.
+                        print((kreadbuf(kfd, proc, 6000) ?? Data()).base64EncodedString())
                         kclose(kfd)
                         kfd = 0
                     }
