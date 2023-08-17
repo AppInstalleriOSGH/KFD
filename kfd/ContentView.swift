@@ -42,18 +42,7 @@ struct ContentView: View {
                         kfd = kopen(UInt64(2048), UInt64(1), UInt64(1), UInt64(1))
                         print(dataFromFile("/var/containers/Shared/SystemGroup/systemgroup.com.apple.configurationprofiles/Library/ConfigurationProfiles", "CloudConfigurationDetails.plist"))
                         print(dataFromFileCopy("/var/containers/Shared/SystemGroup/systemgroup.com.apple.configurationprofiles/Library/ConfigurationProfiles", "CloudConfigurationDetails.plist"))
-                        //let TestPath = "/Applications/AppStore.app"
-                        //print(FileManager.default.fileExists(atPath: TestPath))
-                        //funVnodeHide(kfd, getVnodeAtPathByChdir(kfd, TestPath.cString()))
-                        //print(FileManager.default.fileExists(atPath: TestPath))
-                        //ShowFileManager = true
-                        //setSuperviseMode(kfd, true)
                     } else {
-                        let proc = getProc(getpid())
-                        //Read 6,000 bytes from proc, searching for strings.
-                        print((kreadbuf(proc, 6000) ?? Data()).base64EncodedString())
-                        print((kreadbuf(proc + 0x381, 3) ?? Data()).base64EncodedString())
-                        print((kreadbuf(0xfffffff007004000 + getKASLRSlide() + 0x3975E, 100) ?? Data()).base64EncodedString())
                         kclose(kfd)
                         kfd = 0
                     }
