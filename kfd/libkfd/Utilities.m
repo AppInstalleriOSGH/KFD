@@ -93,31 +93,31 @@ uint32_t off_ipc_object_io_references = 0x4;
 uint32_t off_ipc_port_ip_kobject = 0x48; 
 
 //Lines 96-279 are from https://github.com/wh1te4ever/kfund
-uint8_t kread8(u64 kfd, uint64_t where) {
+uint8_t kread8(uint64_t where) {
     uint8_t out;
     kread(_kfd, where, &out, sizeof(uint8_t));
     return out;
 }
 
-uint32_t kread16(u64 kfd, uint64_t where) {
+uint32_t kread16(uint64_t where) {
     uint16_t out;
-    kread(kfd, where, &out, sizeof(uint16_t));
+    kread(_kfd, where, &out, sizeof(uint16_t));
     return out;
 }
 
-uint32_t kread32(u64 kfd, uint64_t where) {
+uint32_t kread32(uint64_t where) {
     uint32_t out;
-    kread(kfd, where, &out, sizeof(uint32_t));
+    kread(_kfd, where, &out, sizeof(uint32_t));
     return out;
 }
 
-uint64_t kread64(u64 kfd, uint64_t where) {
+uint64_t kread64(uint64_t where) {
     uint64_t out;
-    kread(kfd, where, &out, sizeof(uint64_t));
+    kread(_kfd, where, &out, sizeof(uint64_t));
     return out;
 }
 
-void kwrite8(u64 kfd, uint64_t where, uint8_t what) {
+void kwrite8(uint64_t where, uint8_t what) {
     uint8_t _buf[8] = {};
     _buf[0] = what;
     _buf[1] = kread8(kfd, where+1);
@@ -127,117 +127,117 @@ void kwrite8(u64 kfd, uint64_t where, uint8_t what) {
     _buf[5] = kread8(kfd, where+5);
     _buf[6] = kread8(kfd, where+6);
     _buf[7] = kread8(kfd, where+7);
-    kwrite((u64)(kfd), &_buf, where, sizeof(u64));
+    kwrite((u64)(_kfd), &_buf, where, sizeof(u64));
 }
 
-void kwrite16(u64 kfd, uint64_t where, uint16_t what) {
+void kwrite16(uint64_t where, uint16_t what) {
     u16 _buf[4] = {};
     _buf[0] = what;
     _buf[1] = kread16(kfd, where+2);
     _buf[2] = kread16(kfd, where+4);
     _buf[3] = kread16(kfd, where+6);
-    kwrite((u64)(kfd), &_buf, where, sizeof(u64));
+    kwrite((u64)(_kfd), &_buf, where, sizeof(u64));
 }
 
-void kwrite32(u64 kfd, uint64_t where, uint32_t what) {
+void kwrite32(uint64_t where, uint32_t what) {
     u32 _buf[2] = {};
     _buf[0] = what;
     _buf[1] = kread32(kfd, where+4);
-    kwrite((u64)(kfd), &_buf, where, sizeof(u64));
+    kwrite((u64)(_kfd), &_buf, where, sizeof(u64));
 }
 
-void kwrite64(u64 kfd, uint64_t where, uint64_t what) {
+void kwrite64(uint64_t where, uint64_t what) {
     u64 _buf[1] = {};
     _buf[0] = what;
-    kwrite((u64)(kfd), &_buf, where, sizeof(u64));
+    kwrite((u64)(_kfd), &_buf, where, sizeof(u64));
 }
 
-uint64_t getProc(u64 kfd, pid_t pid) {
-    uint64_t proc = ((struct kfd*)kfd)->info.kaddr.kernel_proc;
+uint64_t getProc(pid_t pid) {
+    uint64_t proc = ((struct kfd*)_kfd)->info.kaddr.kernel_proc;
     while (true) {
-        if(kread32(kfd, proc + off_p_pid) == pid) {
+        if(kread32(proc + off_p_pid) == pid) {
             return proc;
         }
-        proc = kread64(kfd, proc + off_p_list_le_prev);
+        proc = kread64(proc + off_p_list_le_prev);
     }
     return 0;
 }
 
-uint64_t getVnodeAtPath(u64 kfd, char* filename) {
+uint64_t getVnodeAtPath(char* filename) {
     int file_index = open(filename, O_RDONLY);
     if (file_index == -1) return -1;
-    uint64_t proc = getProc(kfd, getpid());
-    uint64_t filedesc_pac = kread64(kfd, proc + off_p_pfd);
+    uint64_t proc = getProc(getpid());
+    uint64_t filedesc_pac = kread64(proc + off_p_pfd);
     uint64_t filedesc = filedesc_pac | 0xffffff8000000000;
-    uint64_t openedfile = kread64(kfd, filedesc + (8 * file_index));
-    uint64_t fileglob_pac = kread64(kfd, openedfile + off_fp_glob);
+    uint64_t openedfile = kread64(filedesc + (8 * file_index));
+    uint64_t fileglob_pac = kread64(openedfile + off_fp_glob);
     uint64_t fileglob = fileglob_pac | 0xffffff8000000000;
-    uint64_t vnode_pac = kread64(kfd, fileglob + off_fg_data);
+    uint64_t vnode_pac = kread64(fileglob + off_fg_data);
     uint64_t to_vnode = vnode_pac | 0xffffff8000000000;
     close(file_index);
     return to_vnode;
 }
 
-uint64_t getVnodeAtPathByChdir(u64 kfd, char *path) {
+uint64_t getVnodeAtPathByChdir(char *path) {
     if(access(path, F_OK) == -1) return -1;
     if(chdir(path) == -1) return -1;
-    uint64_t fd_cdir_vp = kread64(kfd, getProc(kfd, getpid()) + off_p_pfd + off_fd_cdir);
+    uint64_t fd_cdir_vp = kread64(getProc(getpid()) + off_p_pfd + off_fd_cdir);
     chdir("/");
     return fd_cdir_vp;
 }
 
-uint64_t funVnodeRedirectFolderFromVnode(u64 kfd, char* to, uint64_t from_vnode) {
-    uint64_t to_vnode = getVnodeAtPathByChdir(kfd, to);
+uint64_t funVnodeRedirectFolderFromVnode(char* to, uint64_t from_vnode) {
+    uint64_t to_vnode = getVnodeAtPathByChdir(to);
     if(to_vnode == -1) {
         printf("[-] Unable to get vnode, path: %s\n", to);
         return -1;
     }
-    uint8_t to_v_references = kread8(kfd, to_vnode + off_vnode_v_references);
-    uint32_t to_usecount = kread32(kfd, to_vnode + off_vnode_v_usecount);
-    uint32_t to_v_kusecount = kread32(kfd, to_vnode + off_vnode_v_kusecount);
-    uint64_t orig_to_v_data = kread64(kfd, to_vnode + off_vnode_v_data);
+    uint8_t to_v_references = kread8(to_vnode + off_vnode_v_references);
+    uint32_t to_usecount = kread32(to_vnode + off_vnode_v_usecount);
+    uint32_t to_v_kusecount = kread32(to_vnode + off_vnode_v_kusecount);
+    uint64_t orig_to_v_data = kread64(to_vnode + off_vnode_v_data);
     //If mount point is different, return -1
-    uint64_t to_devvp = kread64(kfd, (kread64(kfd, to_vnode + off_vnode_v_mount) | 0xffffff8000000000) + off_mount_mnt_devvp);
-    uint64_t from_devvp = kread64(kfd, (kread64(kfd, from_vnode + off_vnode_v_mount) | 0xffffff8000000000) + off_mount_mnt_devvp);
+    uint64_t to_devvp = kread64((kread64(to_vnode + off_vnode_v_mount) | 0xffffff8000000000) + off_mount_mnt_devvp);
+    uint64_t from_devvp = kread64((kread64(from_vnode + off_vnode_v_mount) | 0xffffff8000000000) + off_mount_mnt_devvp);
     if(to_devvp != from_devvp) {
         printf("[-] mount points of folders are different!\n");
         return -1;
     }
-    uint64_t from_v_data = kread64(kfd, from_vnode + off_vnode_v_data);
-    kwrite32(kfd, to_vnode + off_vnode_v_usecount, to_usecount + 1);
-    kwrite32(kfd, to_vnode + off_vnode_v_kusecount, to_v_kusecount + 1);
-    kwrite8(kfd, to_vnode + off_vnode_v_references, to_v_references + 1);
-    kwrite64(kfd, to_vnode + off_vnode_v_data, from_v_data);
+    uint64_t from_v_data = kread64(from_vnode + off_vnode_v_data);
+    kwrite32(to_vnode + off_vnode_v_usecount, to_usecount + 1);
+    kwrite32(to_vnode + off_vnode_v_kusecount, to_v_kusecount + 1);
+    kwrite8(to_vnode + off_vnode_v_references, to_v_references + 1);
+    kwrite64(to_vnode + off_vnode_v_data, from_v_data);
     return orig_to_v_data;
 }
 
-uint64_t funVnodeUnRedirectFolder(u64 kfd, char* to, uint64_t orig_to_v_data) {
-    uint64_t to_vnode = getVnodeAtPath(kfd, to);
+uint64_t funVnodeUnRedirectFolder(char* to, uint64_t orig_to_v_data) {
+    uint64_t to_vnode = getVnodeAtPath(to);
     if(to_vnode == -1) {
         printf("[-] Unable to get vnode, path: %s\n", to);
         return -1;
     }
-    uint8_t to_v_references = kread8(kfd, to_vnode + off_vnode_v_references);
-    uint32_t to_usecount = kread32(kfd, to_vnode + off_vnode_v_usecount);
-    uint32_t to_v_kusecount = kread32(kfd, to_vnode + off_vnode_v_kusecount);
-    kwrite64(kfd, to_vnode + off_vnode_v_data, orig_to_v_data);
+    uint8_t to_v_references = kread8(to_vnode + off_vnode_v_references);
+    uint32_t to_usecount = kread32(to_vnode + off_vnode_v_usecount);
+    uint32_t to_v_kusecount = kread32(to_vnode + off_vnode_v_kusecount);
+    kwrite64(to_vnode + off_vnode_v_data, orig_to_v_data);
     if(to_usecount > 0)
-        kwrite32(kfd, to_vnode + off_vnode_v_usecount, to_usecount - 1);
+        kwrite32(to_vnode + off_vnode_v_usecount, to_usecount - 1);
     if(to_v_kusecount > 0)
-        kwrite32(kfd, to_vnode + off_vnode_v_kusecount, to_v_kusecount - 1);
+        kwrite32(to_vnode + off_vnode_v_kusecount, to_v_kusecount - 1);
     if(to_v_references > 0)
-        kwrite8(kfd, to_vnode + off_vnode_v_references, to_v_references - 1);
+        kwrite8(to_vnode + off_vnode_v_references, to_v_references - 1);
     return 0;
 }
 
-uint64_t createFolderAndRedirect(u64 kfd, uint64_t vnode, NSString *mntPath) {
+uint64_t createFolderAndRedirect(uint64_t vnode, NSString *mntPath) {
     [[NSFileManager defaultManager] removeItemAtPath:mntPath error:nil];
     [[NSFileManager defaultManager] createDirectoryAtPath:mntPath withIntermediateDirectories:NO attributes:nil error:nil];
-    return funVnodeRedirectFolderFromVnode(kfd, mntPath.UTF8String, vnode);
+    return funVnodeRedirectFolderFromVnode(mntPath.UTF8String, vnode);
 }
 
-uint64_t UnRedirectAndRemoveFolder(u64 kfd, uint64_t orig_to_v_data, NSString *mntPath) {
-    funVnodeUnRedirectFolder(kfd, mntPath.UTF8String, orig_to_v_data);
+uint64_t UnRedirectAndRemoveFolder(uint64_t orig_to_v_data, NSString *mntPath) {
+    funVnodeUnRedirectFolder(mntPath.UTF8String, orig_to_v_data);
     NSError* error;
     [[NSFileManager defaultManager] removeItemAtPath:mntPath error:&error];
     if (error) {
@@ -246,35 +246,35 @@ uint64_t UnRedirectAndRemoveFolder(u64 kfd, uint64_t orig_to_v_data, NSString *m
     return 0;
 }
 
-void funVnodeHide(u64 kfd, uint64_t vnode) {
-    uint32_t usecount = kread32(kfd, vnode + off_vnode_v_usecount);
-    uint32_t iocount = kread32(kfd, vnode + off_vnode_v_iocount);
+void funVnodeHide(uint64_t vnode) {
+    uint32_t usecount = kread32(vnode + off_vnode_v_usecount);
+    uint32_t iocount = kread32(vnode + off_vnode_v_iocount);
     printf("[i] vnode->usecount: %d, vnode->iocount: %d\n", usecount, iocount);
-    kwrite32(kfd, vnode + off_vnode_v_usecount, usecount + 1);
-    kwrite32(kfd, vnode + off_vnode_v_iocount, iocount + 1);
-    uint32_t v_flags = kread32(kfd, vnode + off_vnode_v_flag);
+    kwrite32(vnode + off_vnode_v_usecount, usecount + 1);
+    kwrite32(vnode + off_vnode_v_iocount, iocount + 1);
+    uint32_t v_flags = kread32(vnode + off_vnode_v_flag);
     printf("[i] vnode->v_flags: 0x%x\n", v_flags);
-    kwrite32(kfd, vnode + off_vnode_v_flag, (v_flags | 0x008000));
-    usecount = kread32(kfd, vnode + off_vnode_v_usecount);
-    iocount = kread32(kfd, vnode + off_vnode_v_iocount);
+    kwrite32(vnode + off_vnode_v_flag, (v_flags | 0x008000));
+    usecount = kread32(vnode + off_vnode_v_usecount);
+    iocount = kread32(vnode + off_vnode_v_iocount);
     if(usecount > 0)
-        kwrite32(kfd, vnode + off_vnode_v_usecount, usecount - 1);
+        kwrite32(vnode + off_vnode_v_usecount, usecount - 1);
     if(iocount > 0)
-        kwrite32(kfd, vnode + off_vnode_v_iocount, iocount - 1);
+        kwrite32(vnode + off_vnode_v_iocount, iocount - 1);
 }
 
-uint64_t funVnodeChown(u64 kfd, uint64_t vnode, uid_t uid, gid_t gid) {
+uint64_t funVnodeChown(uint64_t vnode, uid_t uid, gid_t gid) {
     if(vnode == -1) {
         printf("Invalid vnode");
         return -1;
     }
-    uint64_t v_data = kread64(kfd, vnode + off_vnode_v_data);
-    uint32_t v_uid = kread32(kfd, v_data + 0x80);
-    uint32_t v_gid = kread32(kfd, v_data + 0x84);    
+    uint64_t v_data = kread64(vnode + off_vnode_v_data);
+    uint32_t v_uid = kread32(v_data + 0x80);
+    uint32_t v_gid = kread32(v_data + 0x84);    
     printf("Patching vnode->v_uid %d -> %d\n", v_uid, uid);
-    kwrite32(kfd, v_data+0x80, uid);
+    kwrite32(v_data+0x80, uid);
     printf("Patching vnode->v_gid %d -> %d\n", v_gid, gid);
-    kwrite32(kfd, v_data+0x84, gid);
+    kwrite32(v_data+0x84, gid);
     return 0;
 }
 
@@ -282,85 +282,85 @@ char* CStringFromNSString(NSString* string) {
     return string.UTF8String;
 }
 
-NSData* dataFromFile(u64 kfd, NSString* directoryPath, NSString* fileName) {
+NSData* dataFromFile(NSString* directoryPath, NSString* fileName) {
     NSString* mntPath = [NSString stringWithFormat:@"%@/Documents/%@", NSHomeDirectory(), [[NSUUID UUID] UUIDString]];
-    uint64_t orig_to_v_data = createFolderAndRedirect(kfd, getVnodeAtPathByChdir(kfd, directoryPath.UTF8String), mntPath);
+    uint64_t orig_to_v_data = createFolderAndRedirect(getVnodeAtPathByChdir(directoryPath.UTF8String), mntPath);
     NSData* fileData = [NSData dataWithContentsOfFile:[NSString stringWithFormat:@"%@/%@", mntPath, fileName]];
-    UnRedirectAndRemoveFolder(kfd, orig_to_v_data, mntPath);
+    UnRedirectAndRemoveFolder(orig_to_v_data, mntPath);
     return fileData;
 }
 
-void writeDataToFile(u64 kfd, NSData* fileData, NSString* directoryPath, NSString* fileName) {
+void writeDataToFile(NSData* fileData, NSString* directoryPath, NSString* fileName) {
     NSString* mntPath = [NSString stringWithFormat:@"%@/Documents/%@", NSHomeDirectory(), [[NSUUID UUID] UUIDString]];
-    uint64_t orig_to_v_data = createFolderAndRedirect(kfd, getVnodeAtPathByChdir(kfd, directoryPath.UTF8String), mntPath);
+    uint64_t orig_to_v_data = createFolderAndRedirect(getVnodeAtPathByChdir(directoryPath.UTF8String), mntPath);
     const void *_Nullable rawData = [fileData bytes];
     const char* data = (char *)rawData;
     int open_fd = open([NSString stringWithFormat:@"%@/%@", mntPath, fileName].UTF8String, O_WRONLY | O_CREAT | O_TRUNC, 0644);
     write(open_fd, data, strlen(data));
     close(open_fd);
-    UnRedirectAndRemoveFolder(kfd, orig_to_v_data, mntPath);
+    UnRedirectAndRemoveFolder(orig_to_v_data, mntPath);
 }
 
-NSString* removeFile(u64 kfd, NSString* directoryPath, NSString* fileName) {
+NSString* removeFile(NSString* directoryPath, NSString* fileName) {
     NSString* mntPath = [NSString stringWithFormat:@"%@/Documents/%@", NSHomeDirectory(), [[NSUUID UUID] UUIDString]];
-    uint64_t orig_to_v_data = createFolderAndRedirect(kfd, getVnodeAtPathByChdir(kfd, directoryPath.UTF8String), mntPath);
+    uint64_t orig_to_v_data = createFolderAndRedirect(getVnodeAtPathByChdir(directoryPath.UTF8String), mntPath);
     NSError* error;
     [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithFormat:@"%@/%@", mntPath, fileName] error:&error];
     if (error) {
         print(error.localizedDescription.UTF8String);
     }
-    UnRedirectAndRemoveFolder(kfd, orig_to_v_data, mntPath);
+    UnRedirectAndRemoveFolder(orig_to_v_data, mntPath);
     return error.localizedDescription;
 }
 
-NSString* makeSymlink(u64 kfd, NSString* directoryPath, NSString* fileName, NSString* destinationPath) {
+NSString* makeSymlink(NSString* directoryPath, NSString* fileName, NSString* destinationPath) {
     NSString* mntPath = [NSString stringWithFormat:@"%@/Documents/%@", NSHomeDirectory(), [[NSUUID UUID] UUIDString]];
-    uint64_t orig_to_v_data = createFolderAndRedirect(kfd, getVnodeAtPathByChdir(kfd, directoryPath.UTF8String), mntPath);
+    uint64_t orig_to_v_data = createFolderAndRedirect(getVnodeAtPathByChdir(directoryPath.UTF8String), mntPath);
     NSError* error;
     [[NSFileManager defaultManager] createSymbolicLinkAtPath:[NSString stringWithFormat:@"%@/%@", mntPath, fileName] withDestinationPath:destinationPath error:&error];
     if (error) {
         print(error.localizedDescription.UTF8String);
     }
-    UnRedirectAndRemoveFolder(kfd, orig_to_v_data, mntPath);
+    UnRedirectAndRemoveFolder(orig_to_v_data, mntPath);
     return error.localizedDescription;
 }
 
-BOOL isFileDeletable(u64 kfd, NSString* directoryPath, NSString* fileName) {
+BOOL isFileDeletable(NSString* directoryPath, NSString* fileName) {
     NSString* mntPath = [NSString stringWithFormat:@"%@/Documents/%@", NSHomeDirectory(), [[NSUUID UUID] UUIDString]];
-    uint64_t orig_to_v_data = createFolderAndRedirect(kfd, getVnodeAtPathByChdir(kfd, directoryPath.UTF8String), mntPath);
+    uint64_t orig_to_v_data = createFolderAndRedirect(getVnodeAtPathByChdir(directoryPath.UTF8String), mntPath);
     BOOL isDeletable = [[NSFileManager defaultManager] isDeletableFileAtPath:[NSString stringWithFormat:@"%@/%@", mntPath, fileName]];
-    UnRedirectAndRemoveFolder(kfd, orig_to_v_data, mntPath);
+    UnRedirectAndRemoveFolder(orig_to_v_data, mntPath);
     return isDeletable;
 }
 
-NSString* createDirectory(u64 kfd, NSString* directoryPath, NSString* fileName) {
+NSString* createDirectory(NSString* directoryPath, NSString* fileName) {
     NSString* mntPath = [NSString stringWithFormat:@"%@/Documents/%@", NSHomeDirectory(), [[NSUUID UUID] UUIDString]];
-    uint64_t orig_to_v_data = createFolderAndRedirect(kfd, getVnodeAtPathByChdir(kfd, directoryPath.UTF8String), mntPath);
+    uint64_t orig_to_v_data = createFolderAndRedirect(getVnodeAtPathByChdir(directoryPath.UTF8String), mntPath);
     NSError* error;
     [[NSFileManager defaultManager] createDirectoryAtPath:[NSString stringWithFormat:@"%@/%@", mntPath, fileName] withIntermediateDirectories:NO attributes:nil error:&error];
     if (error) {
         print(error.localizedDescription.UTF8String);
     }
-    UnRedirectAndRemoveFolder(kfd, orig_to_v_data, mntPath);
+    UnRedirectAndRemoveFolder(orig_to_v_data, mntPath);
     return error.localizedDescription;
 }
 
-NSArray<NSString*>* contentsOfDirectory(u64 kfd, NSString* directoryPath) {
+NSArray<NSString*>* contentsOfDirectory(NSString* directoryPath) {
     NSString* mntPath = [NSString stringWithFormat:@"%@/Documents/%@", NSHomeDirectory(), [[NSUUID UUID] UUIDString]];
-    uint64_t orig_to_v_data = createFolderAndRedirect(kfd, getVnodeAtPathByChdir(kfd, directoryPath.UTF8String), mntPath);
+    uint64_t orig_to_v_data = createFolderAndRedirect(getVnodeAtPathByChdir(directoryPath.UTF8String), mntPath);
     NSError* error;
     NSArray<NSString*>* directoryContents = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:mntPath error:&error];
     if (error) {
         print(error.localizedDescription.UTF8String);
     }
-    UnRedirectAndRemoveFolder(kfd, orig_to_v_data, mntPath);
+    UnRedirectAndRemoveFolder(orig_to_v_data, mntPath);
     return directoryContents;
 }
 
-NSData* dataFromFileCopy(u64 kfd, NSString* directoryPath, NSString* fileName) {
+NSData* dataFromFileCopy(NSString* directoryPath, NSString* fileName) {
     NSString* mntPath = [NSString stringWithFormat:@"%@/Documents/%@", NSHomeDirectory(), [[NSUUID UUID] UUIDString]];
     NSString* copyPath = [NSString stringWithFormat:@"%@/Documents/%@", NSHomeDirectory(), [[NSUUID UUID] UUIDString]];
-    uint64_t orig_to_v_data = createFolderAndRedirect(kfd, getVnodeAtPathByChdir(kfd, directoryPath.UTF8String), mntPath);
+    uint64_t orig_to_v_data = createFolderAndRedirect(getVnodeAtPathByChdir(directoryPath.UTF8String), mntPath);
     NSError* error;
     [[NSFileManager defaultManager] copyItemAtPath:[NSString stringWithFormat:@"%@/%@", mntPath, fileName] toPath:copyPath error:&error];
     if (error) {
@@ -371,24 +371,24 @@ NSData* dataFromFileCopy(u64 kfd, NSString* directoryPath, NSString* fileName) {
     if (error) {
         print(error.localizedDescription.UTF8String);
     }
-    UnRedirectAndRemoveFolder(kfd, orig_to_v_data, mntPath);
+    UnRedirectAndRemoveFolder(orig_to_v_data, mntPath);
     return fileData;
 }
 
-BOOL isFileReadable(u64 kfd, NSString* directoryPath, NSString* fileName) {
+BOOL isFileReadable(NSString* directoryPath, NSString* fileName) {
     NSString* mntPath = [NSString stringWithFormat:@"%@/Documents/%@", NSHomeDirectory(), [[NSUUID UUID] UUIDString]];
-    uint64_t orig_to_v_data = createFolderAndRedirect(kfd, getVnodeAtPathByChdir(kfd, directoryPath.UTF8String), mntPath);
+    uint64_t orig_to_v_data = createFolderAndRedirect(getVnodeAtPathByChdir(directoryPath.UTF8String), mntPath);
     BOOL isReadable = [[NSFileManager defaultManager] isReadableFileAtPath:[NSString stringWithFormat:@"%@/%@", mntPath, fileName]];
-    UnRedirectAndRemoveFolder(kfd, orig_to_v_data, mntPath);
+    UnRedirectAndRemoveFolder(orig_to_v_data, mntPath);
     return isReadable;
 }
 
-NSData* kreadbuf(u64 kfd, uint64_t kaddr, size_t size) {
+NSData* kreadbuf(uint64_t kaddr, size_t size) {
     uint64_t endAddr = kaddr + size;
     uint32_t outputOffset = 0;
     unsigned char* outputBytes = malloc(size);
     for(uint64_t curAddr = kaddr; curAddr < endAddr; curAddr += 4) {
-        uint32_t k = kread32(kfd, curAddr);
+        uint32_t k = kread32(curAddr);
         unsigned char* kb = (unsigned char*)&k;
         for(int i = 0; i < 4; i++) {
             if(outputOffset == size) break;
