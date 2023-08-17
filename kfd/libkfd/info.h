@@ -88,6 +88,7 @@ void info_init(struct kfd* kfd)
     assert_bsd(sysctlbyname("kern.version", &kfd->info.env.kern_version, &size2, NULL, 0));
     print_string(kfd->info.env.kern_version);
 
+    t1sz_boot = strstr(kfd->info.env.kern_version, "T8120") != NULL ? 17ull : 25ull;
     const u64 number_of_kern_versions = sizeof(kern_versions) / sizeof(kern_versions[0]);
     struct utsname systemInfo;
     uname(&systemInfo);
