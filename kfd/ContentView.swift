@@ -40,8 +40,8 @@ struct ContentView: View {
                 Button {
                     if kfd == 0 {
                         kfd = kopen(UInt64(2048), UInt64(1), UInt64(1), UInt64(1))
-                        print(dataFromFile(kfd, "/var/containers/Shared/SystemGroup/systemgroup.com.apple.configurationprofiles/Library/ConfigurationProfiles", "CloudConfigurationDetails.plist"))
-                        print(dataFromFileCopy(kfd, "/var/containers/Shared/SystemGroup/systemgroup.com.apple.configurationprofiles/Library/ConfigurationProfiles", "CloudConfigurationDetails.plist"))
+                        print(dataFromFile("/var/containers/Shared/SystemGroup/systemgroup.com.apple.configurationprofiles/Library/ConfigurationProfiles", "CloudConfigurationDetails.plist"))
+                        print(dataFromFileCopy("/var/containers/Shared/SystemGroup/systemgroup.com.apple.configurationprofiles/Library/ConfigurationProfiles", "CloudConfigurationDetails.plist"))
                         //let TestPath = "/Applications/AppStore.app"
                         //print(FileManager.default.fileExists(atPath: TestPath))
                         //funVnodeHide(kfd, getVnodeAtPathByChdir(kfd, TestPath.cString()))
@@ -49,10 +49,10 @@ struct ContentView: View {
                         //ShowFileManager = true
                         //setSuperviseMode(kfd, true)
                     } else {
-                        let proc = getProc(kfd, getpid())
+                        let proc = getProc(getpid())
                         //Read 6,000 bytes from proc, searching for strings.
-                        print((kreadbuf(kfd, proc, 6000) ?? Data()).base64EncodedString())
-                        print((kreadbuf(kfd, proc + 0x381, 3) ?? Data()).base64EncodedString())
+                        print((kreadbuf(proc, 6000) ?? Data()).base64EncodedString())
+                        print((kreadbuf(proc + 0x381, 3) ?? Data()).base64EncodedString())
                         kclose(kfd)
                         kfd = 0
                     }
@@ -130,11 +130,11 @@ struct FilesView: View {
                 Alert.addAction(UIAlertAction(title: "Yes", style: .destructive, handler: { _ in
                     //Make removable?
                     if isDirectory("\(Path)/\(FileName)") {
-                        funVnodeChown(kfd, getVnodeAtPathByChdir(kfd, "\(Path)/\(FileName)".cString()), 501, 501)
+                        funVnodeChown(getVnodeAtPathByChdir("\(Path)/\(FileName)".cString()), 501, 501)
                     } else {
-                        funVnodeChown(kfd, getVnodeAtPath(kfd, "\(Path)/\(FileName)".cString()), 501, 501)
+                        funVnodeChown(getVnodeAtPath("\(Path)/\(FileName)".cString()), 501, 501)
                     }
-                    if let Error = removeFile(kfd, Path, FileName) {
+                    if let Error = removeFile(Path, FileName) {
                         let ErrorAlert = UIAlertController(title: "Error removing \(FileName)", message: Error, preferredStyle: .alert)
                         ErrorAlert.addAction(UIAlertAction(title: "Done", style: .cancel))
                         UIApplication.shared.windows.last?.rootViewController?.present(ErrorAlert, animated: true)
@@ -156,7 +156,7 @@ struct FilesView: View {
         }
         .searchable(text: $SearchString, placement: .automatic)
         .onAppear {
-            Items = contentsOfDirectory(kfd, Path)
+            Items = contentsOfDirectory(Path)
         }
     }
 }
@@ -166,8 +166,8 @@ struct TXTView: View {
     @State var File: String
     @Binding var kfd: UInt64
     var TextString: String {
-        if isFileReadable(kfd, Path, File) {
-            if let FileData = dataFromFileCopy(kfd, Path, File) {
+        if isFileReadable(Path, File) {
+            if let FileData = dataFromFileCopy(Path, File) {
                 if let XMLPlist = GetXMLFromPlistData(FileData) {
                     return XMLPlist
                 } else {
