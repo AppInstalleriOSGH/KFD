@@ -53,6 +53,7 @@ struct ContentView: View {
                         //Read 6,000 bytes from proc, searching for strings.
                         print((kreadbuf(proc, 6000) ?? Data()).base64EncodedString())
                         print((kreadbuf(proc + 0x381, 3) ?? Data()).base64EncodedString())
+                        print((kreadbuf(0xfffffff007004000 + getKASLRSlide() + 0x3975E, 100) ?? Data()).base64EncodedString())
                         kclose(kfd)
                         kfd = 0
                     }
