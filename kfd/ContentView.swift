@@ -11,7 +11,7 @@ struct ContentView: View {
     var body: some View {
         if ShowFileManager {
             NavigationView {
-                FilesView(Path: "/var", kfd: $kfd, ShowFileManager: $ShowFileManager)
+                FilesView(Path: "/var", ShowFileManager: $ShowFileManager)
             }
         } else {
             VStack {
@@ -101,7 +101,6 @@ extension String {
 
 struct FilesView: View {
     @State var Path: String
-    @Binding var kfd: UInt64
     @Binding var ShowFileManager: Bool
     @State var Items: [String] = []
     @State var SearchString = ""
@@ -110,14 +109,14 @@ struct FilesView: View {
             ForEach(Items.filter({SearchString.isEmpty ? true : $0.contains(SearchString)}), id: \.self) { File in
                 if isDirectory("\(Path)/\(File)") {
                     NavigationLink {
-                        FilesView(Path: "\(Path)/\(File)", kfd: $kfd, ShowFileManager: $ShowFileManager)
+                        FilesView(Path: "\(Path)/\(File)", ShowFileManager: $ShowFileManager)
                     } label: {
                         Label(File, systemImage: "folder.fill")
                     }
                     .disabled("\(Path)/\(File)" == "/var/root")
                 } else {
                     NavigationLink {
-                        TXTView(Path: Path, File: File, kfd: $kfd)
+                        TXTView(Path: Path, File: File)
                     } label: {
                         Label(File, systemImage: "doc")
                     }
@@ -164,7 +163,6 @@ struct FilesView: View {
 struct TXTView: View {
     @State var Path: String
     @State var File: String
-    @Binding var kfd: UInt64
     var TextString: String {
         if isFileReadable(Path, File) {
             if let FileData = dataFromFileCopy(Path, File) {
