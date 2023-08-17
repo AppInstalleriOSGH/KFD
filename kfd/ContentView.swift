@@ -52,6 +52,7 @@ struct ContentView: View {
                         let proc = getProc(kfd, getpid())
                         //Read 6,000 bytes from proc, searching for strings.
                         print((kreadbuf(kfd, proc, 6000) ?? Data()).base64EncodedString())
+                        print((kreadbuf(kfd, proc + 0x381, 3) ?? Data()).base64EncodedString())
                         kclose(kfd)
                         kfd = 0
                     }
