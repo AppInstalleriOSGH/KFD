@@ -120,29 +120,29 @@ uint64_t kread64(uint64_t where) {
 void kwrite8(uint64_t where, uint8_t what) {
     uint8_t _buf[8] = {};
     _buf[0] = what;
-    _buf[1] = kread8(kfd, where+1);
-    _buf[2] = kread8(kfd, where+2);
-    _buf[3] = kread8(kfd, where+3);
-    _buf[4] = kread8(kfd, where+4);
-    _buf[5] = kread8(kfd, where+5);
-    _buf[6] = kread8(kfd, where+6);
-    _buf[7] = kread8(kfd, where+7);
+    _buf[1] = kread8(where+1);
+    _buf[2] = kread8(where+2);
+    _buf[3] = kread8(where+3);
+    _buf[4] = kread8(where+4);
+    _buf[5] = kread8(where+5);
+    _buf[6] = kread8(where+6);
+    _buf[7] = kread8(where+7);
     kwrite((u64)(_kfd), &_buf, where, sizeof(u64));
 }
 
 void kwrite16(uint64_t where, uint16_t what) {
     u16 _buf[4] = {};
     _buf[0] = what;
-    _buf[1] = kread16(kfd, where+2);
-    _buf[2] = kread16(kfd, where+4);
-    _buf[3] = kread16(kfd, where+6);
+    _buf[1] = kread16(where+2);
+    _buf[2] = kread16(where+4);
+    _buf[3] = kread16(where+6);
     kwrite((u64)(_kfd), &_buf, where, sizeof(u64));
 }
 
 void kwrite32(uint64_t where, uint32_t what) {
     u32 _buf[2] = {};
     _buf[0] = what;
-    _buf[1] = kread32(kfd, where+4);
+    _buf[1] = kread32(where+4);
     kwrite((u64)(_kfd), &_buf, where, sizeof(u64));
 }
 
