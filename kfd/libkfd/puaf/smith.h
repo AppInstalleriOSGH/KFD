@@ -519,7 +519,7 @@ void smith_helper_cleanup(struct kfd* kfd)
          */
         u64 nentries_buffer = kget_u64(_vm_map__hdr__nentries, map_kaddr);
         i32 old_nentries = *(i32*)(&nentries_buffer);
-        print_u32(old_nentries);
+        //print_u32(old_nentries);
         *(i32*)(&nentries_buffer) = (old_nentries - 1);
         kset_u64(_vm_map__hdr__nentries, nentries_buffer, map_kaddr);
 
