@@ -150,15 +150,7 @@ struct kfd {
 #import <sys/utsname.h>
 
 struct kfd* kfd_init(u64 puaf_pages, u64 puaf_method, u64 kread_method, u64 kwrite_method) {
-    struct utsname systemInfo;
-    uname(&systemInfo);
-    if (strcmp(systemInfo.machine, "iPhone15,2") == 0 || strcmp(systemInfo.machine, "iPhone15,3") == 0) {
-        print("T1SZ_BOOT: 17ULL\n");
-        t1sz_boot = 17ULL;
-    } else {
-        print("T1SZ_BOOT: 25ULL\n");
-        t1sz_boot = 25ULL;
-    }
+    t1sz_boot = strstr(current_kern_version, "T8120") != NULL ? 17ull : 25ull;
     struct kfd* kfd = (struct kfd*)(malloc_bzero(sizeof(struct kfd)));
     info_init(kfd);
     puaf_init(kfd, puaf_pages, puaf_method);
