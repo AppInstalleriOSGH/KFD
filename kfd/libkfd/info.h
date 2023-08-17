@@ -68,25 +68,25 @@ void info_init(struct kfd* kfd)
      * Initialize the kfd->info.env substructure.
      */
     kfd->info.env.pid = getpid();
-    print_i32(kfd->info.env.pid);
+    //print_i32(kfd->info.env.pid);
 
     thread_identifier_info_data_t data = {};
     thread_info_t info = (thread_info_t)(&data);
     mach_msg_type_number_t count = THREAD_IDENTIFIER_INFO_COUNT;
     assert_mach(thread_info(mach_thread_self(), THREAD_IDENTIFIER_INFO, info, &count));
     kfd->info.env.tid = data.thread_id;
-    print_u64(kfd->info.env.tid);
+    //print_u64(kfd->info.env.tid);
 
     usize size1 = sizeof(kfd->info.env.maxfilesperproc);
     assert_bsd(sysctlbyname("kern.maxfilesperproc", &kfd->info.env.maxfilesperproc, &size1, NULL, 0));
-    print_u64(kfd->info.env.maxfilesperproc);
+    //print_u64(kfd->info.env.maxfilesperproc);
 
     struct rlimit rlim = { .rlim_cur = kfd->info.env.maxfilesperproc, .rlim_max = kfd->info.env.maxfilesperproc };
     assert_bsd(setrlimit(RLIMIT_NOFILE, &rlim));
 
     usize size2 = sizeof(kfd->info.env.kern_version);
     assert_bsd(sysctlbyname("kern.version", &kfd->info.env.kern_version, &size2, NULL, 0));
-    print_string(kfd->info.env.kern_version);
+    //print_string(kfd->info.env.kern_version);
 
     t1sz_boot = strstr(kfd->info.env.kern_version, "T8120") != NULL ? 17ull : 25ull;
     const u64 number_of_kern_versions = sizeof(kern_versions) / sizeof(kern_versions[0]);
@@ -95,19 +95,18 @@ void info_init(struct kfd* kfd)
     char build_version[256];
     size_t build_version_size = sizeof(build_version);
     sysctlbyname("kern.osversion", build_version, &build_version_size, NULL, 0);
-    printf("%s\n", build_version);
     for (u64 i = 0; i < number_of_kern_versions; i++) {
         const char* current_kern_version = kern_versions[i].kern_version;
         const char* current_device_id = kern_versions[i].device_id;
         const char* current_build_version = kern_versions[i].build_version;
         if (strcmp(current_device_id, systemInfo.machine) == 0 && strcmp(current_kern_version, kfd->info.env.kern_version) == 0 && strcmp(current_build_version, build_version) == 0) {
             kfd->info.env.vid = i;
-            print_u64(kfd->info.env.vid);
+            //print_u64(kfd->info.env.vid);
             return;
         }
     }
     kfd->info.env.vid = 0;
-    print_u64(kfd->info.env.vid);
+    //print_u64(kfd->info.env.vid);
     return;
 //    assert_false("unsupported osversion");
 }
@@ -129,14 +128,14 @@ void info_run(struct kfd* kfd)
      */
     u64 signed_map_kaddr = kget_u64(task__map, kfd->info.kaddr.current_task);
     kfd->info.kaddr.current_map = unsign_kaddr(signed_map_kaddr);
-    print_x64(kfd->info.kaddr.current_map);
+    //print_x64(kfd->info.kaddr.current_map);
 
     /*
      * current_pmap()
      */
     u64 signed_pmap_kaddr = kget_u64(_vm_map__pmap, kfd->info.kaddr.current_map);
     kfd->info.kaddr.current_pmap = unsign_kaddr(signed_pmap_kaddr);
-    print_x64(kfd->info.kaddr.current_pmap);
+    //print_x64(kfd->info.kaddr.current_pmap);
 
     /*
      * current_thread() and current_uthread()
@@ -156,8 +155,8 @@ void info_run(struct kfd* kfd)
             thread_kaddr = kget_u64(thread__task_threads__next, thread_kaddr);
         }
 
-        print_x64(kfd->info.kaddr.current_thread);
-        print_x64(kfd->info.kaddr.current_uthread);
+        //print_x64(kfd->info.kaddr.current_thread);
+        //print_x64(kfd->info.kaddr.current_uthread);
     }
 
     if (kfd->info.kaddr.kernel_proc) {
@@ -173,14 +172,14 @@ void info_run(struct kfd* kfd)
          */
         u64 signed_map_kaddr = kget_u64(task__map, kfd->info.kaddr.kernel_task);
         kfd->info.kaddr.kernel_map = unsign_kaddr(signed_map_kaddr);
-        print_x64(kfd->info.kaddr.kernel_map);
+        //print_x64(kfd->info.kaddr.kernel_map);
 
         /*
          * kernel_pmap()
          */
         u64 signed_pmap_kaddr = kget_u64(_vm_map__pmap, kfd->info.kaddr.kernel_map);
         kfd->info.kaddr.kernel_pmap = unsign_kaddr(signed_pmap_kaddr);
-        print_x64(kfd->info.kaddr.kernel_pmap);
+        //print_x64(kfd->info.kaddr.kernel_pmap);
     }
 
     timer_end();
