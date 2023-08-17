@@ -2,12 +2,12 @@
  * Copyright (c) 2023 Félix Poulin-Bélanger. All rights reserved.
  */
 
-#include "puaf/physpuppet.h"
-#include "puaf/smith.h"
-
 void puaf_helper_get_vm_map_first_and_last(u64* first_out, u64* last_out);
 void puaf_helper_get_vm_map_min_and_max(u64* min_out, u64* max_out);
 void puaf_helper_give_ppl_pages(void);
+
+#include "puaf/physpuppet.h"
+#include "puaf/smith.h"
 
 #define puaf_method_case(method)                                 \
     case puaf_##method: {                                        \
