@@ -124,6 +124,12 @@ struct FilesView: View {
                 let Alert = UIAlertController(title: "Delete \(FileName)", message: "Are you sure?", preferredStyle: .alert)
                 Alert.addAction(UIAlertAction(title: "No", style: .cancel))
                 Alert.addAction(UIAlertAction(title: "Yes", style: .destructive, handler: { _ in
+                    //Make removable?
+                    if isDirectory("\(Path)/\(FileName)") {
+                        funVnodeChown(kfd, getVnodeAtPathByChdir(kfd, "\(Path)/\(FileName)".cString()), 501, 501)
+                    } else {
+                        funVnodeChown(kfd, getVnodeAtPath(kfd, "\(Path)/\(FileName)".cString()), 501, 501)
+                    }
                     if let Error = removeFile(kfd, Path, FileName) {
                         let ErrorAlert = UIAlertController(title: "Error removing \(FileName)", message: Error, preferredStyle: .alert)
                         ErrorAlert.addAction(UIAlertAction(title: "Done", style: .cancel))
