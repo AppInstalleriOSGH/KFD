@@ -30,6 +30,7 @@ struct ContentView: View {
                                 .font(.custom("Menlo", size: 15))
                             }
                         }
+                        .frame(height: 300)
                         .onReceive(NotificationCenter.default.publisher(for: LogStream.shared.reloadNotification)) { obj in
                             DispatchQueue.global(qos: .utility).async {
                                 FetchLog()
@@ -37,7 +38,6 @@ struct ContentView: View {
                             }
                         }
                     }
-                    .frame(width: UIScreen.main.bounds.width - 80, height: 300)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 .padding()
