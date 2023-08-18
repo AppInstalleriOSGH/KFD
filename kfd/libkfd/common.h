@@ -39,26 +39,6 @@ typedef uintptr_t usize;
 #else /* CONFIG_PRINT */
 #define print(args...)
 #endif /* CONFIG_PRINT */
-#define print_bool(name) print("[%s]: %s = %s\n", __FUNCTION__, #name, name ? "true" : "false")
-#define print_i8(name) print("[%s]: %s = %hhi\n", __FUNCTION__, #name, name)
-#define print_u8(name) print("[%s]: %s = %hhu\n", __FUNCTION__, #name, name)
-#define print_x8(name) print("[%s]: %s = %02hhx\n", __FUNCTION__, #name, name)
-#define print_i16(name) print("[%s]: %s = %hi\n", __FUNCTION__, #name, name)
-#define print_u16(name) print("[%s]: %s = %hu\n", __FUNCTION__, #name, name)
-#define print_x16(name) print("[%s]: %s = %04hx\n", __FUNCTION__, #name, name)
-#define print_i32(name) print("[%s]: %s = %i\n", __FUNCTION__, #name, name)
-#define print_u32(name) print("[%s]: %s = %u\n", __FUNCTION__, #name, name)
-#define print_x32(name) print("[%s]: %s = %08x\n", __FUNCTION__, #name, name)
-#define print_i64(name) print("[%s]: %s = %lli\n", __FUNCTION__, #name, name)
-#define print_u64(name) print("[%s]: %s = %llu\n", __FUNCTION__, #name, name)
-#define print_x64(name) print("[%s]: %s = %016llx\n", __FUNCTION__, #name, name)
-#define print_isize(name) print("[%s]: %s = %li\n", __FUNCTION__, #name, name)
-#define print_usize(name) print("[%s]: %s = %lu\n", __FUNCTION__, #name, name)
-#define print_xsize(name) print("[%s]: %s = %016lx\n", __FUNCTION__, #name, name)
-#define print_string(name) print("[%s]: %s = %s\n", __FUNCTION__, #name, name)
-#define print_message(args...) do { print("[%s]: ", __FUNCTION__); print(args); print("\n"); } while (0)
-#define print_success(args...) do { print("[%s]: 🟢 ", __FUNCTION__); print(args); print("\n"); } while (0)
-#define print_warning(args...) do { print("[%s]: 🟡 ", __FUNCTION__); print(args); print("\n"); } while (0)
 #define print_failure(args...) do { print("[%s]: 🔴 ", __FUNCTION__); print(args); print("\n"); } while (0)
 #define print_buffer(uaddr, size)                                          \
     do {                                                                   \
