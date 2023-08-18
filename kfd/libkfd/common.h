@@ -7,17 +7,7 @@
 
 #include <errno.h>
 #include <mach/mach.h>
-#include <pthread.h>
-#include <semaphore.h>
-#include <stdatomic.h>
 #include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/ioctl.h>
-#include <sys/mman.h>
-#include <sys/syscall.h>
-#include <sys/sysctl.h>
-#include <unistd.h>
 
 #define min(a, b) (((a) < (b)) ? (a) : (b))
 #define max(a, b) (((a) > (b)) ? (a) : (b))
@@ -115,5 +105,3 @@ typedef uintptr_t usize;
         free(pointer);               \
         pointer = NULL;              \
     } while (0)
-
-//#endif /* common_h */
