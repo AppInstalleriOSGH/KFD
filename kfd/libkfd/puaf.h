@@ -2,9 +2,6 @@
  * Copyright (c) 2023 Félix Poulin-Bélanger. All rights reserved.
  */
 
-#ifndef puaf_h
-#define puaf_h
-
 void puaf_helper_get_vm_map_first_and_last(u64* first_out, u64* last_out);
 void puaf_helper_get_vm_map_min_and_max(u64* min_out, u64* max_out);
 void puaf_helper_give_ppl_pages(void);
@@ -113,5 +110,3 @@ void puaf_helper_give_ppl_pages(void) {
         assert_mach(vm_deallocate(mach_task_self(), addresses[i], pages(1)));
     }
 }
-
-#endif
