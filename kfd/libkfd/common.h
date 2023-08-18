@@ -157,28 +157,6 @@ typedef uintptr_t usize;
  * Helper timer macros.
  */
 
-#if CONFIG_TIMER
-
-#define timer_start()                                 \
-    struct timeval tv_start;                          \
-    do {                                              \
-        assert_bsd(gettimeofday(&tv_start, NULL));    \
-    } while (0)
-
-#define timer_end()                                 \
-    do {                                            \
-        struct timeval tv_end, tv_diff;             \
-        assert_bsd(gettimeofday(&tv_end, NULL));    \
-        timersub(&tv_end, &tv_start, &tv_diff);     \
-        print_timer(&tv_diff);                      \
-    } while (0)
-
-#else /* CONFIG_TIMER */
-
-#define timer_start()
-#define timer_end()
-
-#endif /* CONFIG_TIMER */
 
 /*
  * Helper allocation macros.
