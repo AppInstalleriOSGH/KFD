@@ -374,7 +374,6 @@ void smith_helper_cleanup(struct kfd* kfd) {
     }
 }
 
-
 #define puaf_method_case(method)                                 \
     case puaf_##method: {                                        \
         const char* method_name = #method;                       \
