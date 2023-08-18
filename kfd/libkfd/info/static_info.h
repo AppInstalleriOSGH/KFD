@@ -4,19 +4,12 @@
 
 #import <sys/utsname.h>
 
-#ifndef static_info_h
-#define static_info_h
-
 #define pages(number_of_pages) ((number_of_pages) * (16384ull))
-
 extern unsigned long long t1sz_boot = 0;
-//#define t1sz_boot (25ULL)
 #define ptr_mask ((1ull << (64ull - t1sz_boot)) - 1ull)
 #define pac_mask (~ptr_mask)
 #define unsign_kaddr(kaddr) ((kaddr) | (pac_mask))
-
 const u64 msg_ool_size_small = (32 * 1024);
-
 #define GUARD_REQUIRED (1u << 1)
 
 struct psemnode {
@@ -35,10 +28,6 @@ struct fileproc {
         u64 fp_guard;
     };
 };
-
-/*
- * kqueue stuff
- */
 
 #define KQ_WORKLOOP_CREATE     0x01
 #define KQ_WORKLOOP_DESTROY    0x02
@@ -71,10 +60,6 @@ __options_decl(kq_state_t, u16, {
     KQ_R2K_ARMED     = 0x1000,
     KQ_HAS_TURNSTILE = 0x2000,
 });
-
-/*
- * proc_info stuff
- */
 
 #define PROC_INFO_CALL_LISTPIDS             0x1
 #define PROC_INFO_CALL_PIDINFO              0x2
@@ -171,10 +156,6 @@ struct kqueue_dyninfo {
     u64 _kqdi_reserved1[4];
 };
 
-/*
- * perfmon stuff
- */
-
 #define PERFMON_SPEC_MAX_ATTR_COUNT (32)
 
 struct perfmon_layout {
@@ -247,10 +228,6 @@ enum perfmon_ioctl {
     PERFMON_CTL_SPECIFY = _IOWR('P', 10, struct perfmon_spec),
 };
 
-/*
- * pmap stuff
- */
-
 #define AP_RWNA   (0x0ull << 6)
 #define AP_RWRW   (0x1ull << 6)
 #define AP_RONA   (0x2ull << 6)
@@ -308,5 +285,3 @@ enum perfmon_ioctl {
 #define ARM_16K_TT_L3_OFFMASK       0x0000000000003fffull
 #define ARM_16K_TT_L3_SHIFT         14
 #define ARM_16K_TT_L3_INDEX_MASK    0x0000000001ffc000ull
-
-#endif /* static_info_h */
