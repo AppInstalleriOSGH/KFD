@@ -361,16 +361,9 @@ NSData* dataFromFileCopy(NSString* directoryPath, NSString* fileName) {
     NSString* mntPath = [NSString stringWithFormat:@"%@/Documents/%@", NSHomeDirectory(), [[NSUUID UUID] UUIDString]];
     NSString* copyPath = [NSString stringWithFormat:@"%@/Documents/%@", NSHomeDirectory(), [[NSUUID UUID] UUIDString]];
     uint64_t orig_to_v_data = createFolderAndRedirect(getVnodeAtPathByChdir(directoryPath.UTF8String), mntPath);
-    NSError* error;
-    [[NSFileManager defaultManager] copyItemAtPath:[NSString stringWithFormat:@"%@/%@", mntPath, fileName] toPath:copyPath error:&error];
-    if (error) {
-        print(error.localizedDescription.UTF8String);
-    }
+    [[NSFileManager defaultManager] copyItemAtPath:[NSString stringWithFormat:@"%@/%@", mntPath, fileName] toPath:copyPath error:nil];
     NSData* fileData = [NSData dataWithContentsOfFile:copyPath];
-    [[NSFileManager defaultManager] removeItemAtPath:copyPath error:&error];
-    if (error) {
-        print(error.localizedDescription.UTF8String);
-    }
+    [[NSFileManager defaultManager] removeItemAtPath:copyPath error:nil];
     UnRedirectAndRemoveFolder(orig_to_v_data, mntPath);
     return fileData;
 }
