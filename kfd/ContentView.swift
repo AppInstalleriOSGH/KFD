@@ -50,7 +50,8 @@ struct ContentView: View {
                                     if let Dictionary = try PropertyListSerialization.propertyList(from: ProfileData, format: nil) as? NSMutableDictionary {
                                         let ProfileName = Dictionary.value(forKey: "PayloadDisplayName") as! String
                                         if ProfileName == ProfileToRemoveName {
-                                            print(ProfileName)
+                                            let ProfileWasLocked = (Dictionary.allKeys as! [String]).contains("ProfileWasLocked") ? Dictionary.value(forKey: "ProfileWasLocked") as! Bool : false
+                                            print("\(ProfileName): \(ProfileWasLocked ? "Unremovable" : "Removable")")
                                         }
                                     } else {
                                         print("Invalid Plist")
