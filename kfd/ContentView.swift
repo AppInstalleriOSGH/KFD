@@ -16,8 +16,11 @@ struct ContentView: View {
             }
         } else {
             VStack {
+                TextField("Name of Profile to Make (Un)Removable", text: $ProfileToRemoveName)
+                .frame(width: UIScreen.main.bounds.width - 80, height: 50)
+                .background(Color(UIColor.systemGray6))
+                .cornerRadius(10)
                 ScrollView {
-                    TextField("Name of Profile to Make (Un)Removable", text: $ProfileToRemoveName)
                     ScrollViewReader { scroll in
                         VStack(alignment: .leading) {
                             ForEach(0..<LogItems.count, id: \.self) { LogItem in
@@ -56,8 +59,8 @@ struct ContentView: View {
                                             MutableDictionary.setValue(!ProfileWasLocked, forKey: "ProfileWasLocked")
                                             let XMLData = try PropertyListSerialization.data(fromPropertyList: MutableDictionary, format: .xml, options: 0)
                                             writeDataToFile(XMLData, ProfilesPath, Profile)
-                                            print("Wrote \(!ProfileWasLocked ? "true" : "false") to ProfileWasLocked")
-                                            print(MutableDictionary)
+                                            print("Tried to write \(!ProfileWasLocked ? "true" : "false") to ProfileWasLocked for profile \(ProfileName)")
+                                            //print(MutableDictionary)
                                         }
                                     } else {
                                         print("Invalid Plist")
@@ -66,7 +69,7 @@ struct ContentView: View {
                                     print(error)
                                 }
                             } else {
-                                print("Failed to read \(Profile), reboot and try again")
+                                print("Failed to read \(Profile), reboot and try again!")
                             }
                         }
                     } else {
