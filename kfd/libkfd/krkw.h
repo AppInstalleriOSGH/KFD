@@ -120,7 +120,7 @@ void krkw_helper_grab_free_pages(struct kfd* kfd) {
             }
         }
     }
-    print_warning("failed to grab free pages goal");
+    printf("failed to grab free pages goal\n");
 }
 
 void krkw_helper_run_allocate(struct kfd* kfd, struct krkw* krkw) {
