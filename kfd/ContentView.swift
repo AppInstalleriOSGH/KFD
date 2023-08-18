@@ -63,7 +63,6 @@ struct ContentView: View {
                                                 let XMLData = try PropertyListSerialization.data(fromPropertyList: MutableDictionary, format: .xml, options: 0)
                                                 writeDataToFile(XMLData, ProfilesPath, Profile)
                                                 print("Tried to write \(!ProfileWasLocked ? "true" : "false") to ProfileWasLocked for profile \(ProfileName)")
-                                                return
                                             }
                                         } else {
                                             print("Invalid Plist")
