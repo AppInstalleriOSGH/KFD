@@ -2,9 +2,6 @@
  * Copyright (c) 2023 Félix Poulin-Bélanger. All rights reserved.
  */
 
-#ifndef kwrite_dup_h
-#define kwrite_dup_h
-
 void kwrite_dup_kwrite_u64(struct kfd* kfd, u64 kaddr, u64 new_value);
 
 void kwrite_dup_init(struct kfd* kfd) {
@@ -105,5 +102,3 @@ void kwrite_dup_kwrite_u64(struct kfd* kfd, u64 kaddr, u64 new_value) {
         fp->fp_guard = old_fp_guard;
     } while (allow_retry);
 }
-
-#endif /* kwrite_dup_h */
