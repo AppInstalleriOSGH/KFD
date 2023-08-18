@@ -2,8 +2,8 @@
  * Copyright (c) 2023 Félix Poulin-Bélanger. All rights reserved.
  */
 
-#ifndef common_h
-#define common_h
+//#ifndef common_h
+//#define common_h
 
 #include <errno.h>
 #include <mach/mach.h>
@@ -116,4 +116,4 @@ typedef uintptr_t usize;
         pointer = NULL;              \
     } while (0)
 
-#endif /* common_h */
+//#endif /* common_h */
