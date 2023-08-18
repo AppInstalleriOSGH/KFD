@@ -26,8 +26,8 @@ void puaf_init(struct kfd* kfd, u64 puaf_pages, u64 puaf_method) {
     kfd->puaf.number_of_puaf_pages = puaf_pages;
     kfd->puaf.puaf_pages_uaddr = (u64*)(malloc_bzero(kfd->puaf.number_of_puaf_pages * sizeof(u64)));
     switch (puaf_method) {
-        puaf_method_case(physpuppet)
-        puaf_method_case(smith)
+        //puaf_method_case(physpuppet)
+        //puaf_method_case(smith)
     }
     kfd->puaf.puaf_method_ops.init(kfd);
 }
