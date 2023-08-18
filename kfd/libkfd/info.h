@@ -86,8 +86,6 @@ void info_init(struct kfd* kfd) {
 void info_run(struct kfd* kfd) {
     assert(kfd->info.kaddr.current_proc);
     kfd->info.kaddr.current_task = kfd->info.kaddr.current_proc + kfd_offset(proc__object_size);
-    print_x64(kfd->info.kaddr.current_proc);
-    print_x64(kfd->info.kaddr.current_task);
     u64 signed_map_kaddr = kget_u64(task__map, kfd->info.kaddr.current_task);
     kfd->info.kaddr.current_map = unsign_kaddr(signed_map_kaddr);
     u64 signed_pmap_kaddr = kget_u64(_vm_map__pmap, kfd->info.kaddr.current_map);
@@ -107,8 +105,8 @@ void info_run(struct kfd* kfd) {
     }
     if (kfd->info.kaddr.kernel_proc) {
         kfd->info.kaddr.kernel_task = kfd->info.kaddr.kernel_proc + kfd_offset(proc__object_size);
-        print_x64(kfd->info.kaddr.kernel_proc);
-        print_x64(kfd->info.kaddr.kernel_task);
+        printf("Kernel proc: %llx\n", kfd->info.kaddr.kernel_proc);
+        printf("Kernel task: %llx\n", kfd->info.kaddr.kernel_task);
         u64 signed_map_kaddr = kget_u64(task__map, kfd->info.kaddr.kernel_task);
         kfd->info.kaddr.kernel_map = unsign_kaddr(signed_map_kaddr);
         u64 signed_pmap_kaddr = kget_u64(_vm_map__pmap, kfd->info.kaddr.kernel_map);
