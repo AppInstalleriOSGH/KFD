@@ -2,11 +2,6 @@
  * Copyright (c) 2023 Félix Poulin-Bélanger. All rights reserved.
  */
 
-#include "krkw/kread/kread_kqueue_workloop_ctl.h"
-#include "krkw/kread/kread_sem_open.h"
-#include "krkw/kwrite/kwrite_dup.h"
-#include "krkw/kwrite/kwrite_sem_open.h"
-
 #define kread_from_method(type, method)                                             \
     do {                                                                            \
         volatile type* type_base = (volatile type*)(uaddr);                         \
@@ -17,6 +12,9 @@
         }                                                                           \
     } while (0)
 
+#include "krkw/kread/kread_kqueue_workloop_ctl.h"
+#include "krkw/kread/kread_sem_open.h"
+
 #define kwrite_from_method(type, method)                                       \
     do {                                                                       \
         volatile type* type_base = (volatile type*)(uaddr);                    \
@@ -26,6 +24,9 @@
             method(kfd, kaddr + (type_offset * sizeof(type)), type_value);     \
         }                                                                      \
     } while (0)
+
+#include "krkw/kwrite/kwrite_dup.h"
+#include "krkw/kwrite/kwrite_sem_open.h"
 
 void krkw_helper_init(struct kfd* kfd, struct krkw* krkw);
 void krkw_helper_grab_free_pages(struct kfd* kfd);
