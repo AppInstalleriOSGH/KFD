@@ -182,7 +182,7 @@ u64 kopen(u64 puaf_pages, u64 puaf_method, u64 kread_method, u64 kwrite_method) 
     puaf_cleanup(kfd);
 
     _kfd = (u64)(kfd);
-    printf("Out.");
+    printf("Out.\n");
     return (u64)(kfd);
 }
 
