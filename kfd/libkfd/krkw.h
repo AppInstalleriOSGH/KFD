@@ -2,9 +2,6 @@
  * Copyright (c) 2023 Félix Poulin-Bélanger. All rights reserved.
  */
 
-#ifndef krkw_h
-#define krkw_h
-
 #define kread_from_method(type, method)                                             \
     do {                                                                            \
         volatile type* type_base = (volatile type*)(uaddr);                         \
@@ -180,5 +177,3 @@ void krkw_helper_free(struct kfd* kfd, struct krkw* krkw) {
         bzero_free(krkw->krkw_method_data, krkw->krkw_method_data_size);
     }
 }
-
-#endif /* krkw_h */
