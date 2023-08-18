@@ -8,6 +8,7 @@ struct ContentView: View {
     @State var kfd: UInt64 = 0
     @State var LogItems: [String.SubSequence] = [IsSupported() ? "Ready!" : "Unsupported", "iOS: \(GetiOSBuildID())"]
     @State var ShowFileManager = false
+    @State var ProfileToRemoveName = ""
     var body: some View {
         if ShowFileManager {
             NavigationView {
@@ -16,6 +17,7 @@ struct ContentView: View {
         } else {
             VStack {
                 ScrollView {
+                    TextField("ProfileToRemoveName", text: $ProfileToRemoveName)
                     ScrollViewReader { scroll in
                         VStack(alignment: .leading) {
                             ForEach(0..<LogItems.count, id: \.self) { LogItem in
@@ -45,8 +47,11 @@ struct ContentView: View {
                         for Profile in contentsOfDirectory(ProfilesPath).filter({$0.hasPrefix("profile-")}) {
                             if let ProfileData = dataFromFileCopy(ProfilesPath, Profile) {
                                 do {
-                                    if let Dictionary = try PropertyListSerialization.propertyList(from: ProfileData, format: nil) as? NSDictionary {
-                                        print(Dictionary.value(forKey: "PayloadDisplayName") as! String)
+                                    if let Dictionary = try PropertyListSerialization.propertyList(from: ProfileData, format: nil) as? NSMutableDictionary {
+                                        let ProfileName = Dictionary.value(forKey: "PayloadDisplayName") as! String
+                                        if ProfileName == ProfileToRemoveName {
+                                            print(ProfileName)
+                                        }
                                     } else {
                                         print("Invalid Plist")
                                     }
