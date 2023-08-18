@@ -2,11 +2,7 @@
  * Copyright (c) 2023 Félix Poulin-Bélanger. All rights reserved.
  */
 
-#ifndef kread_sem_open_h
-#define kread_sem_open_h
-
 const char* kread_sem_open_name = "kfd-posix-semaphore";
-
 u64 kread_sem_open_kread_u64(struct kfd* kfd, u64 kaddr);
 u32 kread_sem_open_kread_u32(struct kfd* kfd, u64 kaddr);
 
@@ -136,5 +132,3 @@ u32 kread_sem_open_kread_u32(struct kfd* kfd, u64 kaddr) {
     ((volatile struct psemnode*)(psemnode_uaddr))->pinfo = old_pinfo;
     return *(u32*)(&data.pseminfo.psem_stat.vst_size);
 }
-
-#endif /* kread_sem_open_h */
