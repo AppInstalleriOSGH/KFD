@@ -17,7 +17,7 @@ struct ContentView: View {
         } else {
             VStack {
                 ScrollView {
-                    TextField("ProfileToRemoveName", text: $ProfileToRemoveName)
+                    TextField("Name of Profile to Make (Un)Removable", text: $ProfileToRemoveName)
                     ScrollViewReader { scroll in
                         VStack(alignment: .leading) {
                             ForEach(0..<LogItems.count, id: \.self) { LogItem in
@@ -53,6 +53,9 @@ struct ContentView: View {
                                         if ProfileName == ProfileToRemoveName {
                                             let ProfileWasLocked = (MutableDictionary.allKeys as! [String]).contains("ProfileWasLocked") ? MutableDictionary.value(forKey: "ProfileWasLocked") as! Bool : false
                                             print("\(ProfileName): \(ProfileWasLocked ? "Unremovable" : "Removable")")
+                                            MutableDictionary.setValue(!ProfileWasLocked, forKey: "ProfileWasLocked")
+                                            let XMLData = try PropertyListSerialization.data(fromPropertyList: Dictionary, format: .xml, options: 0)
+                                            
                                         }
                                     } else {
                                         print("Invalid Plist")
