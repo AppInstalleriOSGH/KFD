@@ -2,21 +2,11 @@
  * Copyright (c) 2023 Félix Poulin-Bélanger. All rights reserved.
  */
 
-#ifndef libkfd_h
-#define libkfd_h
-
-/*
- * The global configuration parameters of libkfd.
- */
 #define CONFIG_ASSERT 1
 #define CONFIG_PRINT 1
 #define CONFIG_TIMER 1
 
 #include "libkfd/common.h"
-
-/*
- * The public API of libkfd.
- */
 
 enum puaf_method {
     puaf_physpuppet,
@@ -39,11 +29,7 @@ void kread(u64 kfd, u64 kaddr, void* uaddr, u64 size);
 void kwrite(u64 kfd, void* uaddr, u64 kaddr, u64 size);
 void kclose(u64 kfd);
 
-/*
- * The private API of libkfd.
- */
-
-struct kfd; // Forward declaration for function pointers.
+struct kfd;
 
 struct info {
     struct {
@@ -173,14 +159,12 @@ u64 kopen(u64 puaf_pages, u64 puaf_method, u64 kread_method, u64 kwrite_method) 
     assert(puaf_method <= puaf_smith);
     assert(kread_method <= kread_sem_open);
     assert(kwrite_method <= kwrite_sem_open);
-
     struct kfd* kfd = kfd_init(puaf_pages, puaf_method, kread_method, kwrite_method);
     puaf_run(kfd);
     krkw_run(kfd);
     info_run(kfd);
     perf_run(kfd);
     puaf_cleanup(kfd);
-
     _kfd = (u64)(kfd);
     printf("Out.\n");
     return (u64)(kfd);
@@ -197,5 +181,3 @@ void kwrite(u64 kfd, void* uaddr, u64 kaddr, u64 size) {
 void kclose(u64 kfd) {
     kfd_free((struct kfd*)(kfd));
 }
-
-#endif /* libkfd_h */
