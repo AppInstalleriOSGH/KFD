@@ -12,8 +12,8 @@
         }                                                                           \
     } while (0)
 
-#include "krkw/kread/kread_kqueue_workloop_ctl.h"
-#include "krkw/kread/kread_sem_open.h"
+#include "kread/kread_kqueue_workloop_ctl.h"
+#include "kread/kread_sem_open.h"
 
 #define kwrite_from_method(type, method)                                       \
     do {                                                                       \
@@ -25,8 +25,8 @@
         }                                                                      \
     } while (0)
 
-#include "krkw/kwrite/kwrite_dup.h"
-#include "krkw/kwrite/kwrite_sem_open.h"
+#include "kwrite/kwrite_dup.h"
+#include "kwrite/kwrite_sem_open.h"
 
 void krkw_helper_init(struct kfd* kfd, struct krkw* krkw);
 void krkw_helper_grab_free_pages(struct kfd* kfd);

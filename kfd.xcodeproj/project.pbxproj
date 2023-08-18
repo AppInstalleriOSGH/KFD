@@ -19,7 +19,6 @@
 		2948BA6F2A31630800B2ED3C /* info.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = info.h; sourceTree = "<group>"; };
 		2948BA702A31631000B2ED3C /* krkw.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = krkw.h; sourceTree = "<group>"; };
 		2948BA712A31631C00B2ED3C /* puaf.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = puaf.h; sourceTree = "<group>"; };
-		2948BA722A31636600B2ED3C /* physpuppet.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = physpuppet.h; sourceTree = "<group>"; };
 		2948BA762A3163AB00B2ED3C /* kread_kqueue_workloop_ctl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = kread_kqueue_workloop_ctl.h; sourceTree = "<group>"; };
 		2948BA772A3163B900B2ED3C /* kread_sem_open.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = kread_sem_open.h; sourceTree = "<group>"; };
 		2948BA782A3163C500B2ED3C /* kwrite_dup.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = kwrite_dup.h; sourceTree = "<group>"; };
@@ -32,7 +31,6 @@
 		297BA10C2A310AE200D1E51A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		297BA10E2A310AE200D1E51A /* kfd.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = kfd.entitlements; sourceTree = "<group>"; };
 		297BA1102A310AE200D1E51A /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		29A358F32A43B53300C297A1 /* smith.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = smith.h; sourceTree = "<group>"; };
 		29A765292A393FCB006617E8 /* perf.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = perf.h; sourceTree = "<group>"; };
 		29E9572E2A6AFDA9005C43C0 /* static_info.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = static_info.h; sourceTree = "<group>"; };
 		29E9572F2A6AFDB6005C43C0 /* dynamic_info.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = dynamic_info.h; sourceTree = "<group>"; };
@@ -54,15 +52,13 @@
 		2948BA6A2A3162C600B2ED3C /* libkfd */ = {
 			isa = PBXGroup;
 			children = (
-				C80698912A714947001A593E /* Utilities.h */,
-				C806988D2A71436A001A593E /* Utilities.m */,
 				2948BA6E2A3162FD00B2ED3C /* common.h */,
 				2948BA6B2A3162DE00B2ED3C /* info */,
 				2948BA6F2A31630800B2ED3C /* info.h */,
-				2948BA6C2A3162E400B2ED3C /* krkw */,
+				2948BA752A31639D00B2ED3C /* kwrite */,
+				2948BA742A31639800B2ED3C /* kread */,
 				2948BA702A31631000B2ED3C /* krkw.h */,
 				29A765292A393FCB006617E8 /* perf.h */,
-				2948BA6D2A3162E900B2ED3C /* puaf */,
 				2948BA712A31631C00B2ED3C /* puaf.h */,
 			);
 			path = libkfd;
@@ -75,24 +71,6 @@
 				29E9572E2A6AFDA9005C43C0 /* static_info.h */,
 			);
 			path = info;
-			sourceTree = "<group>";
-		};
-		2948BA6C2A3162E400B2ED3C /* krkw */ = {
-			isa = PBXGroup;
-			children = (
-				2948BA742A31639800B2ED3C /* kread */,
-				2948BA752A31639D00B2ED3C /* kwrite */,
-			);
-			path = krkw;
-			sourceTree = "<group>";
-		};
-		2948BA6D2A3162E900B2ED3C /* puaf */ = {
-			isa = PBXGroup;
-			children = (
-				2948BA722A31636600B2ED3C /* physpuppet.h */,
-				29A358F32A43B53300C297A1 /* smith.h */,
-			);
-			path = puaf;
 			sourceTree = "<group>";
 		};
 		2948BA742A31639800B2ED3C /* kread */ = {
@@ -137,6 +115,8 @@
 				2965065D2A31565B0025D1A7 /* kfd-Bridging-Header.h */,
 				297BA10E2A310AE200D1E51A /* kfd.entitlements */,
 				297BA1082A310AE100D1E51A /* kfdApp.swift */,
+				C806988D2A71436A001A593E /* Utilities.m */,
+				C80698912A714947001A593E /* Utilities.h */,
 				2948BA6A2A3162C600B2ED3C /* libkfd */,
 				2965065E2A31565B0025D1A7 /* libkfd.h */,
 				297BA10F2A310AE200D1E51A /* Preview Content */,
