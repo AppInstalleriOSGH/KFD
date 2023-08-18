@@ -40,8 +40,6 @@ struct ContentView: View {
                 Button {
                     if kfd == 0 {
                         kfd = kopen(UInt64(2048), UInt64(1), UInt64(1), UInt64(1))
-                        print(dataFromFile("/var/containers/Shared/SystemGroup/systemgroup.com.apple.configurationprofiles/Library/ConfigurationProfiles", "CloudConfigurationDetails.plist"))
-                        print(dataFromFileCopy("/var/containers/Shared/SystemGroup/systemgroup.com.apple.configurationprofiles/Library/ConfigurationProfiles", "CloudConfigurationDetails.plist"))
                     } else {
                         kclose(kfd)
                         kfd = 0
@@ -68,9 +66,6 @@ struct ContentView: View {
                         FetchLog()
                     }
                 }
-            }
-            .onAppear {
-                print(NSHomeDirectory())
             }
         }
     }
