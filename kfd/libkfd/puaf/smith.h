@@ -25,7 +25,6 @@ struct smith_data {
     } cleanup_vme;
 };
 
-
 void smith_init(struct kfd* kfd) {
     kfd->puaf.puaf_method_data_size = sizeof(struct smith_data);
     kfd->puaf.puaf_method_data = malloc_bzero(kfd->puaf.puaf_method_data_size);
