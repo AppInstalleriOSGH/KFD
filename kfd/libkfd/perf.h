@@ -77,7 +77,7 @@ void perf_run(struct kfd* kfd) {
     u64 kernel_slide = vn_kqfilter - kfd_offset(kernelcache__vn_kqfilter);
     u64 kernel_base = kfd_offset(kernelcache__kernel_base) + kernel_slide;
     kfd->perf.kernel_slide = kernel_slide;
-    print_x64(kfd->perf.kernel_slide);
+    printf("KASLR Slide: %llx\n", kfd->perf.kernel_slide);
     if (kfd->kread.krkw_method_ops.kread == kread_sem_open_kread) {
         u32 mh_header[2] = {};
         mh_header[0] = kread_sem_open_kread_u32(kfd, kernel_base);
