@@ -2,10 +2,6 @@
  * Copyright (c) 2023 Félix Poulin-Bélanger. All rights reserved.
  */
 
-#ifndef smith_h
-#define smith_h
-
-
 const bool take_vm_map_lock = true;
 void smith_helper_init(struct kfd* kfd);
 void* smith_helper_spinner_pthread(void* arg);
@@ -330,5 +326,3 @@ void smith_helper_cleanup(struct kfd* kfd) {
         assert_bsd(pthread_join(smith->cleanup_vme.pthread, NULL));
     }
 }
-
-#endif /* smith_h */
