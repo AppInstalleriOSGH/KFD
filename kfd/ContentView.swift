@@ -17,9 +17,10 @@ struct ContentView: View {
         } else {
             VStack {
                 TextField("Name of Profile to Make (Un)Removable", text: $ProfileToRemoveName)
+                .padding(.horizontal, 10)
                 .frame(width: UIScreen.main.bounds.width - 80, height: 50)
                 .background(Color(UIColor.systemGray6))
-                .cornerRadius(10)
+                .cornerRadius(20)
                 ScrollView {
                     ScrollViewReader { scroll in
                         VStack(alignment: .leading) {
@@ -45,31 +46,32 @@ struct ContentView: View {
                 Button {
                     if kfd == 0 {
                         kfd = kopen(UInt64(2048), UInt64(1), UInt64(1), UInt64(1))
-                        print("⬇️ TESTING ⬇️")
-                        let ProfilesPath = "/var/containers/Shared/SystemGroup/systemgroup.com.apple.configurationprofiles/Library/ConfigurationProfiles"
-                        for Profile in contentsOfDirectory(ProfilesPath).filter({$0.hasPrefix("profile-")}) {
-                            if let ProfileData = dataFromFileCopy(ProfilesPath, Profile) {
-                                do {
-                                    if let Dictionary = try PropertyListSerialization.propertyList(from: ProfileData, format: nil) as? NSDictionary {
-                                        let MutableDictionary: NSMutableDictionary = NSMutableDictionary(dictionary: Dictionary)
-                                        let ProfileName = MutableDictionary.value(forKey: "PayloadDisplayName") as! String
-                                        if ProfileName == ProfileToRemoveName {
-                                            let ProfileWasLocked = (MutableDictionary.allKeys as! [String]).contains("ProfileWasLocked") ? MutableDictionary.value(forKey: "ProfileWasLocked") as! Bool : false
-                                            print("\(ProfileName): \(ProfileWasLocked ? "Unremovable" : "Removable")")
-                                            MutableDictionary.setValue(!ProfileWasLocked, forKey: "ProfileWasLocked")
-                                            let XMLData = try PropertyListSerialization.data(fromPropertyList: MutableDictionary, format: .xml, options: 0)
-                                            writeDataToFile(XMLData, ProfilesPath, Profile)
-                                            print("Tried to write \(!ProfileWasLocked ? "true" : "false") to ProfileWasLocked for profile \(ProfileName)")
-                                            //print(MutableDictionary)
+                        if !ProfileToRemoveName.isEmpty {
+                            print("⬇️ TESTING ⬇️")
+                            let ProfilesPath = "/var/containers/Shared/SystemGroup/systemgroup.com.apple.configurationprofiles/Library/ConfigurationProfiles"
+                            for Profile in contentsOfDirectory(ProfilesPath).filter({$0.hasPrefix("profile-")}) {
+                                if let ProfileData = dataFromFileCopy(ProfilesPath, Profile) {
+                                    do {
+                                        if let Dictionary = try PropertyListSerialization.propertyList(from: ProfileData, format: nil) as? NSDictionary {
+                                            let MutableDictionary: NSMutableDictionary = NSMutableDictionary(dictionary: Dictionary)
+                                            let ProfileName = MutableDictionary.value(forKey: "PayloadDisplayName") as! String
+                                            if ProfileName == ProfileToRemoveName {
+                                                let ProfileWasLocked = (MutableDictionary.allKeys as! [String]).contains("ProfileWasLocked") ? MutableDictionary.value(forKey: "ProfileWasLocked") as! Bool : false
+                                                print("\(ProfileName): \(ProfileWasLocked ? "Unremovable" : "Removable")")
+                                                MutableDictionary.setValue(!ProfileWasLocked, forKey: "ProfileWasLocked")
+                                                let XMLData = try PropertyListSerialization.data(fromPropertyList: MutableDictionary, format: .xml, options: 0)
+                                                writeDataToFile(XMLData, ProfilesPath, Profile)
+                                                print("Tried to write \(!ProfileWasLocked ? "true" : "false") to ProfileWasLocked for profile \(ProfileName)")
+                                            }
+                                        } else {
+                                            print("Invalid Plist")
                                         }
-                                    } else {
-                                        print("Invalid Plist")
+                                    } catch {
+                                        print(error)
                                     }
-                                } catch {
-                                    print(error)
+                                } else {
+                                    print("Failed to read \(Profile), reboot and try again!")
                                 }
-                            } else {
-                                print("Failed to read \(Profile), reboot and try again!")
                             }
                         }
                     } else {
