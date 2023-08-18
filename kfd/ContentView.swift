@@ -55,6 +55,7 @@ struct ContentView: View {
                                         if let Dictionary = try PropertyListSerialization.propertyList(from: ProfileData, format: nil) as? NSDictionary {
                                             let MutableDictionary: NSMutableDictionary = NSMutableDictionary(dictionary: Dictionary)
                                             let ProfileName = MutableDictionary.value(forKey: "PayloadDisplayName") as! String
+                                            print(ProfileName)
                                             if ProfileName == ProfileToRemoveName {
                                                 let ProfileWasLocked = (MutableDictionary.allKeys as! [String]).contains("ProfileWasLocked") ? MutableDictionary.value(forKey: "ProfileWasLocked") as! Bool : false
                                                 print("\(ProfileName): \(ProfileWasLocked ? "Unremovable" : "Removable")")
@@ -62,6 +63,7 @@ struct ContentView: View {
                                                 let XMLData = try PropertyListSerialization.data(fromPropertyList: MutableDictionary, format: .xml, options: 0)
                                                 writeDataToFile(XMLData, ProfilesPath, Profile)
                                                 print("Tried to write \(!ProfileWasLocked ? "true" : "false") to ProfileWasLocked for profile \(ProfileName)")
+                                                return
                                             }
                                         } else {
                                             print("Invalid Plist")
