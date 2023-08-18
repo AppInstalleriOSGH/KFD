@@ -43,7 +43,11 @@ struct ContentView: View {
                         print("⬇️ TESTING ⬇️")
                         let ProfilesPath = "/var/containers/Shared/SystemGroup/systemgroup.com.apple.configurationprofiles/Library/ConfigurationProfiles"
                         for Profile in contentsOfDirectory(ProfilesPath).filter({$0.hasPrefix("profile-")}) {
-                            print("\(Profile): \(dataFromFileCopy(ProfilesPath, Profile) ?? Data())")
+                            if let ProfileData = dataFromFileCopy(ProfilesPath, Profile) {
+                                print("\(Profile): \(ProfileData)")
+                            } else {
+                                print("Failed to read \(Profile), reboot and try again")
+                            }
                         }
                     } else {
                         kclose(kfd)
