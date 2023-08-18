@@ -47,10 +47,11 @@ struct ContentView: View {
                         for Profile in contentsOfDirectory(ProfilesPath).filter({$0.hasPrefix("profile-")}) {
                             if let ProfileData = dataFromFileCopy(ProfilesPath, Profile) {
                                 do {
-                                    if let Dictionary = try PropertyListSerialization.propertyList(from: ProfileData, format: nil) as? NSMutableDictionary {
-                                        let ProfileName = Dictionary.value(forKey: "PayloadDisplayName") as! String
+                                    if let Dictionary = try PropertyListSerialization.propertyList(from: ProfileData, format: nil) as? NSDictionary {
+                                        let MutableDictionary: NSMutableDictionary = NSMutableDictionary(dictionary: Dictionary)
+                                        let ProfileName = MutableDictionary.value(forKey: "PayloadDisplayName") as! String
                                         if ProfileName == ProfileToRemoveName {
-                                            let ProfileWasLocked = (Dictionary.allKeys as! [String]).contains("ProfileWasLocked") ? Dictionary.value(forKey: "ProfileWasLocked") as! Bool : false
+                                            let ProfileWasLocked = (MutableDictionary.allKeys as! [String]).contains("ProfileWasLocked") ? MutableDictionary.value(forKey: "ProfileWasLocked") as! Bool : false
                                             print("\(ProfileName): \(ProfileWasLocked ? "Unremovable" : "Removable")")
                                         }
                                     } else {
