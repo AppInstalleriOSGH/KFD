@@ -2,9 +2,6 @@
  * Copyright (c) 2023 Félix Poulin-Bélanger. All rights reserved.
  */
 
-#ifndef perf_h
-#define perf_h
-
 u64 phystokv(struct kfd* kfd, u64 pa);
 u64 vtophys(struct kfd* kfd, u64 va);
 
@@ -230,5 +227,3 @@ u64 vtophys(struct kfd* kfd, u64 va) {
     }
     return pa;
 }
-
-#endif /* perf_h */
