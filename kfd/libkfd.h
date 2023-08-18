@@ -2,10 +2,6 @@
  * Copyright (c) 2023 Félix Poulin-Bélanger. All rights reserved.
  */
 
-#define CONFIG_ASSERT 1
-#define CONFIG_PRINT 1
-#define CONFIG_TIMER 1
-
 #include "libkfd/common.h"
 
 enum puaf_method {
