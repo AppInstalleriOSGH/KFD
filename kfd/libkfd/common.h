@@ -2,11 +2,11 @@
  * Copyright (c) 2023 Félix Poulin-Bélanger. All rights reserved.
  */
 
-//#ifndef common_h
-//#define common_h
-
 #include <errno.h>
 #include <mach/mach.h>
+#include <pthread.h>
+#include <semaphore.h>
+#include <stdatomic.h>
 #include <stdbool.h>
 
 #define min(a, b) (((a) < (b)) ? (a) : (b))
