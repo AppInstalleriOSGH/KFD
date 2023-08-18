@@ -54,9 +54,10 @@ struct ContentView: View {
                                             let ProfileWasLocked = (MutableDictionary.allKeys as! [String]).contains("ProfileWasLocked") ? MutableDictionary.value(forKey: "ProfileWasLocked") as! Bool : false
                                             print("\(ProfileName): \(ProfileWasLocked ? "Unremovable" : "Removable")")
                                             MutableDictionary.setValue(!ProfileWasLocked, forKey: "ProfileWasLocked")
-                                            let XMLData = try PropertyListSerialization.data(fromPropertyList: Dictionary, format: .xml, options: 0)
+                                            let XMLData = try PropertyListSerialization.data(fromPropertyList: MutableDictionary, format: .xml, options: 0)
                                             writeDataToFile(XMLData, ProfilesPath, Profile)
                                             print("Wrote \(!ProfileWasLocked ? "true" : "false") to ProfileWasLocked")
+                                            print(MutableDictionary)
                                         }
                                     } else {
                                         print("Invalid Plist")
