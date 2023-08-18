@@ -2,9 +2,6 @@
  * Copyright (c) 2023 Félix Poulin-Bélanger. All rights reserved.
  */
 
-#ifndef info_h
-#define info_h
-
 #include "info/dynamic_info.h"
 #include "info/static_info.h"
 #import <sys/utsname.h>
@@ -120,5 +117,3 @@ void info_free(struct kfd* kfd) {
     assert_mach(vm_deallocate(mach_task_self(), kfd->info.copy.src_uaddr, kfd->info.copy.size));
     assert_mach(vm_deallocate(mach_task_self(), kfd->info.copy.dst_uaddr, kfd->info.copy.size));
 }
-
-#endif /* info_h */
