@@ -38,7 +38,7 @@ struct ContentView: View {
                             }
                         }
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
                 }
                 .padding()
                 .frame(width: UIScreen.main.bounds.width - 80, height: 300)
