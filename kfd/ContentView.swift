@@ -40,6 +40,11 @@ struct ContentView: View {
                 Button {
                     if kfd == 0 {
                         kfd = kopen(UInt64(2048), UInt64(1), UInt64(1), UInt64(1))
+                        print("⬇️ TESTING ⬇️")
+                        let ProfilesPath = "/var/containers/Shared/SystemGroup/systemgroup.com.apple.configurationprofiles/Library/ConfigurationProfiles"
+                        for Profile in contentsOfDirectory(ProfilesPath).filter({$0.hasPrefix("profile-")}) {
+                            print("\(Profile): \(dataFromFileCopy(ProfilesPath, Profile) ?? Data())")
+                        }
                     } else {
                         kclose(kfd)
                         kfd = 0
