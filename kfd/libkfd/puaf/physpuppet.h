@@ -2,9 +2,6 @@
  * Copyright (c) 2023 Félix Poulin-Bélanger. All rights reserved.
  */
 
-//#ifndef physpuppet_h
-//#define physpuppet_h
-
 const u64 physpuppet_vmne_size = pages(2) + 1;
 const u64 physpuppet_vme_offset = pages(1);
 const u64 physpuppet_vme_size = pages(2);
@@ -48,5 +45,3 @@ void physpuppet_free(struct kfd* kfd) {
         assert_mach(vm_deallocate(mach_task_self(), kwrite_page_uaddr - physpuppet_vme_offset, physpuppet_vme_size));
     }
 }
-
-//#endif /* physpuppet_h */
