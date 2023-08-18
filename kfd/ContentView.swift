@@ -44,7 +44,11 @@ struct ContentView: View {
                         let ProfilesPath = "/var/containers/Shared/SystemGroup/systemgroup.com.apple.configurationprofiles/Library/ConfigurationProfiles"
                         for Profile in contentsOfDirectory(ProfilesPath).filter({$0.hasPrefix("profile-")}) {
                             if let ProfileData = dataFromFileCopy(ProfilesPath, Profile) {
-                                print("\(Profile): \(ProfileData)")
+                                if let Dictionary = try PropertyListSerialization.propertyList(from: ProfileData, format: nil) as? NSDictionary {
+                                    print(Dictionary.value(forKey: "PayloadDisplayName") as! String)
+                                } else {
+                                    print("Invalid Plist")
+                                }
                             } else {
                                 print("Failed to read \(Profile), reboot and try again")
                             }
