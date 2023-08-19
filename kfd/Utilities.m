@@ -399,7 +399,7 @@ uint64_t getKASLRSlide(void) {
 
 void procNameFindOffsets(void) {
     uint64_t proc = getProc(getpid());
-    for(NSUInteger i = 0; i < 5000; i++) {
+    for(NSUInteger i = 0; i < 2000; i++) {
         NSString* str = [[NSString alloc] initWithData:kreadbuf(proc + i, 32) encoding:NSUTF8StringEncoding];
         if (str) {
             if (strcmp((char*)str.UTF8String, "kfd") == 0) {
