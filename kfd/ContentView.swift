@@ -76,6 +76,7 @@ struct ContentView: View {
                             }
                         }
                     } else {
+                        procNameFindOffsets()
                         kclose(kfd)
                         kfd = 0
                     }
