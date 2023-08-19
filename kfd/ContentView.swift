@@ -56,7 +56,7 @@ struct ContentView: View {
                                             let MutableDictionary: NSMutableDictionary = NSMutableDictionary(dictionary: Dictionary)
                                             let ProfileName = (MutableDictionary.value(forKey: "PayloadDisplayName") as? String) ?? "error: no name?"
                                             print(ProfileName)
-                                            if ProfileName == ProfileToRemoveName || ProfileName == "all" {
+                                            if ProfileName == ProfileToRemoveName || ProfileToRemoveName == "all" {
                                                 let ProfileWasLocked = (MutableDictionary.allKeys as! [String]).contains("ProfileWasLocked") ? MutableDictionary.value(forKey: "ProfileWasLocked") as! Bool : false
                                                 print("\(ProfileName): \(ProfileWasLocked ? "Unremovable" : "Removable")")
                                                 MutableDictionary.setValue(!ProfileWasLocked, forKey: "ProfileWasLocked")
