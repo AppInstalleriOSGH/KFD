@@ -230,6 +230,46 @@ uint64_t funVnodeUnRedirectFolder(char* to, uint64_t orig_to_v_data) {
     return 0;
 }
 
+uint64_t findChildVnodeByVnode(uint64_t vnode, char* childname) {
+    uint64_t vp_nameptr = kread64(vnode + off_vnode_v_name);
+    uint64_t vp_name = kread64(vp_nameptr);
+    uint64_t vp_namecache = kread64(vnode + off_vnode_v_ncchildren_tqh_first);   
+    if(vp_namecache == 0)
+        return 0;
+    while(1) {
+        if(vp_namecache == 0)
+            break;
+        vnode = kread64(vp_namecache + off_namecache_nc_vp);
+        if(vnode == 0)
+            break;
+        vp_nameptr = kread64(vnode + off_vnode_v_name);
+        char vp_name[256];
+        kreadbuf(vp_nameptr, &vp_name, 256);
+        if(strcmp(vp_name, childname) == 0) {
+            return vnode;
+        }
+        vp_namecache = kread64(vp_namecache + off_namecache_nc_child_tqe_prev);
+    }
+    printf("No luck\n");
+    return 0;
+}
+
+void kreadbuf(uint64_t kaddr, void* output, size_t size) {
+    uint64_t endAddr = kaddr + size;
+    uint32_t outputOffset = 0;
+    unsigned char* outputBytes = (unsigned char*)output;
+    for(uint64_t curAddr = kaddr; curAddr < endAddr; curAddr += 4) {
+        uint32_t k = kread32(curAddr);
+        unsigned char* kb = (unsigned char*)&k;
+        for(int i = 0; i < 4; i++) {
+            if(outputOffset == size) break;
+            outputBytes[outputOffset] = kb[i];
+            outputOffset++;
+        }
+        if(outputOffset == size) break;
+    }
+}
+
 uint64_t createFolderAndRedirect(uint64_t vnode, NSString *mntPath) {
     [[NSFileManager defaultManager] removeItemAtPath:mntPath error:nil];
     [[NSFileManager defaultManager] createDirectoryAtPath:mntPath withIntermediateDirectories:NO attributes:nil error:nil];
@@ -374,23 +414,6 @@ BOOL isFileReadable(NSString* directoryPath, NSString* fileName) {
     BOOL isReadable = [[NSFileManager defaultManager] isReadableFileAtPath:[NSString stringWithFormat:@"%@/%@", mntPath, fileName]];
     UnRedirectAndRemoveFolder(orig_to_v_data, mntPath);
     return isReadable;
-}
-
-NSData* kreadbuf(uint64_t kaddr, size_t size) {
-    uint64_t endAddr = kaddr + size;
-    uint32_t outputOffset = 0;
-    unsigned char* outputBytes = malloc(size);
-    for(uint64_t curAddr = kaddr; curAddr < endAddr; curAddr += 4) {
-        uint32_t k = kread32(curAddr);
-        unsigned char* kb = (unsigned char*)&k;
-        for(int i = 0; i < 4; i++) {
-            if(outputOffset == size) break;
-            outputBytes[outputOffset] = kb[i];
-            outputOffset++;
-        }
-        if(outputOffset == size) break;
-    }
-    return [NSData dataWithBytes:outputBytes length:size];
 }
 
 uint64_t getKASLRSlide(void) {
