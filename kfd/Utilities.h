@@ -9,7 +9,6 @@
 #import <Foundation/Foundation.h>
 
 uint64_t findChildVnodeByVnode(uint64_t vnode, char* childname);
-void procNameFindOffsets(void);
 uint64_t getKASLRSlide(void);
 void kreadbuf(uint64_t kaddr, void* output, size_t size);
 uint64_t funVnodeChown(uint64_t vnode, uid_t uid, gid_t gid);
