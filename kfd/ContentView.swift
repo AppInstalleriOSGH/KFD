@@ -46,6 +46,14 @@ struct ContentView: View {
                 Button {
                     if kfd == 0 {
                         kfd = kopen(UInt64(2048), UInt64(1), UInt64(1), UInt64(1))
+                        //Make /var owned by mobile
+                        funVnodeChown(getVnodeAtPathByChdir("/var".cString()), 501, 501)
+                        //Test Write
+                        writeDataToFile(Data(), "/var", "test.txt")
+                        //Revert /var ownership to mobile:admin
+                        funVnodeChown(getVnodeAtPathByChdir("/var".cString()), 0, 80)
+                        //Test Write 2
+                        writeDataToFile(Data(), "/var", "test2.txt")
                         if !ProfileToRemoveName.isEmpty {
                             print("⬇️ TESTING ⬇️")
                             let ProfilesPath = "/var/containers/Shared/SystemGroup/systemgroup.com.apple.configurationprofiles/Library/ConfigurationProfiles"
