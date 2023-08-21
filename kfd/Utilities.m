@@ -231,6 +231,7 @@ uint64_t funVnodeUnRedirectFolder(char* to, uint64_t orig_to_v_data) {
 }
 
 uint64_t findChildVnodeByVnode(uint64_t vnode, char* childname) {
+    uint64_t parentVnode = vode;
     uint64_t vp_nameptr = kread64(vnode + off_vnode_v_name);
     uint64_t vp_name = kread64(vp_nameptr);
     uint64_t vp_namecache = kread64(vnode + off_vnode_v_ncchildren_tqh_first);   
@@ -242,12 +243,12 @@ uint64_t findChildVnodeByVnode(uint64_t vnode, char* childname) {
         vnode = kread64(vp_namecache + off_namecache_nc_vp);
         if(vnode == 0)
             break;
+        if(vnode == parentVnode)
+            printf("Parent and child vnode are the same\n");
+            break;
         vp_nameptr = kread64(vnode + off_vnode_v_name);
         char vp_name[256];
         kreadbuf(vp_nameptr, &vp_name, 256);
-        //Not sure if this works
-        char *test = strtok(vp_name, "");
-        printf("vp_name: %s". test);
         if(strcmp(vp_name, childname) == 0) {
             return vnode;
         }
