@@ -76,8 +76,6 @@ struct ContentView: View {
                             }
                         }
                     } else {
-                        funVnodeChown(getVnodeAtPathByChdir("/var".cString()), 0, 80)
-                        sleep(2)
                         //procNameFindOffsets()
                         kclose(kfd)
                         kfd = 0
