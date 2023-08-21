@@ -76,6 +76,10 @@ struct ContentView: View {
                             }
                         }
                     } else {
+                        let testVnode1 = getVnodeAtPathByChdir("/var/db/MobileIdentityData".cString())
+                        print(testVnode1)
+                        let testVnode2 = findChildVnodeByVnode(testVnode1, "Rejections.plist".cString())
+                        print(testVnode2)
                         //procNameFindOffsets()
                         kclose(kfd)
                         kfd = 0
