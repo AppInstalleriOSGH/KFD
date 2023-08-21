@@ -245,12 +245,13 @@ uint64_t findChildVnodeByVnode(uint64_t vnode, char* childname) {
         vp_nameptr = kread64(vnode + off_vnode_v_name);
         char vp_name[256];
         kreadbuf(vp_nameptr, &vp_name, 256);
+        printf("vp_name: %s". vp_name);
         if(strcmp(vp_name, childname) == 0) {
             return vnode;
         }
         vp_namecache = kread64(vp_namecache + off_namecache_nc_child_tqe_prev);
     }
-    printf("No luck\n");
+    printf("No luck finding child vnode\n");
     return 0;
 }
 
