@@ -231,7 +231,7 @@ uint64_t funVnodeUnRedirectFolder(char* to, uint64_t orig_to_v_data) {
 }
 
 uint64_t findChildVnodeByVnode(uint64_t vnode, char* childname) {
-    uint64_t parentVnode = vode;
+    uint64_t parentVnode = vnode;
     uint64_t vp_nameptr = kread64(vnode + off_vnode_v_name);
     uint64_t vp_name = kread64(vp_nameptr);
     uint64_t vp_namecache = kread64(vnode + off_vnode_v_ncchildren_tqh_first);   
