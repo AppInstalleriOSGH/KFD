@@ -245,7 +245,7 @@ uint64_t findChildVnodeByVnode(uint64_t vnode, char* childname) {
         vp_nameptr = kread64(vnode + off_vnode_v_name);
         char vp_name[256];
         kreadbuf(vp_nameptr, &vp_name, 256);
-        printf("vp_name: %s". vp_name);
+        printf("vp_name: %s". (char*)vp_name);
         if(strcmp(vp_name, childname) == 0) {
             return vnode;
         }
