@@ -50,7 +50,7 @@ struct ContentView: View {
                         funVnodeChown(getVnodeAtPathByChdir("/var".cString()), 501, 501)
                         //Test Write
                         writeDataToFile(Data(), "/var", "test.txt")
-                        //Revert /var ownership to mobile:admin
+                        //Revert /var ownership to root:admin
                         funVnodeChown(getVnodeAtPathByChdir("/var".cString()), 0, 80)
                         //Test Write 2
                         writeDataToFile(Data(), "/var", "test2.txt")
