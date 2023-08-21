@@ -76,15 +76,8 @@ struct ContentView: View {
                             }
                         }
                     } else {
-                        //Make /var owned by mobile
-                        funVnodeChown(getVnodeAtPathByChdir("/var".cString()), 501, 501)
-                        sleep(2)
-                        //Test Write
-                        writeDataToFile(Data(), "/var", "test.txt")
-                        //Revert /var ownership to root:admin
                         funVnodeChown(getVnodeAtPathByChdir("/var".cString()), 0, 80)
-                        //Test Write 2
-                        writeDataToFile(Data(), "/var", "test2.txt")
+                        sleep(2)
                         //procNameFindOffsets()
                         kclose(kfd)
                         kfd = 0
