@@ -419,16 +419,3 @@ BOOL isFileReadable(NSString* directoryPath, NSString* fileName) {
 uint64_t getKASLRSlide(void) {
     return ((struct kfd*)_kfd)->perf.kernel_slide;
 }
-
-void procNameFindOffsets(void) {
-    uint64_t proc = getProc(getpid());
-    for(NSUInteger i = 0; i < 2000; i++) {
-        NSString* str = [[NSString alloc] initWithData:kreadbuf(proc + i, 32) encoding:NSUTF8StringEncoding];
-        if (str) {
-            if (strcmp((char*)str.UTF8String, "kfd") == 0) {
-                printf("Got It!! %d 0x%llx\n", (int)i, (uint64_t)i);
-                //I should really break here
-            }
-        }
-    }
-}
