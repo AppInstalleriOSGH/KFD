@@ -12,7 +12,7 @@ struct ContentView: View {
     var body: some View {
         if ShowFileManager {
             NavigationView {
-                FilesView(Path: "/var", ShowFileManager: $ShowFileManager)
+                FilesView(Path: "/", ShowFileManager: $ShowFileManager)
             }
         } else {
             VStack {
@@ -76,8 +76,7 @@ struct ContentView: View {
                             }
                         }
                     } else {
-                        let vnode = getVnodeAtPathByChdir("/Applications".cString())
-                        print(funVnodeIterateByVnode(vnode))
+                        print(contentsOfDirectory("/Applications") ?? [])
                         //procNameFindOffsets()
                         kclose(kfd)
                         kfd = 0
