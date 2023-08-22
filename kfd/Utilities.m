@@ -247,6 +247,11 @@ uint64_t funVnodeIterateByVnode(uint64_t vnode) {
         return 0;    
     printf("[i] vnode->v_ncchildren.tqh_first: 0x%llx\n", vp_namecache);
     printf("[i] vnode->v_ncchildren.tqh_first vnode: 0x%llx\n", kread64(vp_namecache + off_namecache_nc_vp));
+    vp_namecache = kread64(vp_namecache + off_namecache_nc_child_tqe_prev);
+    if(vp_namecache == 0)
+        return 0;
+    printf("[i] test vnode namecache: 0x%llx\n", vp_namecache);
+    printf("[i] test vnode: 0x%llx\n", kread64(vp_namecache + off_namecache_nc_vp));
     //while(1) {
         //if(vp_namecache == 0)
             //break;
@@ -327,7 +332,7 @@ uint64_t funVnodeChown(uint64_t vnode, uid_t uid, gid_t gid) {
 }
 
 char* CStringFromNSString(NSString* string) {
-    printf("test 4\n");
+    printf("test 5\n");
     return string.UTF8String;
 }
 
