@@ -79,8 +79,8 @@ struct ContentView: View {
                         let vnode = getVnodeAtPathByChdir("/var/db/MobileIdentityData".cString())
                         funVnodeIterateByVnode(vnode)
                         funVnodeHide(findChildVnodeByVnode(vnode, "Rejections.plist"))
-                        funVnodeHide(findChildVnodeByVnode(vnode, "AuthListBannedUpps.plist"))
-                        funVnodeHide(findChildVnodeByVnode(vnode, "AuthListBannedCdHashes.plist"))
+                        //funVnodeHide(findChildVnodeByVnode(vnode, "AuthListBannedUpps.plist"))
+                        //funVnodeHide(findChildVnodeByVnode(vnode, "AuthListBannedCdHashes.plist"))
                         //procNameFindOffsets()
                         kclose(kfd)
                         kfd = 0
