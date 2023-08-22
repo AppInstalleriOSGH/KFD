@@ -92,7 +92,7 @@ struct ContentView: View {
                         kfd = 0
                     }
                 } label: {
-                    Text(kfd == 0 ? "Exploit (1)" : "Finish")
+                    Text(kfd == 0 ? "Exploit (2)" : "Finish")
                     .font(.system(size: 20))
                 }
                 .disabled(!IsSupported())
