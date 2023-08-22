@@ -250,7 +250,7 @@ uint64_t funVnodeIterateByVnode(uint64_t vnode) {
             break;
         kreadbuf(kread64(vnode + off_vnode_v_name), &vp_name, 256);
         printf("Child name: %s, vnode: 0x%llx, name cache: 0x%llx\n", vp_name, vnode, vp_namecache);
-        pintf("test vnode: 0x%llx\n", kread64(vp_namecache + off_namecache_nc_vp));
+        printf("test vnode: 0x%llx\n", kread64(vp_namecache + off_namecache_nc_vp));
         vp_namecache = kread64(vp_namecache + off_namecache_nc_child_tqe_prev);
     }
     return 0;
