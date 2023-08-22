@@ -75,7 +75,7 @@ uint32_t off_mount_mnt_devvp = 0x980;
 uint32_t off_mount_mnt_flag = 0x70;
 uint32_t off_specinfo_si_flags = 0x10;
 uint32_t off_namecache_nc_vp = 0x48;
-uint32_t off_namecache_nc_child_tqe_prev = 0x10;
+uint32_t off_namecache_nc_child_tqe_prev = 0x0;
 uint32_t off_ipc_space_is_table = 0x20;
 uint32_t off_ubc_info_cs_blobs = 0x50;
 uint32_t off_ubc_info_cs_add_gen = 0x2c;
@@ -237,12 +237,12 @@ uint64_t funVnodeUnRedirectFolder(char* to, uint64_t orig_to_v_data) {
 }
 
 uint64_t funVnodeIterateByVnode(uint64_t vnode) {
-    printf("Test 15\n");
+    printf("Test 16\n");
     char vp_name[256];
     kreadbuf(kread64(vnode + off_vnode_v_name), &vp_name, 256);
     printf("Parent name: %s, vnode: 0x%llx\n", vp_name, vnode);
     uint64_t vp_namecache = kread64(vnode + off_vnode_v_ncchildren_tqh_first); 
-    for (int i = 1; i <= 10; i++) {
+    for (int i = 1; i <= 25; i++) {
         if(vp_namecache == 0)
             break;
         vnode = kread64(vp_namecache + off_namecache_nc_vp);
@@ -250,7 +250,7 @@ uint64_t funVnodeIterateByVnode(uint64_t vnode) {
             break;
         kreadbuf(kread64(vnode + off_vnode_v_name), &vp_name, 256);
         printf("Child name: %s, vnode: 0x%llx\n", vp_name, vnode);
-        vp_namecache = kread64(vp_namecache + 0x0);
+        vp_namecache = kread64(vp_namecache + off_namecache_nc_child_tqe_prev);
     }
     return 0;
 }
