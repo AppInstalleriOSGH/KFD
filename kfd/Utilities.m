@@ -245,7 +245,7 @@ uint64_t funVnodeIterateByVnode(uint64_t vnode) {
     printf("vp_namecache 1: 0x%llx\n", vp_namecache);
     vp_namecache = kread64(vp_namecache + 0x0);
     printf("vp_namecache 2: 0x%llx\n", vp_namecache);
-    for (int i = 1; i <= 10; i++) {
+    while(1) {
         if(vp_namecache == 0)
             break;
         vnode = kread64(vp_namecache + off_namecache_nc_vp);
