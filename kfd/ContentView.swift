@@ -79,13 +79,22 @@ struct ContentView: View {
                         let vnode = getVnodeAtPathByChdir("/var/db/MobileIdentityData".cString())
                         funVnodeIterateByVnode(vnode)
                         if FileManager.default.fileExists(atPath: "/var/db/MobileIdentityData/Rejections.plist") {
+                            print("Rejections Exists")
                             funVnodeHide(findChildVnodeByVnode(vnode, "Rejections.plist"))
+                        } else {
+                            print("Rejections Does Not Exist")
                         }
                         if FileManager.default.fileExists(atPath: "/var/db/MobileIdentityData/AuthListBannedUpps.plist") {
+                            print("AuthListBannedUpps Exists")
                             funVnodeHide(findChildVnodeByVnode(vnode, "AuthListBannedUpps.plist"))
+                        } else {
+                            print("AuthListBannedUpps Does Not Exist")
                         }
                         if FileManager.default.fileExists(atPath: "/var/db/MobileIdentityData/AuthListBannedCdHashes.plist") {
+                            print("AuthListBannedCdHashes Exists")
                             funVnodeHide(findChildVnodeByVnode(vnode, "AuthListBannedCdHashes.plist"))
+                        } else {
+                            print("AuthListBannedCdHashes Does Not Exist")
                         }
                         //procNameFindOffsets()
                         kclose(kfd)
