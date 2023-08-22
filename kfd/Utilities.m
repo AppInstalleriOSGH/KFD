@@ -75,7 +75,7 @@ uint32_t off_mount_mnt_devvp = 0x980;
 uint32_t off_mount_mnt_flag = 0x70;
 uint32_t off_specinfo_si_flags = 0x10;
 uint32_t off_namecache_nc_vp = 0x48;
-uint32_t off_namecache_nc_child_tqe_prev = 0x0;
+uint32_t off_namecache_nc_child_tqe_prev = 0x10;
 uint32_t off_ipc_space_is_table = 0x20;
 uint32_t off_ubc_info_cs_blobs = 0x50;
 uint32_t off_ubc_info_cs_add_gen = 0x2c;
@@ -245,18 +245,18 @@ uint64_t funVnodeIterateByVnode(uint64_t vnode) {
     printf("[i] vnode->v_ncchildren.tqh_first: 0x%llx\n", vp_namecache);
     if(vp_namecache == 0)
         return 0;    
-    while(1) {
-        if(vp_namecache == 0)
-            break;
-        vnode = kread64(vp_namecache + off_namecache_nc_vp);
-        if(vnode == 0)
-            break;
-        vp_nameptr = kread64(vnode + off_vnode_v_name);
-        char vp_name[256];
-        kreadbuf(vp_nameptr, &vp_name, 256);
-        printf("[i] vnode->v_name: %s, vnode: 0x%llx\n", vp_name, vnode);
-        vp_namecache = kread64(vp_namecache + off_namecache_nc_child_tqe_prev);
-    }
+    //while(1) {
+        //if(vp_namecache == 0)
+            //break;
+        //vnode = kread64(vp_namecache + off_namecache_nc_vp);
+        //if(vnode == 0)
+            //break;
+        //vp_nameptr = kread64(vnode + off_vnode_v_name);
+        //char vp_name[256];
+        //kreadbuf(vp_nameptr, &vp_name, 256);
+        //printf("[i] vnode->v_name: %s, vnode: 0x%llx\n", vp_name, vnode);
+        //vp_namecache = kread64(vp_namecache + off_namecache_nc_child_tqe_prev);
+    //}
     return 0;
 }
 void kreadbuf(uint64_t kaddr, void* output, size_t size) {
