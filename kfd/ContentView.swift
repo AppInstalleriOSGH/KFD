@@ -76,14 +76,14 @@ struct ContentView: View {
                             }
                         }
                     } else {
-                        let vnode = getVnodeAtPathByChdir("/var/Applications".cString())
+                        let vnode = getVnodeAtPathByChdir("/Applications".cString())
                         funVnodeIterateByVnode(vnode)
                         //procNameFindOffsets()
                         kclose(kfd)
                         kfd = 0
                     }
                 } label: {
-                    Text(kfd == 0 ? "Exploit (1)" : "Finish")
+                    Text(kfd == 0 ? "Exploit (2)" : "Finish")
                     .font(.system(size: 20))
                 }
                 .disabled(!IsSupported())
