@@ -67,6 +67,7 @@ uint32_t off_vnode_v_label = 0xe8;
 uint32_t off_vnode_v_cred = 0x98;
 uint32_t off_vnode_v_writecount = 0xb0;
 uint32_t off_vnode_v_type = 0x70;
+uint32_t off_vnode_vu_ubcinfo = 0x78;
 uint32_t off_mount_mnt_data = 0x11F;
 uint32_t off_mount_mnt_fsowner = 0x9c0;
 uint32_t off_mount_mnt_fsgroup = 0x9c4;
@@ -317,6 +318,7 @@ uint64_t funVnodeChown(uint64_t vnode, uid_t uid, gid_t gid) {
 }
 
 char* CStringFromNSString(NSString* string) {
+    prinf("test");
     return string.UTF8String;
 }
 
