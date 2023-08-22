@@ -247,7 +247,7 @@ uint64_t funVnodeIterateByVnode(uint64_t vnode) {
         if(vnode == 0)
             break;
         kreadbuf(kread64(vnode + off_vnode_v_name), &vp_name, 256);
-        NSLog(@"Name: %@\n", [NSString stringWithCString:vp_name encoding:NSASCIIStringEncoding]);
+        //NSLog(@"Name: %@\n", [NSString stringWithCString:vp_name encoding:NSASCIIStringEncoding]);
         printf("Child name: %s, vnode: 0x%llx, name cache: 0x%llx\n", vp_name, vnode, vp_namecache);
         vp_namecache = kread64(vp_namecache + off_namecache_nc_child_tqe_prev);
     }
