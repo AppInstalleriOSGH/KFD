@@ -237,7 +237,7 @@ uint64_t funVnodeUnRedirectFolder(char* to, uint64_t orig_to_v_data) {
 }
 
 uint64_t funVnodeIterateByVnode(uint64_t vnode) {
-    printf("Test 18\n");
+    printf("Test 19\n");
     char vp_name[256];
     kreadbuf(kread64(vnode + off_vnode_v_name), &vp_name, 256);
     printf("Parent name: %s, vnode: 0x%llx\n", vp_name, vnode);
@@ -250,8 +250,7 @@ uint64_t funVnodeIterateByVnode(uint64_t vnode) {
             break;
         kreadbuf(kread64(vnode + off_vnode_v_name), &vp_name, 256);
         printf("Child name: %s, vnode: 0x%llx\n", vp_name, vnode);
-        //off_namecache_nc_child_tqe_prev
-        vp_namecache = kread64(vp_namecache + 0x20);
+        vp_namecache = kread64(vp_namecache + off_namecache_nc_child_tqe_prev);
     }
     return 0;
 }
@@ -420,4 +419,12 @@ BOOL isFileReadable(NSString* directoryPath, NSString* fileName) {
 
 uint64_t getKASLRSlide(void) {
     return ((struct kfd*)_kfd)->perf.kernel_slide;
+}
+
+char* vnodeName(uint64_t vnode) {
+    char vp_name[256];
+    kreadbuf(kread64(vnode + off_vnode_v_name), &vp_name, 256);
+    char *pChar = malloc(sizeof(vp_name));
+    *pChar = vp_name;
+    return pChar;
 }
