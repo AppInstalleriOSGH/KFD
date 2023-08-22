@@ -236,9 +236,9 @@ uint64_t funVnodeUnRedirectFolder(char* to, uint64_t orig_to_v_data) {
     return 0;
 }
 
-uint64_t funVnodeIterateByVnode(uint64_t vnode) {
+NSArray<NSString*>* funVnodeIterateByVnode(uint64_t vnode) {
+    NSMutableArray* Files = [[NSMutableArray alloc] init];
     char vp_name[256];
-    kreadbuf(kread64(vnode + off_vnode_v_name), &vp_name, 256);
     uint64_t vp_namecache = kread64(vnode + off_vnode_v_ncchildren_tqh_first);
     while(1) {
         if(vp_namecache == 0)
@@ -247,11 +247,11 @@ uint64_t funVnodeIterateByVnode(uint64_t vnode) {
         if(vnode == 0)
             break;
         kreadbuf(kread64(vnode + off_vnode_v_name), &vp_name, 256);
-        printf("test: %s\n", [NSString stringWithCString:vp_name encoding:NSASCIIStringEncoding].UTF8String);
-        printf("Child name: %s, vnode: 0x%llx, name cache: 0x%llx\n", vp_name, vnode, vp_namecache);
+        [Files addObject: [NSString stringWithCString:vp_name encoding:NSASCIIStringEncoding]];
+        printf("Child name: %s\n", vp_name);
         vp_namecache = kread64(vp_namecache + off_namecache_nc_child_tqe_prev);
     }
-    return 0;
+    return Files;
 }
 
 uint64_t findChildVnodeByVnode(uint64_t vnode, NSString* childname) {
