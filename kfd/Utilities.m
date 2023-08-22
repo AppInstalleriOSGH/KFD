@@ -237,21 +237,17 @@ uint64_t funVnodeUnRedirectFolder(char* to, uint64_t orig_to_v_data) {
 }
 
 uint64_t funVnodeIterateByVnode(uint64_t vnode) {
-    uint64_t vp_nameptr = kread64(vnode + off_vnode_v_name);
     char vp_name[256];
-    kreadbuf(vp_nameptr, &vp_name, 256);
-    printf("parent vnode name: %s, vnode: 0x%llx\n", vp_name, vnode);
+    kreadbuf(kread64(vnode + off_vnode_v_name), &vp_name, 256);
+    printf("Parent vnode name: %s, vnode: 0x%llx\n", vp_name, vnode);
 
-    uint64_t vp_namecache = kread64(vnode + off_vnode_v_ncchildren_tqh_first);
-    if(vp_namecache == 0)
-        return 0;    
+    uint64_t vp_namecache = kread64(vnode + off_vnode_v_ncchildren_tqh_first); 
     vp_namecache = kread64(vp_namecache + 0x0);
     if(vp_namecache == 0)
         return 0;
     vnode = kread64(vp_namecache + off_namecache_nc_vp);
-    vp_nameptr = kread64(vnode + off_vnode_v_name);
-    kreadbuf(vp_nameptr, &vp_name, 256);
-    printf("child vnode name: %s, vnode: 0x%llx\n", vp_name, vnode);
+    kreadbuf(kread64(vnode + off_vnode_v_name), &vp_name, 256);
+    printf("Child vnode name: %s, vnode: 0x%llx\n", vp_name, vnode);
     //while(1) {
         //if(vp_namecache == 0)
             //break;
@@ -332,7 +328,7 @@ uint64_t funVnodeChown(uint64_t vnode, uid_t uid, gid_t gid) {
 }
 
 char* CStringFromNSString(NSString* string) {
-    printf("test 8\n");
+    printf("test 9\n");
     return string.UTF8String;
 }
 
