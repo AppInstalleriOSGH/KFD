@@ -96,6 +96,10 @@ struct ContentView: View {
                             ShowFileManager = true
                         }
                         .font(.system(size: 20))
+                        Button("Test") {
+                            test()
+                        }
+                        .font(.system(size: 20))
                     }
                 }
             }
