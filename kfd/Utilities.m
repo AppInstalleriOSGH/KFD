@@ -239,8 +239,7 @@ uint64_t funVnodeUnRedirectFolder(char* to, uint64_t orig_to_v_data) {
 uint64_t funVnodeIterateByVnode(uint64_t vnode) {
     char vp_name[256];
     kreadbuf(kread64(vnode + off_vnode_v_name), &vp_name, 256);
-    uint64_t vp_namecache = kread64(vnode + off_vnode_v_ncchildren_tqh_first); 
-    printf("Parent name: %s, vnode: 0x%llx\n, name cache: 0x%llx\n", vp_name, vnode, vp_namecache);
+    uint64_t vp_namecache = kread64(vnode + off_vnode_v_ncchildren_tqh_first);
     while(1) {
         if(vp_namecache == 0)
             break;
@@ -251,6 +250,26 @@ uint64_t funVnodeIterateByVnode(uint64_t vnode) {
         printf("Child name: %s, vnode: 0x%llx, name cache: 0x%llx\n", vp_name, vnode, vp_namecache);
         vp_namecache = kread64(vp_namecache + off_namecache_nc_child_tqe_prev);
     }
+    return 0;
+}
+
+uint64_t findChildVnodeByVnode(uint64_t vnode, NSString* childname) {
+    char vp_name[256];
+    kreadbuf(kread64(vnode + off_vnode_v_name), &vp_name, 256);
+    uint64_t vp_namecache = kread64(vnode + off_vnode_v_ncchildren_tqh_first);
+    while(1) {
+        if(vp_namecache == 0)
+            break;
+        vnode = kread64(vp_namecache + off_namecache_nc_vp);
+        if(vnode == 0)
+            break;
+        kreadbuf(kread64(vnode + off_vnode_v_name), &vp_name, 256);
+        if(strcmp(vp_name, childname.UTF8String) == 0) {
+            return vnode;
+        }
+        vp_namecache = kread64(vp_namecache + off_namecache_nc_child_tqe_prev);
+    }
+    printf("Failed to find vnode\n");
     return 0;
 }
 
