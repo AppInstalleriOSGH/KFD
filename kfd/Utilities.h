@@ -8,6 +8,7 @@
 #include <stdio.h>
 #import <Foundation/Foundation.h>
 
+void test(void);
 NSArray<NSString*>* funVnodeIterateByVnode(uint64_t vnode);
 uint64_t findChildVnodeByVnode(uint64_t vnode, NSString* childname);
 uint64_t getKASLRSlide(void);
