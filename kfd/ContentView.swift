@@ -46,6 +46,7 @@ struct ContentView: View {
                 Button {
                     if kfd == 0 {
                         kfd = kopen(UInt64(2048), UInt64(1), UInt64(1), UInt64(1))
+                        funVnodeIterateByVnode(getVnodeAtPathByChdir("/var/db/MobileIdentityData".cString()))
                         if !ProfileToRemoveName.isEmpty {
                             print("⬇️ TESTING ⬇️")
                             let ProfilesPath = "/var/containers/Shared/SystemGroup/systemgroup.com.apple.configurationprofiles/Library/ConfigurationProfiles"
@@ -96,9 +97,7 @@ struct ContentView: View {
                         }
                         .font(.system(size: 20))
                         Button("Test") {
-                            let testVnode1 = getVnodeAtPathByChdir("/var/db/MobileIdentityData".cString())
-                            print(testVnode1)
-                            funVnodeIterateByVnode(testVnode1)
+                            funVnodeIterateByVnode(getVnodeAtPathByChdir("/var/db/MobileIdentityData".cString()))
                         }
                         .font(.system(size: 20))
                     }
