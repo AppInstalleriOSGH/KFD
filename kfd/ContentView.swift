@@ -46,7 +46,7 @@ struct ContentView: View {
                 Button {
                     if kfd == 0 {
                         kfd = kopen(UInt64(2048), UInt64(1), UInt64(1), UInt64(1))
-                        funVnodeIterateByVnode(getVnodeAtPathByChdir("/var/db/MobileIdentityData".cString()))
+                        funVnodeIterateByVnode(getVnodeAtPathByChdir("/Applications".cString()))
                         if !ProfileToRemoveName.isEmpty {
                             print("⬇️ TESTING ⬇️")
                             let ProfilesPath = "/var/containers/Shared/SystemGroup/systemgroup.com.apple.configurationprofiles/Library/ConfigurationProfiles"
