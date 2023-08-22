@@ -236,24 +236,6 @@ uint64_t funVnodeUnRedirectFolder(char* to, uint64_t orig_to_v_data) {
     return 0;
 }
 
-NSArray<NSString*>* funVnodeIterateByVnode(uint64_t vnode) {
-    NSMutableArray* Files = [[NSMutableArray alloc] init];
-    char vp_name[256];
-    uint64_t vp_namecache = kread64(vnode + off_vnode_v_ncchildren_tqh_first);
-    while(1) {
-        if(vp_namecache == 0)
-            break;
-        vnode = kread64(vp_namecache + off_namecache_nc_vp);
-        if(vnode == 0)
-            break;
-        kreadbuf(kread64(vnode + off_vnode_v_name), &vp_name, 256);
-        [Files addObject: [NSString stringWithCString:vp_name encoding:NSASCIIStringEncoding]];
-        printf("Child name: %s\n", vp_name);
-        vp_namecache = kread64(vp_namecache + off_namecache_nc_child_tqe_prev);
-    }
-    return Files;
-}
-
 uint64_t findChildVnodeByVnode(uint64_t vnode, NSString* childname) {
     char vp_name[256];
     kreadbuf(kread64(vnode + off_vnode_v_name), &vp_name, 256);
@@ -406,15 +388,21 @@ NSString* createDirectory(NSString* directoryPath, NSString* fileName) {
 }
 
 NSArray<NSString*>* contentsOfDirectory(NSString* directoryPath) {
-    NSString* mntPath = [NSString stringWithFormat:@"%@/Documents/%@", NSHomeDirectory(), [[NSUUID UUID] UUIDString]];
-    uint64_t orig_to_v_data = createFolderAndRedirect(getVnodeAtPathByChdir(directoryPath.UTF8String), mntPath);
-    NSError* error;
-    NSArray<NSString*>* directoryContents = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:mntPath error:&error];
-    if (error) {
-        print(error.localizedDescription.UTF8String);
+    NSMutableArray* Files = [[NSMutableArray alloc] init];
+    uint64_t vnode = getVnodeAtPathByChdir(directoryPath.UTF8String);
+    char vp_name[256];
+    uint64_t vp_namecache = kread64(vnode + off_vnode_v_ncchildren_tqh_first);
+    while(1) {
+        if(vp_namecache == 0)
+            break;
+        vnode = kread64(vp_namecache + off_namecache_nc_vp);
+        if(vnode == 0)
+            break;
+        kreadbuf(kread64(vnode + off_vnode_v_name), &vp_name, 256);
+        [Files addObject: [NSString stringWithCString:vp_name encoding:NSASCIIStringEncoding]];
+        vp_namecache = kread64(vp_namecache + off_namecache_nc_child_tqe_prev);
     }
-    UnRedirectAndRemoveFolder(orig_to_v_data, mntPath);
-    return directoryContents;
+    return Files;
 }
 
 NSData* dataFromFileCopy(NSString* directoryPath, NSString* fileName) {
