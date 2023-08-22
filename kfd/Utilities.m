@@ -179,8 +179,14 @@ uint64_t getVnodeAtPath(char* filename) {
 }
 
 uint64_t getVnodeAtPathByChdir(char *path) {
-    if(access(path, F_OK) == -1) return -1;
-    if(chdir(path) == -1) return -1;
+    if(access(path, F_OK) == -1) {
+        printf("no access to %s\n", path);
+        return -1;
+    }
+    if(chdir(path) == -1) {
+        printf("cant chdir to %s\n", path);
+        return -1;
+    }
     uint64_t fd_cdir_vp = kread64(getProc(getpid()) + off_p_pfd + off_fd_cdir);
     chdir("/");
     return fd_cdir_vp;
@@ -318,7 +324,7 @@ uint64_t funVnodeChown(uint64_t vnode, uid_t uid, gid_t gid) {
 }
 
 char* CStringFromNSString(NSString* string) {
-    printf("test");
+    printf("test 2\n");
     return string.UTF8String;
 }
 
