@@ -12,7 +12,7 @@ struct ContentView: View {
     var body: some View {
         if ShowFileManager {
             NavigationView {
-                FilesView(Path: "/", ShowFileManager: $ShowFileManager)
+                FilesView(Path: "/var", ShowFileManager: $ShowFileManager)
             }
         } else {
             VStack {
@@ -76,7 +76,7 @@ struct ContentView: View {
                             }
                         }
                     } else {
-                        print(contentsOfDirectory("/Applications") ?? [])
+                        //print(funVnodeIterateByVnode("/Applications") ?? [])
                         //procNameFindOffsets()
                         kclose(kfd)
                         kfd = 0
@@ -179,11 +179,7 @@ struct FilesView: View {
         }
         .searchable(text: $SearchString, placement: .automatic)
         .onAppear {
-            if Path == "/" {
-                Items = try! FileManager.default.contentsOfDirectory(atPath: "/")
-            } else {
-                Items = contentsOfDirectory(Path)
-            }
+            Items = contentsOfDirectory(Path)
         }
     }
 }
