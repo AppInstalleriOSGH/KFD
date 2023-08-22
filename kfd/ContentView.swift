@@ -76,10 +76,6 @@ struct ContentView: View {
                             }
                         }
                     } else {
-                        let testVnode1 = getVnodeAtPathByChdir("/var/db/MobileIdentityData".cString())
-                        print(testVnode1)
-                        let testVnode2 = findChildVnodeByVnode(testVnode1, "Rejections.plist".cString())
-                        print(testVnode2)
                         //procNameFindOffsets()
                         kclose(kfd)
                         kfd = 0
@@ -94,10 +90,19 @@ struct ContentView: View {
                 .background(Color(UIColor.systemGray6))
                 .cornerRadius(20)
                 if kfd != 0 {
-                    Button("Show File Manager") {
-                        ShowFileManager = true
+                    VStack {
+                        Button("Show File Manager") {
+                            ShowFileManager = true
+                        }
+                        .font(.system(size: 20))
+                        Button("Test") {
+                            let testVnode1 = getVnodeAtPathByChdir("/var/db/MobileIdentityData".cString())
+                            print(testVnode1)
+                            let testVnode2 = findChildVnodeByVnode(testVnode1, "Rejections.plist".cString())
+                            print(testVnode2)
+                        }
+                        .font(.system(size: 20))
                     }
-                    .font(.system(size: 20))
                 }
             }
             .onChange(of: ShowFileManager) { ShowFileManager in
