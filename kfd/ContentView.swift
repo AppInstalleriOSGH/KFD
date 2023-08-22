@@ -179,7 +179,11 @@ struct FilesView: View {
         }
         .searchable(text: $SearchString, placement: .automatic)
         .onAppear {
-            Items = contentsOfDirectory(Path)
+            if Path == "/" {
+                Items = try! FileManager.default.contentsOfDirectory(atPath: "/")
+            } else {
+                Items = contentsOfDirectory(Path)
+            }
         }
     }
 }
