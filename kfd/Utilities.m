@@ -254,9 +254,9 @@ uint64_t funVnodeIterateByVnode(uint64_t vnode) {
     vnode = kread64(vp_namecache + off_namecache_nc_vp);
     printf("[i] test vnode: 0x%llx\n", vnode);
     vp_nameptr = kread64(vnode + off_vnode_v_name);
-    char vp_name[256];
-    kreadbuf(vp_nameptr, &vp_name, 256);
-    printf("[i] vnode->v_name: %s, vnode: 0x%llx\n", vp_name, vnode);
+    char vp_name_test[256];
+    kreadbuf(vp_nameptr, &vp_name_test, 256);
+    printf("[i] vnode->v_name: %s, vnode: 0x%llx\n", vp_name_test, vnode);
     //while(1) {
         //if(vp_namecache == 0)
             //break;
