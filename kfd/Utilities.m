@@ -417,10 +417,8 @@ uint64_t getKASLRSlide(void) {
     return ((struct kfd*)_kfd)->perf.kernel_slide;
 }
 
-char* vnodeName(uint64_t vnode) {
+char vnodeName(uint64_t vnode) {
     char vp_name[256];
     kreadbuf(kread64(vnode + off_vnode_v_name), &vp_name, 256);
-    char *pChar = malloc(sizeof(vp_name));
-    *pChar = vp_name;
-    return pChar;
+    return vp_name;
 }
