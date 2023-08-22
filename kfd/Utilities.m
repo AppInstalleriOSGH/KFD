@@ -243,6 +243,7 @@ uint64_t funVnodeIterateByVnode(uint64_t vnode) {
     printf("Parent name: %s, vnode: 0x%llx\n", vp_name, vnode);
     uint64_t vp_namecache = kread64(vnode + off_vnode_v_ncchildren_tqh_first); 
     uint64_t child_vp_namecache;
+    vp_namecache = kread64(vp_namecache + 0x0);
     for (int i = 1; i <= 3; i++) {
         if(vp_namecache == 0)
             break;
