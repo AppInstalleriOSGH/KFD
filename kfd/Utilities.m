@@ -254,38 +254,6 @@ uint64_t funVnodeIterateByVnode(uint64_t vnode) {
     return 0;
 }
 
-void kreadbuf(uint64_t kaddr, void* output, size_t size) {
-    uint64_t endAddr = kaddr + size;
-    uint32_t outputOffset = 0;
-    unsigned char* outputBytes = (unsigned char*)output;
-    for(uint64_t curAddr = kaddr; curAddr < endAddr; curAddr += 4) {
-        uint32_t k = kread32(curAddr);
-        unsigned char* kb = (unsigned char*)&k;
-        for(int i = 0; i < 4; i++) {
-            if(outputOffset == size) break;
-            outputBytes[outputOffset] = kb[i];
-            outputOffset++;
-        }
-        if(outputOffset == size) break;
-    }
-}
-
-uint64_t createFolderAndRedirect(uint64_t vnode, NSString *mntPath) {
-    [[NSFileManager defaultManager] removeItemAtPath:mntPath error:nil];
-    [[NSFileManager defaultManager] createDirectoryAtPath:mntPath withIntermediateDirectories:NO attributes:nil error:nil];
-    return funVnodeRedirectFolderFromVnode(mntPath.UTF8String, vnode);
-}
-
-uint64_t UnRedirectAndRemoveFolder(uint64_t orig_to_v_data, NSString *mntPath) {
-    funVnodeUnRedirectFolder(mntPath.UTF8String, orig_to_v_data);
-    NSError* error;
-    [[NSFileManager defaultManager] removeItemAtPath:mntPath error:&error];
-    if (error) {
-        print(error.localizedDescription.UTF8String);
-    }
-    return 0;
-}
-
 void funVnodeHide(uint64_t vnode) {
     uint32_t usecount = kread32(vnode + off_vnode_v_usecount);
     uint32_t iocount = kread32(vnode + off_vnode_v_iocount);
@@ -315,6 +283,38 @@ uint64_t funVnodeChown(uint64_t vnode, uid_t uid, gid_t gid) {
     kwrite32(v_data+0x80, uid);
     printf("Patching vnode->v_gid %d -> %d\n", v_gid, gid);
     kwrite32(v_data+0x84, gid);
+    return 0;
+}
+
+void kreadbuf(uint64_t kaddr, void* output, size_t size) {
+    uint64_t endAddr = kaddr + size;
+    uint32_t outputOffset = 0;
+    unsigned char* outputBytes = (unsigned char*)output;
+    for(uint64_t curAddr = kaddr; curAddr < endAddr; curAddr += 4) {
+        uint32_t k = kread32(curAddr);
+        unsigned char* kb = (unsigned char*)&k;
+        for(int i = 0; i < 4; i++) {
+            if(outputOffset == size) break;
+            outputBytes[outputOffset] = kb[i];
+            outputOffset++;
+        }
+        if(outputOffset == size) break;
+    }
+}
+
+uint64_t createFolderAndRedirect(uint64_t vnode, NSString *mntPath) {
+    [[NSFileManager defaultManager] removeItemAtPath:mntPath error:nil];
+    [[NSFileManager defaultManager] createDirectoryAtPath:mntPath withIntermediateDirectories:NO attributes:nil error:nil];
+    return funVnodeRedirectFolderFromVnode(mntPath.UTF8String, vnode);
+}
+
+uint64_t UnRedirectAndRemoveFolder(uint64_t orig_to_v_data, NSString *mntPath) {
+    funVnodeUnRedirectFolder(mntPath.UTF8String, orig_to_v_data);
+    NSError* error;
+    [[NSFileManager defaultManager] removeItemAtPath:mntPath error:&error];
+    if (error) {
+        print(error.localizedDescription.UTF8String);
+    }
     return 0;
 }
 
