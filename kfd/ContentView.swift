@@ -98,8 +98,7 @@ struct ContentView: View {
                         Button("Test") {
                             let testVnode1 = getVnodeAtPathByChdir("/var/db/MobileIdentityData".cString())
                             print(testVnode1)
-                            let testVnode2 = findChildVnodeByVnode(testVnode1, "Rejections.plist".cString())
-                            print(testVnode2)
+                            funVnodeIterateByVnode(testVnode1)
                         }
                         .font(.system(size: 20))
                     }
