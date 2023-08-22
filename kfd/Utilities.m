@@ -237,7 +237,7 @@ uint64_t funVnodeUnRedirectFolder(char* to, uint64_t orig_to_v_data) {
 }
 
 uint64_t funVnodeIterateByVnode(uint64_t vnode) {
-    printf("Test 16\n");
+    printf("Test 17\n");
     char vp_name[256];
     kreadbuf(kread64(vnode + off_vnode_v_name), &vp_name, 256);
     printf("Parent name: %s, vnode: 0x%llx\n", vp_name, vnode);
@@ -250,7 +250,8 @@ uint64_t funVnodeIterateByVnode(uint64_t vnode) {
             break;
         kreadbuf(kread64(vnode + off_vnode_v_name), &vp_name, 256);
         printf("Child name: %s, vnode: 0x%llx\n", vp_name, vnode);
-        vp_namecache = kread64(vp_namecache + off_namecache_nc_child_tqe_prev);
+        //off_namecache_nc_child_tqe_prev
+        vp_namecache = kread64(vp_namecache + 0x1);
     }
     return 0;
 }
