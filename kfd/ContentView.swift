@@ -78,7 +78,7 @@ struct ContentView: View {
                     } else {
                         let vnode = getVnodeAtPathByChdir("/Applications".cString())
                         print(vnode)
-                        //funVnodeIterateByVnode(getVnodeAtPathByChdir("/Applications".cString()))
+                        funVnodeIterateByVnode(vnode)
                         //procNameFindOffsets()
                         kclose(kfd)
                         kfd = 0
