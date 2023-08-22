@@ -96,10 +96,6 @@ struct ContentView: View {
                             ShowFileManager = true
                         }
                         .font(.system(size: 20))
-                        Button("Test") {
-                            funVnodeIterateByVnode(getVnodeAtPathByChdir("/var/db/MobileIdentityData".cString()))
-                        }
-                        .font(.system(size: 20))
                     }
                 }
             }
