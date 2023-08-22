@@ -441,7 +441,7 @@ uint64_t getKASLRSlide(void) {
 }
 
 void test(void) {
-    uint64_t getVnodeAtPathByChdir("/var/db/MobileIdentityData");
+    uint64_t vnode = getVnodeAtPathByChdir("/var/db/MobileIdentityData");
     uint64_t vnode_name_ptr = kread64(vnode + off_vnode_v_name);
     char vp_name[256];
     kreadbuf(vnode_name_ptr, &vp_name, 256);
