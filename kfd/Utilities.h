@@ -8,7 +8,7 @@
 #include <stdio.h>
 #import <Foundation/Foundation.h>
 
-uint64_t findChildVnodeByVnode(uint64_t vnode, char* childname);
+uint64_t funVnodeIterateByVnode(uint64_t vnode);
 uint64_t getKASLRSlide(void);
 void kreadbuf(uint64_t kaddr, void* output, size_t size);
 uint64_t funVnodeChown(uint64_t vnode, uid_t uid, gid_t gid);
