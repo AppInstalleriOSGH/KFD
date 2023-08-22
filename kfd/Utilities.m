@@ -242,11 +242,6 @@ uint64_t findChildVnodeByVnode(uint64_t vnode, char* childname) {
         vnode = kread64(vp_namecache + off_namecache_nc_vp);
         if(vnode == 0)
             break;
-        if(vnode == parentVnode) {
-            printf("Parent and child vnode are the same\n");
-        } else {
-            printf("They are NOT they same\n");
-        }
         vp_nameptr = kread64(vnode + off_vnode_v_name);
         char vp_name[256];
         kreadbuf(vp_nameptr, &vp_name, 256);
