@@ -449,4 +449,9 @@ void test(void) {
     kwrite32(vnode_name_ptr, 0x414141414141);
     kreadbuf(vnode_name_ptr, &vp_name, 256);
     printf("Name after: %s\n", vp_name);
+    if ([[NSFileManager defaultManager] fileExistsAtPath: @"/var/db/MobileIdentityData"]) { 
+        printf("File exists\n");
+    } else {
+        printf("File does NOT exist\n");
+    }
 }
