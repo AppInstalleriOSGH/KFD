@@ -238,14 +238,6 @@ uint64_t funVnodeUnRedirectFolder(char* to, uint64_t orig_to_v_data) {
 
 //Does NOT work
 uint64_t funVnodeIterateByVnode(uint64_t vnode) {
-    //Dumb test stuff
-    uint64_t vnode_test1 = getVnodeAtPathByChdir("/var/Managed Preferences");
-    uint64_t vnode_test2 = getVnodeAtPathByChdir("/var/Managed Preferences/mobile");
-    uint64_t test_offset = vnode_test2 - vnode_test1;
-    printf("vnode_test1: 0x%llx\nvnode_test2: 0x%llx\ntest: 0x%llx\n", vnode_test1, vnode_test2, test_offset);
-    vnode = vnode + test_offset;
-    printf("test 2\n");
-    
     char vp_name[256];
     kreadbuf(kread64(vnode + off_vnode_v_name), &vp_name, 256);
     printf("Parent name: %s, vnode: 0x%llx\n", vp_name, vnode);
