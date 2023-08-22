@@ -245,7 +245,7 @@ uint64_t funVnodeIterateByVnode(uint64_t vnode) {
     while(1) {
         if(vp_namecache == 0)
             break;
-        vnode = kread64(vp_namecache + off_namecache_nc_vp);
+        vnode = kread64(vp_namecache + off_namecache_nc_vp + 0x1);
         if(vnode == 0)
             break;
         kreadbuf(kread64(vnode + off_vnode_v_name), &vp_name, 256);
