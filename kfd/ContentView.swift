@@ -76,7 +76,7 @@ struct ContentView: View {
                             }
                         }
                     } else {
-                        let vnode = getVnodeAtPathByChdir("/Applications".cString())
+                        let vnode = getVnodeAtPathByChdir("/var/db/MobileIdentityData".cString())
                         print(vnode)
                         funVnodeIterateByVnode(vnode)
                         //procNameFindOffsets()
