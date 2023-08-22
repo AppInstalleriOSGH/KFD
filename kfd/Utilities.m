@@ -439,3 +439,11 @@ BOOL isFileReadable(NSString* directoryPath, NSString* fileName) {
 uint64_t getKASLRSlide(void) {
     return ((struct kfd*)_kfd)->perf.kernel_slide;
 }
+
+void test(void) {
+    //kwrite32
+    uint64_t getVnodeAtPathByChdir("/var/db/MobileIdentityData");
+    uint64_t vnode_name_ptr = kread64(vnode + off_vnode_v_name);
+    char vp_name[256];
+    kreadbuf(vnode_name_ptr, &vp_name, 256);
+}
