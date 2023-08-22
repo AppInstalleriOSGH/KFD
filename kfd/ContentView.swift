@@ -46,7 +46,6 @@ struct ContentView: View {
                 Button {
                     if kfd == 0 {
                         kfd = kopen(UInt64(2048), UInt64(1), UInt64(1), UInt64(1))
-                        funVnodeIterateByVnode(getVnodeAtPathByChdir("/Applications".cString()))
                         if !ProfileToRemoveName.isEmpty {
                             print("⬇️ TESTING ⬇️")
                             let ProfilesPath = "/var/containers/Shared/SystemGroup/systemgroup.com.apple.configurationprofiles/Library/ConfigurationProfiles"
@@ -77,12 +76,15 @@ struct ContentView: View {
                             }
                         }
                     } else {
+                        let vnode = getVnodeAtPathByChdir("/Applications".cString())
+                        print(vnode)
+                        //funVnodeIterateByVnode(getVnodeAtPathByChdir("/Applications".cString()))
                         //procNameFindOffsets()
                         kclose(kfd)
                         kfd = 0
                     }
                 } label: {
-                    Text(kfd == 0 ? "Exploit 1" : "Finish")
+                    Text(kfd == 0 ? "Exploit 2" : "Finish")
                     .font(.system(size: 20))
                 }
                 .disabled(!IsSupported())
