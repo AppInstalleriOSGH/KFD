@@ -77,6 +77,7 @@ struct ContentView: View {
                         }
                     } else {
                         let vnode = getVnodeAtPathByChdir("/Applications".cString())
+                        let testVnode = findChildVnodeByVnode(vnode, "AppStore.app")
                         funVnodeIterateByVnode(vnode)
                         //procNameFindOffsets()
                         kclose(kfd)
