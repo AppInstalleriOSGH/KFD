@@ -318,7 +318,7 @@ uint64_t funVnodeChown(uint64_t vnode, uid_t uid, gid_t gid) {
 }
 
 char* CStringFromNSString(NSString* string) {
-    prinf("test");
+    printf("test");
     return string.UTF8String;
 }
 
