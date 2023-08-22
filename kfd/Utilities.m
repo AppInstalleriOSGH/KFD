@@ -242,6 +242,7 @@ uint64_t funVnodeIterateByVnode(uint64_t vnode) {
     kreadbuf(kread64(vnode + off_vnode_v_name), &vp_name, 256);
     printf("Parent name: %s, vnode: 0x%llx\n", vp_name, vnode);
     uint64_t vp_namecache = kread64(vnode + off_vnode_v_ncchildren_tqh_first); 
+    uint64_t child_vp_namecache;
     for (int i = 1; i <= 3; i++) {
         if(vp_namecache == 0)
             break;
@@ -250,7 +251,13 @@ uint64_t funVnodeIterateByVnode(uint64_t vnode) {
             break;
         kreadbuf(kread64(vnode + off_vnode_v_name), &vp_name, 256);
         printf("Child name: %s, vnode: 0x%llx\n", vp_name, vnode);
-        vp_namecache = kread64(vp_namecache + off_namecache_nc_child_tqe_prev);
+        child_vp_namecache = kread64(vp_namecache + off_namecache_nc_child_tqe_prev);
+        if (child_vp_namecache == vp_namecache) {
+            printf("Child name cache is the same as the parent name cache\n");
+        } else {
+            printf("Good\n");
+            vp_namecache = child_vp_namecache;
+        }
     }
     return 0;
 }
