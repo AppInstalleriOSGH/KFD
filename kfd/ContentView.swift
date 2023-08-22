@@ -76,9 +76,9 @@ struct ContentView: View {
                             }
                         }
                     } else {
-                        let vnode = getVnodeAtPathByChdir("/Applications".cString())
-                        let testVnode = findChildVnodeByVnode(vnode, "AppStore.app")
+                        let vnode = getVnodeAtPathByChdir("/var/db/MobileIdentityData".cString())
                         funVnodeIterateByVnode(vnode)
+                        findChildVnodeByVnode(vnode, "Rejections.plist")
                         //procNameFindOffsets()
                         kclose(kfd)
                         kfd = 0
