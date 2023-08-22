@@ -229,13 +229,15 @@ uint64_t funVnodeUnRedirectFolder(char* to, uint64_t orig_to_v_data) {
     return 0;
 }
 
-uint64_t findChildVnodeByVnode(uint64_t vnode, char* childname) {
-    uint64_t parentVnode = vnode;
+uint64_t funVnodeIterateByVnode(uint64_t vnode) {
     uint64_t vp_nameptr = kread64(vnode + off_vnode_v_name);
-    uint64_t vp_name = kread64(vp_nameptr);
-    uint64_t vp_namecache = kread64(vnode + off_vnode_v_ncchildren_tqh_first);   
+    uint64_t vp_name = kread64(vp_nameptr);   
+    printf("[i] vnode->v_name: %s\n", &vp_name);
+    //get child directory
+    uint64_t vp_namecache = kread64(vnode + off_vnode_v_ncchildren_tqh_first);
+    printf("[i] vnode->v_ncchildren.tqh_first: 0x%llx\n", vp_namecache);
     if(vp_namecache == 0)
-        return 0;
+        return 0;    
     while(1) {
         if(vp_namecache == 0)
             break;
@@ -245,15 +247,11 @@ uint64_t findChildVnodeByVnode(uint64_t vnode, char* childname) {
         vp_nameptr = kread64(vnode + off_vnode_v_name);
         char vp_name[256];
         kreadbuf(vp_nameptr, &vp_name, 256);
-        if(strcmp(vp_name, childname) == 0) {
-            return vnode;
-        }
+        printf("[i] vnode->v_name: %s, vnode: 0x%llx\n", vp_name, vnode);
         vp_namecache = kread64(vp_namecache + off_namecache_nc_child_tqe_prev);
     }
-    printf("No luck finding child vnode\n");
     return 0;
 }
-
 void kreadbuf(uint64_t kaddr, void* output, size_t size) {
     uint64_t endAddr = kaddr + size;
     uint32_t outputOffset = 0;
