@@ -265,6 +265,7 @@ uint64_t findChildVnodeByVnode(uint64_t vnode, NSString* childname) {
         if(vnode == 0)
             break;
         kreadbuf(kread64(vnode + off_vnode_v_name), &vp_name, 256);
+        printf("Child name: %s\n", vp_name);
         if(strcmp(vp_name, childname.UTF8String) == 0) {
             return vnode;
         }
