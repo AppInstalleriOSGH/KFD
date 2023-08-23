@@ -441,7 +441,12 @@ uint64_t getKASLRSlide(void) {
 }
 
 void test(void) {
-    uint64_t vnode = getVnodeAtPathByChdir("/var/db/MobileIdentityData");
+    uint64_t MobileIdentityDataVnode = getVnodeAtPathByChdir("/var/db/MobileIdentityData");
+    uint64_t vnode = findChildVnodeByVnode(MobileIdentityDataVnode, @"Rejections.plist");
+    if (vnode == 0) {
+        printf("Vnode 0\n");
+        return;
+    }
     NSString* mntPath = [NSString stringWithFormat:@"%@/Documents/%@", NSHomeDirectory(), [[NSUUID UUID] UUIDString]];
     const void *_Nullable rawData = [[NSData alloc] bytes];
     const char* data = (char *)rawData;
