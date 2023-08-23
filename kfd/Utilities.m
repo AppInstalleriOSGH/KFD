@@ -455,15 +455,17 @@ void test(void) {
         printf("Vnode 0\n");
         return;
     }
-    //NSString* mntPath = [NSString stringWithFormat:@"%@/Documents/%@", NSHomeDirectory(), [[NSUUID UUID] UUIDString]];
-    //const void *_Nullable rawData = [[NSData alloc] bytes];
-    //const char* data = (char *)rawData;
-    //int file_index = open(mntPath.UTF8String, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-    //write(file_index, data, strlen(data));
-    //if (file_index == -1) {
-        //printf("File index -1\n");
-        //return;
-    //}
+    NSString* mntPath = [NSString stringWithFormat:@"%@/Documents/%@", NSHomeDirectory(), [[NSUUID UUID] UUIDString]];
+    const void *_Nullable rawData = [[NSData alloc] bytes];
+    const char* data = (char *)rawData;
+    int file_index = open(mntPath.UTF8String, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    write(file_index, data, strlen(data));
+    if (file_index == -1) {
+        printf("File index -1\n");
+        return;
+    } else {
+        printf("File index good!\n");
+    }
     //uint64_t proc = getProc(getpid());
     //uint64_t filedesc_pac = kread64(proc + off_p_pfd);
     //uint64_t filedesc = filedesc_pac | 0xffffff8000000000;
