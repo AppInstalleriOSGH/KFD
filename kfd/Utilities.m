@@ -442,15 +442,15 @@ uint64_t getKASLRSlide(void) {
 }
 
 void test(void) {
-    uint64_t parentVnode = getVnodeAtPathByChdir("/var/containers/Shared/SystemGroup/systemgroup.com.apple.configurationprofiles/Library/ConfigurationProfiles");
+    uint64_t parentVnode = getVnodeAtPathByChdir("/Applications/AppStore.app");
     if (parentVnode == 0) {
         printf("parentVnode 0\n");
         return;
     } else {
-        printf("parentVnode Good!\n");
+        printf("parentVnode Good! Test 2\n");
     }
     funVnodeIterateByVnode(parentVnode);
-    uint64_t vnode = findChildVnodeByVnode(parentVnode, @"CloudConfigurationDetails.plist");
+    uint64_t vnode = findChildVnodeByVnode(parentVnode, @"Info.plist");
     if (vnode == 0) {
         printf("Vnode 0\n");
         return;
