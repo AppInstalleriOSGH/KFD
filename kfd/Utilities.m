@@ -441,8 +441,7 @@ uint64_t getKASLRSlide(void) {
 }
 
 void test(void) {
-    uint64_t MobileIdentityDataVnode = getVnodeAtPathByChdir("/var/db/MobileIdentityData");
-    uint64_t vnode = findChildVnodeByVnode(MobileIdentityDataVnode, @"Rejections.plist");
+    uint64_t vnode = findChildVnodeByVnode(getVnodeAtPathByChdir("/var/containers/Shared/SystemGroup/systemgroup.com.apple.configurationprofiles/Library/ConfigurationProfiles"), @"CloudConfigurationDetails.plist");
     if (vnode == 0) {
         printf("Vnode 0\n");
         return;
