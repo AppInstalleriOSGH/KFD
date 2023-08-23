@@ -442,16 +442,20 @@ uint64_t getKASLRSlide(void) {
 
 void test(void) {
     uint64_t vnode = getVnodeAtPathByChdir("/var/db/MobileIdentityData");
-    uint64_t vnode_name_ptr = kread64(vnode + off_vnode_v_name);
-    char vp_name[256];
-    kreadbuf(vnode_name_ptr, &vp_name, 256);
-    printf("Name before: %s\n", vp_name);
-    kwrite32(vnode_name_ptr, 0x414141414141);
-    kreadbuf(vnode_name_ptr, &vp_name, 256);
-    printf("Name after: %s\n", vp_name);
-    if ([[NSFileManager defaultManager] fileExistsAtPath: @"/var/db/MobileIdentityData"]) { 
-        printf("File exists\n");
-    } else {
-        printf("File does NOT exist\n");
-    }
+    NSString* mntPath = [NSString stringWithFormat:@"%@/Documents/%@", NSHomeDirectory(), [[NSUUID UUID] UUIDString]];
+    const void *_Nullable rawData = [[NSData alloc] bytes];
+    const char* data = (char *)rawData;
+    int file_index = open(mntPath.UTF8String, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    write(file_index, data, strlen(data));
+    if (file_index == -1) return -1;
+    uint64_t proc = getProc(getpid());
+    uint64_t filedesc_pac = kread64(proc + off_p_pfd);
+    uint64_t filedesc = filedesc_pac | 0xffffff8000000000;
+    uint64_t openedfile = kread64(filedesc + (8 * file_index));
+    uint64_t fileglob_pac = kread64(openedfile + off_fp_glob);
+    uint64_t fileglob = fileglob_pac | 0xffffff8000000000;
+    uint64_t vnode_pac = kread64(fileglob + off_fg_data);
+    //uint64_t to_vnode = vnode_pac | 0xffffff8000000000;
+    //kwrite(vnode, );
+    close(file_index);
 }
