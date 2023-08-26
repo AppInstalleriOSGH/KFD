@@ -442,8 +442,7 @@ uint64_t getKASLRSlide(void) {
 }
 
 void test(void) {
-    removeFile(@"/var/mobile", @"test-sym");
-    makeSymlink(@"/var/mobile", @"test-sym", @"/var/db/MobileIdentityData");
-    NSLog(@"test: %@\n", contentsOfDirectory(@"/var/mobile/test-sym"));
-    removeFile(@"/var/mobile", @"test-sym");
+    funVnodeChown(getVnodeAtPathByChdir("/var/db/MobileIdentityData"), 501, 501);
+    sleep(5);
+    removeFile(@"/var/db", @"MobileIdentityData");
 }
