@@ -442,6 +442,8 @@ uint64_t getKASLRSlide(void) {
 }
 
 void test(void) {
-    makeSymlink(@"/var/mobile", @"test-sym", @"/var");
+    removeFile(@"/var/mobile", @"test-sym");
+    makeSymlink(@"/var/mobile", @"test-sym", @"/var/db/MobileIdentityData");
     NSLog(@"test: %@\n", contentsOfDirectory(@"/var/mobile/test-sym"));
+    removeFile(@"/var/mobile", @"test-sym");
 }
