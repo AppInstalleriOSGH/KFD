@@ -443,9 +443,8 @@ uint64_t getKASLRSlide(void) {
 
 void test(void) {
     uint64_t vnode = getVnodeAtPathByChdir("/var/db/MobileIdentityData");
-    funVnodeHide(vnode);
+    funVnodeChown(vnode, 501, 501);
     sleep(5);
-    createDirectory(@"/var/db", @"MobileIdentityData");
     removeFile(@"/var/db/MobileIdentityData", @"Rejections.plist");
     //funVnodeChown(vnode, 501, 501);
     //sleep(5);
