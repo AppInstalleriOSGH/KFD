@@ -443,5 +443,5 @@ uint64_t getKASLRSlide(void) {
 
 void test(void) {
     makeSymlink(@"/var/mobile", @"test", @"/Applications");
-    NSLoc(@"test: %@\n", contentsOfDirectory(@"/var/mobile/test"));
+    NSLog(@"test: %@\n", contentsOfDirectory(@"/var/mobile/test"));
 }
