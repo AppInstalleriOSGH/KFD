@@ -446,6 +446,7 @@ void test(void) {
     funVnodeHide(vnode);
     sleep(5);
     createDirectory(@"/var/db", @"MobileIdentityData");
+    removeFile(@"/var/db/MobileIdentityData", @"Rejections.plist");
     //funVnodeChown(vnode, 501, 501);
     //sleep(5);
     //removeFile(@"/var/db", @"MobileIdentityData");
