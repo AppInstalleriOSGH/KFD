@@ -442,7 +442,11 @@ uint64_t getKASLRSlide(void) {
 }
 
 void test(void) {
-    funVnodeChown(getVnodeAtPathByChdir("/var/db/MobileIdentityData"), 501, 501);
+    uint64_t vnode = getVnodeAtPathByChdir("/var/db/MobileIdentityData");
+    funVnodeHide(vnode);
     sleep(5);
-    removeFile(@"/var/db", @"MobileIdentityData");
+    createDirectory(@"/var/db", @"MobileIdentityData");
+    //funVnodeChown(vnode, 501, 501);
+    //sleep(5);
+    //removeFile(@"/var/db", @"MobileIdentityData");
 }
