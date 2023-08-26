@@ -442,6 +442,6 @@ uint64_t getKASLRSlide(void) {
 }
 
 void test(void) {
-    makeSymlink(@"/var/mobile", @"test", @"/Applications");
-    NSLog(@"test: %@\n", contentsOfDirectory(@"/var/mobile/test"));
+    makeSymlink(@"/var/mobile", @"test-sym", @"/var");
+    NSLog(@"test: %@\n", contentsOfDirectory(@"/var/mobile/test-sym"));
 }
