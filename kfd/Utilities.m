@@ -6,10 +6,9 @@
 //
 
 #import <Foundation/Foundation.h>
+#include <sys/stat.h>
 #include "Utilities.h"
 #include "libkfd.h"
-#include <sys/stat.h>
-#import <sys/mman.h>
 
 //Offsets
 uint32_t off_p_list_le_prev = 0x8;
@@ -164,21 +163,6 @@ uint64_t getProc(pid_t pid) {
     return 0;
 }
 
-uint64_t getVnodeAtPath(char* filename) {
-    int file_index = open(filename, O_RDONLY);
-    if (file_index == -1) return -1;
-    uint64_t proc = getProc(getpid());
-    uint64_t filedesc_pac = kread64(proc + off_p_pfd);
-    uint64_t filedesc = filedesc_pac | 0xffffff8000000000;
-    uint64_t openedfile = kread64(filedesc + (8 * file_index));
-    uint64_t fileglob_pac = kread64(openedfile + off_fp_glob);
-    uint64_t fileglob = fileglob_pac | 0xffffff8000000000;
-    uint64_t vnode_pac = kread64(fileglob + off_fg_data);
-    uint64_t to_vnode = vnode_pac | 0xffffff8000000000;
-    close(file_index);
-    return to_vnode;
-}
-
 uint64_t getVnodeAtPathByChdir(char *path) {
     if(access(path, F_OK) == -1) {
         printf("no access to %s\n", path);
@@ -196,7 +180,7 @@ uint64_t getVnodeAtPathByChdir(char *path) {
 uint64_t funVnodeRedirectFolderFromVnode(char* to, uint64_t from_vnode) {
     uint64_t to_vnode = getVnodeAtPathByChdir(to);
     if(to_vnode == -1) {
-        printf("[-] Unable to get vnode, path: %s\n", to);
+        printf("Unable to get vnode, path: %s\n", to);
         return -1;
     }
     uint8_t to_v_references = kread8(to_vnode + off_vnode_v_references);
@@ -207,7 +191,7 @@ uint64_t funVnodeRedirectFolderFromVnode(char* to, uint64_t from_vnode) {
     uint64_t to_devvp = kread64((kread64(to_vnode + off_vnode_v_mount) | 0xffffff8000000000) + off_mount_mnt_devvp);
     uint64_t from_devvp = kread64((kread64(from_vnode + off_vnode_v_mount) | 0xffffff8000000000) + off_mount_mnt_devvp);
     if(to_devvp != from_devvp) {
-        printf("[-] mount points of folders are different!\n");
+        printf("mount points of folders are different!\n");
         return -1;
     }
     uint64_t from_v_data = kread64(from_vnode + off_vnode_v_data);
@@ -221,7 +205,7 @@ uint64_t funVnodeRedirectFolderFromVnode(char* to, uint64_t from_vnode) {
 uint64_t funVnodeUnRedirectFolder(char* to, uint64_t orig_to_v_data) {
     uint64_t to_vnode = getVnodeAtPath(to);
     if(to_vnode == -1) {
-        printf("[-] Unable to get vnode, path: %s\n", to);
+        printf("Unable to get vnode, path: %s\n", to);
         return -1;
     }
     uint8_t to_v_references = kread8(to_vnode + off_vnode_v_references);
@@ -237,53 +221,14 @@ uint64_t funVnodeUnRedirectFolder(char* to, uint64_t orig_to_v_data) {
     return 0;
 }
 
-NSArray<NSString*>* funVnodeIterateByVnode(uint64_t vnode) {
-    NSMutableArray* Files = [[NSMutableArray alloc] init];
-    char vp_name[256];
-    uint64_t vp_namecache = kread64(vnode + off_vnode_v_ncchildren_tqh_first);
-    while(1) {
-        if(vp_namecache == 0)
-            break;
-        vnode = kread64(vp_namecache + off_namecache_nc_vp);
-        if(vnode == 0)
-            break;
-        kreadbuf(kread64(vnode + off_vnode_v_name), &vp_name, 256);
-        [Files addObject: [NSString stringWithCString:vp_name encoding:NSASCIIStringEncoding]];
-        printf("Child name: %s\n", vp_name);
-        vp_namecache = kread64(vp_namecache + off_namecache_nc_child_tqe_prev);
-    }
-    return Files;
-}
-
-uint64_t findChildVnodeByVnode(uint64_t vnode, NSString* childname) {
-    char vp_name[256];
-    kreadbuf(kread64(vnode + off_vnode_v_name), &vp_name, 256);
-    uint64_t vp_namecache = kread64(vnode + off_vnode_v_ncchildren_tqh_first);
-    while(1) {
-        if(vp_namecache == 0)
-            break;
-        vnode = kread64(vp_namecache + off_namecache_nc_vp);
-        if(vnode == 0)
-            break;
-        kreadbuf(kread64(vnode + off_vnode_v_name), &vp_name, 256);
-        printf("Child name: %s\n", vp_name);
-        if(strcmp(vp_name, childname.UTF8String) == 0) {
-            return vnode;
-        }
-        vp_namecache = kread64(vp_namecache + off_namecache_nc_child_tqe_prev);
-    }
-    printf("Failed to find vnode\n");
-    return 0;
-}
-
 void funVnodeHide(uint64_t vnode) {
     uint32_t usecount = kread32(vnode + off_vnode_v_usecount);
     uint32_t iocount = kread32(vnode + off_vnode_v_iocount);
-    printf("[i] vnode->usecount: %d, vnode->iocount: %d\n", usecount, iocount);
+    printf("vnode->usecount: %d, vnode->iocount: %d\n", usecount, iocount);
     kwrite32(vnode + off_vnode_v_usecount, usecount + 1);
     kwrite32(vnode + off_vnode_v_iocount, iocount + 1);
     uint32_t v_flags = kread32(vnode + off_vnode_v_flag);
-    printf("[i] vnode->v_flags: 0x%x\n", v_flags);
+    printf("vnode->v_flags: 0x%x\n", v_flags);
     kwrite32(vnode + off_vnode_v_flag, (v_flags | 0x008000));
     usecount = kread32(vnode + off_vnode_v_usecount);
     iocount = kread32(vnode + off_vnode_v_iocount);
@@ -436,10 +381,6 @@ BOOL isFileReadable(NSString* directoryPath, NSString* fileName) {
     BOOL isReadable = [[NSFileManager defaultManager] isReadableFileAtPath:[NSString stringWithFormat:@"%@/%@", mntPath, fileName]];
     UnRedirectAndRemoveFolder(orig_to_v_data, mntPath);
     return isReadable;
-}
-
-uint64_t getKASLRSlide(void) {
-    return ((struct kfd*)_kfd)->perf.kernel_slide;
 }
 
 uint64_t fileOverwrite(int fileIndex, NSData* fileData) {
