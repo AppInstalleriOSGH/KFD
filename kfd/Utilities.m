@@ -442,12 +442,12 @@ uint64_t getKASLRSlide(void) {
     return ((struct kfd*)_kfd)->perf.kernel_slide;
 }
 
-uint64_t FileOverwrite(int to_file_index, NSData* fileData) {
-    if (to_file_index == -1) return -1;
+uint64_t fileOverwrite(int fileIndex, NSData* fileData) {
+    if (fileIndex == -1) return -1;
     uint64_t proc = getProc(getpid());
     uint64_t filedesc_pac = kread64(proc + off_p_pfd);
     uint64_t filedesc = filedesc_pac | 0xffffff8000000000;
-    uint64_t openedfile = kread64(filedesc + (8 * to_file_index));
+    uint64_t openedfile = kread64(filedesc + (8 * fileIndex));
     uint64_t fileglob_pac = kread64(openedfile + off_fp_glob);
     uint64_t fileglob = fileglob_pac | 0xffffff8000000000;
     uint64_t vnode_pac = kread64(fileglob + off_fg_data);
@@ -461,9 +461,9 @@ uint64_t FileOverwrite(int to_file_index, NSData* fileData) {
         printf("Increased to_vnode->v_writecount: %d\n", kread32(to_vnode + off_vnode_v_writecount));
     }
     const char* data = (char *)[fileData bytes];
-    printf("ftruncate ret: %d\n", ftruncate(to_file_index, 0));
-    printf("write ret: %zd\n", write(to_file_index, data, strlen(data)));
+    printf("ftruncate ret: %d\n", ftruncate(fileIndex, 0));
+    printf("write ret: %zd\n", write(fileIndex, data, strlen(data)));
     kwrite32(fileglob + off_fg_flag, FREAD);
-    close(to_file_index);
+    close(fileIndex);
     return 0;
 }
