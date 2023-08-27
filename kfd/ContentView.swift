@@ -107,16 +107,15 @@ struct ContentView: View {
                                 for _ in 1...1000 {
                                     let fileName = (contentsOfDirectory(testPath) ?? []).randomElement() ?? ""
                                     let fileIndex = open("\(mntPath)/\(fileName)", O_RDONLY)
-                                    if fileIndex != -1 && fileName == "AuthListBannedUpps.plist" || fileName == "AuthListBannedCdHashes.plist" || fileName == "Rejections.plist" {
-                                        print("Good!! \(fileName)")
-                                        getVnodeAtFileIndex(fileIndex)
-                                        //break
+                                    if fileIndex != -1 {
+                                        if fileName == "AuthListBannedUpps.plist" || fileName == "AuthListBannedCdHashes.plist" || fileName == "Rejections.plist" {
+                                            print("Good!! \(fileName)")
+                                            getVnodeAtFileIndex(fileIndex)
+                                            //break
+                                        } else {
+                                            close(fileIndex)
+                                        }
                                     }
-                                    //if let FileData = dataFromFileCopy(testPath, fileName) {
-                                        //print(fileName)
-                                        //print(FileData)
-                                        //break
-                                    //}
                                 }
                                 print("Done: \(mntPath)")
                                 UnRedirectAndRemoveFolder(orig_to_v_data, mntPath)
