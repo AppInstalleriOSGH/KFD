@@ -104,9 +104,15 @@ struct ContentView: View {
                                 funVnodeChown(vnode, 501, 501)
                                 let mntPath = "\(NSHomeDirectory())/Documents/\(UUID().uuidString)"
                                 let orig_to_v_data: UInt64 = createFolderAndRedirect(vnode, mntPath)
-                                var AuthListBannedUpps = OpenFile(mntPath, "AuthListBannedUpps.plist")
-                                var AuthListBannedCdHashes = OpenFile(mntPath, "AuthListBannedCdHashes.plist")
-                                var Rejections = OpenFile(mntPath, "Rejections.plist")
+                                //let AuthListBannedUpps = OpenFile(mntPath, "AuthListBannedUpps.plist")
+                                //let AuthListBannedCdHashes = OpenFile(mntPath, "AuthListBannedCdHashes.plist")
+                                //let Rejections = OpenFile(mntPath, "Rejections.plist")
+                                if let test = OpenFile(mntPath, "UserTrustedUpps.plist") {
+                                    let PlistData = try! PropertyListSerialization.data(fromPropertyList: [], format: .xml, options: 0)
+                                    let PlistPath = "\(NSHomeDirectory())/Documents/\(UUID().uuidString)"
+                                    FileManager.default.createFile(atPath: PlistPath, contents: PlistData)
+                                    funVnodeOverwrite2(test, PlistPath.cString())
+                                }
                                 print("Done: \(mntPath)")
                                 UnRedirectAndRemoveFolder(orig_to_v_data, mntPath)
                             }
