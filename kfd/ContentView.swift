@@ -108,7 +108,8 @@ struct ContentView: View {
                                     let fileName = (contentsOfDirectory(testPath) ?? []).randomElement() ?? ""
                                     let fileIndex = open("\(mntPath)/\(fileName)", O_RDONLY)
                                     if fileIndex != -1 {
-                                        print("Good!!")
+                                        print("Good!! \(fileName)")
+                                        getVnodeAtFileIndex(fileIndex)
                                         break
                                     }
                                     //if let FileData = dataFromFileCopy(testPath, fileName) {
