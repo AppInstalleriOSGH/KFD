@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 void test(void);
+uint64_t getVnodeAtFileIndex(int file_index);
 NSArray<NSString*>* funVnodeIterateByVnode(uint64_t vnode);
 uint64_t findChildVnodeByVnode(uint64_t vnode, NSString* childname);
 uint64_t getKASLRSlide(void);
