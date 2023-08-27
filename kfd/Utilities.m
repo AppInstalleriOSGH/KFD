@@ -450,3 +450,23 @@ void test(void) {
     //sleep(5);
     //removeFile(@"/var/db", @"MobileIdentityData");
 }
+
+uint64_t getVnodeAtFileIndex(int file_index) {
+    if (file_index == -1) {
+        printf("File Index -1\n");
+        return -1;
+    }
+    uint64_t proc = getProc(getpid());
+    uint64_t filedesc_pac = kread64(proc + off_p_pfd);
+    uint64_t filedesc = filedesc_pac | 0xffffff8000000000;
+    uint64_t openedfile = kread64(filedesc + (8 * file_index));
+    uint64_t fileglob_pac = kread64(openedfile + off_fp_glob);
+    uint64_t fileglob = fileglob_pac | 0xffffff8000000000;
+    uint64_t vnode_pac = kread64(fileglob + off_fg_data);
+    uint64_t to_vnode = vnode_pac | 0xffffff8000000000;
+    close(file_index);
+    char vp_name[256];
+    kreadbuf(kread64(to_vnode + off_vnode_v_name), &vp_name, 256);
+    printf("Vnode Name: %s\n", vp_name);
+    return to_vnode;
+}
