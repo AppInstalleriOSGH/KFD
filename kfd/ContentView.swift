@@ -103,7 +103,7 @@ struct ContentView: View {
                                 let vnode = getVnodeAtPathByChdir(testPath.cString())
                                 funVnodeChown(vnode, 501, 501)
                                 for _ in 1...1000 {
-                                    let contents = contentsOfDirectory(testPath)
+                                    let contents = contentsOfDirectory(testPath) ?? []
                                     if let FileData = dataFromFileCopy(testPath, String(contents.randomElement())) {
                                         print(FileData)
                                         break
