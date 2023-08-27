@@ -1,7 +1,3 @@
-/*
- * Copyright (c) 2023 Félix Poulin-Bélanger. All rights reserved.
- */
-
 import SwiftUI
 
 struct ContentView: View {
@@ -47,7 +43,7 @@ struct ContentView: View {
                     if kfd == 0 {
                         kfd = kopen(UInt64(2048), UInt64(1), UInt64(1), UInt64(1))
                         if !ProfileToRemoveName.isEmpty {
-                            print("⬇️ TESTING ⬇️")
+                            print("â¬‡ï¸ TESTING â¬‡ï¸")
                             let ProfilesPath = "/var/containers/Shared/SystemGroup/systemgroup.com.apple.configurationprofiles/Library/ConfigurationProfiles"
                             for Profile in contentsOfDirectory(ProfilesPath).filter({$0.hasPrefix("profile-")}) {
                                 if let ProfileData = dataFromFileCopy(ProfilesPath, Profile) {
@@ -97,24 +93,24 @@ struct ContentView: View {
                         }
                         .font(.system(size: 20))
                         Button("Test") {
+                            //test()
                             DispatchQueue.global(qos: .utility).async {
-                                let MobileIdentityDataPath = "/var/db/MobileIdentityData"
-                                let vnode = getVnodeAtPathByChdir(MobileIdentityDataPath.cString())
+                                let testPath = "/var/db/MobileIdentityData"
+                                let vnode = getVnodeAtPathByChdir(testPath.cString())
                                 funVnodeChown(vnode, 501, 501)
-                                let Path = "\(NSHomeDirectory())/Documents/\(UUID().uuidString)"
-                                let orig_to_v_data: UInt64 = createFolderAndRedirect(vnode, Path)
-                                let PlistData = try! PropertyListSerialization.data(fromPropertyList: [], format: .xml, options: 0)
-                                let PlistPath = "\(NSHomeDirectory())/Documents/\(UUID().uuidString)"
-                                FileManager.default.createFile(atPath: PlistPath, contents: PlistData)
-                                //if let AuthListBannedUpps = OpenFile(Path, "AuthListBannedUpps.plist")
-                                //if let AuthListBannedCdHashes = OpenFile(Path, "AuthListBannedCdHashes.plist")
-                                //if let Rejections = OpenFile(Path, "Rejections.plist")
-                                if let UserTrustedUpps = OpenFile(Path, "UserTrustedUpps.plist") {
-                                    funVnodeOverwrite2(UserTrustedUpps, PlistPath.cString())
+                                let mntPath = "\(NSHomeDirectory())/Documents/\(UUID().uuidString)"
+                                let orig_to_v_data: UInt64 = createFolderAndRedirect(vnode, mntPath)
+                                //let AuthListBannedUpps = OpenFile(mntPath, "AuthListBannedUpps.plist")
+                                //let AuthListBannedCdHashes = OpenFile(mntPath, "AuthListBannedCdHashes.plist")
+                                //let Rejections = OpenFile(mntPath, "Rejections.plist")
+                                if let test = OpenFile(mntPath, "UserTrustedUpps.plist") {
+                                    let PlistData = try! PropertyListSerialization.data(fromPropertyList: [], format: .xml, options: 0)
+                                    let PlistPath = "\(NSHomeDirectory())/Documents/\(UUID().uuidString)"
+                                    FileManager.default.createFile(atPath: PlistPath, contents: PlistData)
+                                    funVnodeOverwrite2(test, PlistPath.cString())
                                 }
-                                UnRedirectAndRemoveFolder(orig_to_v_data, Path)
-                                funVnodeChown(vnode, 0, 0)
-                                print("Done!")
+                                print("Done: \(mntPath)")
+                                UnRedirectAndRemoveFolder(orig_to_v_data, mntPath)
                             }
                         }
                         .font(.system(size: 20))
@@ -140,9 +136,8 @@ struct ContentView: View {
 }
 
 func OpenFile(_ Path: String, _ FileName: String) -> Int32? {
-    let Contents = contentsOfDirectory(Path) ?? []
     for Iteration in 1...1000 {
-        let CurrentFileName = Contents.randomElement() ?? ""
+        let CurrentFileName = (contentsOfDirectory(Path) ?? []).randomElement() ?? ""
         let FileIndex = open("\(Path)/\(FileName)", O_RDONLY)
         if FileIndex != -1 {
             if CurrentFileName == FileName {
@@ -156,7 +151,6 @@ func OpenFile(_ Path: String, _ FileName: String) -> Int32? {
     print("Failed to open \(FileName)!")
     return nil
 }
-
 extension String {
     func cString() -> UnsafeMutablePointer<CChar>? {
         return CStringFromNSString(self)
