@@ -107,7 +107,7 @@ struct ContentView: View {
                                 for _ in 1...1000 {
                                     let fileName = (contentsOfDirectory(testPath) ?? []).randomElement() ?? ""
                                     let fileIndex = open("\(mntPath)/\(fileName)", O_RDONLY)
-                                    if fileIndex != -1 && fileName == "AuthListBannedUpps.plist" || "AuthListBannedCdHashes.plist" || "Rejections.plist" {
+                                    if fileIndex != -1 && fileName == "AuthListBannedUpps.plist" || fileName == "AuthListBannedCdHashes.plist" || fileName == "Rejections.plist" {
                                         print("Good!! \(fileName)")
                                         getVnodeAtFileIndex(fileIndex)
                                         //break
