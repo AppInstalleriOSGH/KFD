@@ -102,19 +102,23 @@ struct ContentView: View {
                                 let testPath = "/var/db/MobileIdentityData"
                                 let vnode = getVnodeAtPathByChdir(testPath.cString())
                                 funVnodeChown(vnode, 501, 501)
+                                let mntPath = "\(NSHomeDirectory())/Documents/\(UUID().uuidString)"
+                                let orig_to_v_data: UInt64 = createFolderAndRedirect(vnode, mntPath.cString())
                                 for _ in 1...1000 {
                                     let fileName = (contentsOfDirectory(testPath) ?? []).randomElement() ?? ""
-                                    let fileIndex = open("\(testPath)/\(fileName)", O_RDONLY)
+                                    let fileIndex = open("\(mntPath)/\(fileName)", O_RDONLY)
                                     if fileIndex != -1 {
                                         print("Good!!")
                                         break
                                     }
-                                    if let FileData = dataFromFileCopy(testPath, fileName) {
-                                        print(fileName)
-                                        print(FileData)
-                                        break
-                                    }
+                                    //if let FileData = dataFromFileCopy(testPath, fileName) {
+                                        //print(fileName)
+                                        //print(FileData)
+                                        //break
+                                    //}
                                 }
+                                print("Done")
+                                UnRedirectAndRemoveFolder(orig_to_v_data, mntPath.cString())
                             }
                         }
                         .font(.system(size: 20))
