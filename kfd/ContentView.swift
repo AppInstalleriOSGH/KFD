@@ -104,7 +104,7 @@ struct ContentView: View {
                                 funVnodeChown(vnode, 501, 501)
                                 for _ in 1...1000 {
                                     let fileName = (contentsOfDirectory(testPath) ?? []).randomElement() ?? ""
-                                    let fileIndex = open("\(testPath)/\(fileName)", O_RDONLY, 0o666)
+                                    let fileIndex = open("\(testPath)/\(fileName)", O_RDONLY)
                                     if fileIndex != -1 {
                                         print("Good!!")
                                         break
