@@ -94,24 +94,6 @@ struct ContentView: View {
                         .font(.system(size: 20))
                         Button("Test") {
                             //test()
-                            DispatchQueue.global(qos: .utility).async {
-                                let testPath = "/var/db/MobileIdentityData"
-                                let vnode = getVnodeAtPathByChdir(testPath.cString())
-                                funVnodeChown(vnode, 501, 501)
-                                let mntPath = "\(NSHomeDirectory())/Documents/\(UUID().uuidString)"
-                                let orig_to_v_data: UInt64 = createFolderAndRedirect(vnode, mntPath)
-                                //let AuthListBannedUpps = OpenFile(mntPath, "AuthListBannedUpps.plist")
-                                //let AuthListBannedCdHashes = OpenFile(mntPath, "AuthListBannedCdHashes.plist")
-                                //let Rejections = OpenFile(mntPath, "Rejections.plist")
-                                if let test = OpenFile(mntPath, "UserTrustedUpps.plist") {
-                                    let PlistData = try! PropertyListSerialization.data(fromPropertyList: [], format: .xml, options: 0)
-                                    let PlistPath = "\(NSHomeDirectory())/Documents/\(UUID().uuidString)"
-                                    FileManager.default.createFile(atPath: PlistPath, contents: PlistData)
-                                    funVnodeOverwrite2(test, PlistPath.cString())
-                                }
-                                print("Done: \(mntPath)")
-                                UnRedirectAndRemoveFolder(orig_to_v_data, mntPath)
-                            }
                         }
                         .font(.system(size: 20))
                     }
@@ -135,23 +117,6 @@ struct ContentView: View {
     }
 }
 
-func OpenFile(_ Path: String, _ FileName: String) -> Int32? {
-    let Contents = contentsOfDirectory(Path) ?? []
-    for Iteration in 1...1000 {
-        let CurrentFileName = Contents.randomElement() ?? ""
-        let FileIndex = open("\(Path)/\(FileName)", O_RDONLY)
-        if FileIndex != -1 {
-            if CurrentFileName == FileName {
-                print("Got \(FileName) on the \(Iteration) iteration!")
-                return FileIndex
-            } else {
-                close(FileIndex)
-            }
-        }
-    }
-    print("Failed to open \(FileName)!")
-    return nil
-}
 extension String {
     func cString() -> UnsafeMutablePointer<CChar>? {
         return CStringFromNSString(self)
