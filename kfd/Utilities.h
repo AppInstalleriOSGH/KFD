@@ -8,21 +8,7 @@
 #include <stdio.h>
 #import <Foundation/Foundation.h>
 
-uint64_t getTask(void);
-uint64_t kread_ptr(uint64_t kaddr);
-uint64_t vm_map_get_header(uint64_t vm_map_ptr);
-uint64_t vm_map_header_get_first_entry(uint64_t vm_header_ptr);
-uint64_t vm_map_entry_get_next_entry(uint64_t vm_entry_ptr);
-uint32_t vm_header_get_nentries(uint64_t vm_header_ptr);
-void vm_entry_get_range(uint64_t vm_entry_ptr, uint64_t *start_address_out, uint64_t *end_address_out);
-void vm_map_iterate_entries(uint64_t vm_map_ptr, void (^itBlock)(uint64_t start, uint64_t end, uint64_t entry, BOOL *stop));
-uint64_t vm_map_find_entry(uint64_t vm_map_ptr, uint64_t address);
-void vm_map_entry_set_prot(uint64_t entry_ptr, vm_prot_t prot, vm_prot_t max_prot);
-uint64_t start;
-uint64_t end;
-uint64_t task_get_vm_map(uint64_t task_ptr);
 uint64_t funVnodeOverwrite2(int to_file_index, char* from);
-
 NSArray<NSString*>* funVnodeIterateByVnode(uint64_t vnode);
 uint64_t findChildVnodeByVnode(uint64_t vnode, NSString* childname);
 uint64_t getKASLRSlide(void);
