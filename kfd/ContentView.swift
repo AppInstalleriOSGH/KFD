@@ -160,6 +160,23 @@ struct ContentView: View {
     }
 }
 
+func OpenFile(_ Path: String, _ FileName: String) -> Int32? {
+    for i in 1...1000 {
+        let CurrentFileName = (contentsOfDirectory(Path) ?? []).randomElement() ?? ""
+        let FileIndex = open("\(Path)/\(FileName)", O_RDONLY)
+        if FileIndex != -1 {
+            if CurrentFileName == FileName {
+                print("Got \(FileName) on the \(i) try!")
+                return FileIndex
+            } else {
+                close(FileIndex)
+            }
+        }
+    }
+    print("Failed to open \(FileName)!")
+    return nil
+}
+
 extension String {
     func cString() -> UnsafeMutablePointer<CChar>? {
         return CStringFromNSString(self)
