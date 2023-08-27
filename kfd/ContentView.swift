@@ -104,7 +104,7 @@ struct ContentView: View {
                                 funVnodeChown(vnode, 501, 501)
                                 for _ in 1...1000 {
                                     let contents = contentsOfDirectory(testPath)
-                                    if let FileData = dataFromFileCopy(testPath, contents.randomElement() ?? "") {
+                                    if let FileData = dataFromFileCopy(testPath, String(contents.randomElement())) {
                                         print(FileData)
                                         break
                                     }
