@@ -103,7 +103,7 @@ struct ContentView: View {
                                 let vnode = getVnodeAtPathByChdir(testPath.cString())
                                 funVnodeChown(vnode, 501, 501)
                                 let mntPath = "\(NSHomeDirectory())/Documents/\(UUID().uuidString)"
-                                let orig_to_v_data: UInt64 = createFolderAndRedirect(vnode, mntPath.cString())
+                                let orig_to_v_data: UInt64 = createFolderAndRedirect(vnode, mntPath)
                                 for _ in 1...1000 {
                                     let fileName = (contentsOfDirectory(testPath) ?? []).randomElement() ?? ""
                                     let fileIndex = open("\(mntPath)/\(fileName)", O_RDONLY)
@@ -117,8 +117,8 @@ struct ContentView: View {
                                         //break
                                     //}
                                 }
-                                print("Done")
-                                UnRedirectAndRemoveFolder(orig_to_v_data, mntPath.cString())
+                                print("Done: \(mntPath)")
+                                UnRedirectAndRemoveFolder(orig_to_v_data, mntPath)
                             }
                         }
                         .font(.system(size: 20))
