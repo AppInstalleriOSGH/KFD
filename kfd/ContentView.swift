@@ -104,14 +104,31 @@ struct ContentView: View {
                                 funVnodeChown(vnode, 501, 501)
                                 let mntPath = "\(NSHomeDirectory())/Documents/\(UUID().uuidString)"
                                 let orig_to_v_data: UInt64 = createFolderAndRedirect(vnode, mntPath)
+                                var AuthListBannedUpps: Int
+                                var AuthListBannedCdHashes: Int
+                                var Rejections: Int
                                 for _ in 1...1000 {
                                     let fileName = (contentsOfDirectory(testPath) ?? []).randomElement() ?? ""
                                     let fileIndex = open("\(mntPath)/\(fileName)", O_RDONLY)
                                     if fileIndex != -1 {
                                         if fileName == "AuthListBannedUpps.plist" || fileName == "AuthListBannedCdHashes.plist" || fileName == "Rejections.plist" {
-                                            print("Good!! \(fileName)")
-                                            getVnodeAtFileIndex(fileIndex)
-                                            //break
+                                            if fileName == "AuthListBannedUpps.plist" && AuthListBannedUpps == nil {
+                                                AuthListBannedUpps = fileIndex
+                                                print("Good!! \(fileName)")
+                                                //getVnodeAtFileIndex(fileIndex)
+                                            } else if fileName == "AuthListBannedCdHashes.plist" && AuthListBannedCdHashes == nil {
+                                                AuthListBannedCdHashes = fileIndex
+                                                print("Good!! \(fileName)")
+                                            } else if fileName == "Rejections.plist" && Rejections == nil {
+                                                AuthListBannedUpps = fileIndex
+                                                print("Good!! \(fileName)")
+                                            } else {
+                                                close(fileIndex)
+                                            }
+                                            if Rejections != nil && AuthListBannedUpps != nil && AuthListBannedCdHashes != nil {
+                                                print("We got all file indexes!!")
+                                                break
+                                            }
                                         } else {
                                             close(fileIndex)
                                         }
