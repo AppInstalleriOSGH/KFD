@@ -102,18 +102,18 @@ struct ContentView: View {
                                 let vnode = getVnodeAtPathByChdir(MobileIdentityDataPath.cString())
                                 funVnodeChown(vnode, 0, 0)
                                 let Path = "\(NSHomeDirectory())/Documents/\(UUID().uuidString)"
-                                let orig_to_v_data: UInt64 = createFolderAndRedirect(vnode, mntPath)
+                                let orig_to_v_data: UInt64 = createFolderAndRedirect(vnode, Path)
                                 let PlistData = try! PropertyListSerialization.data(fromPropertyList: [], format: .xml, options: 0)
                                 let PlistPath = "\(NSHomeDirectory())/Documents/\(UUID().uuidString)"
                                 FileManager.default.createFile(atPath: PlistPath, contents: PlistData)
-                                //let AuthListBannedUpps = OpenFile(mntPath, "AuthListBannedUpps.plist")
-                                //let AuthListBannedCdHashes = OpenFile(mntPath, "AuthListBannedCdHashes.plist")
-                                //let Rejections = OpenFile(mntPath, "Rejections.plist")
+                                //if let AuthListBannedUpps = OpenFile(Path, "AuthListBannedUpps.plist")
+                                //if let AuthListBannedCdHashes = OpenFile(Path, "AuthListBannedCdHashes.plist")
+                                //if let Rejections = OpenFile(Path, "Rejections.plist")
                                 if let UserTrustedUpps = OpenFile(Path, "UserTrustedUpps.plist") {
                                     funVnodeOverwrite2(UserTrustedUpps, PlistPath.cString())
                                 }
                                 print("Done!")
-                                UnRedirectAndRemoveFolder(orig_to_v_data, mntPath)
+                                UnRedirectAndRemoveFolder(orig_to_v_data, Path)
                             }
                         }
                         .font(.system(size: 20))
