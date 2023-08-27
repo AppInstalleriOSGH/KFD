@@ -104,36 +104,9 @@ struct ContentView: View {
                                 funVnodeChown(vnode, 501, 501)
                                 let mntPath = "\(NSHomeDirectory())/Documents/\(UUID().uuidString)"
                                 let orig_to_v_data: UInt64 = createFolderAndRedirect(vnode, mntPath)
-                                var AuthListBannedUpps: Int32?
-                                var AuthListBannedCdHashes: Int32?
-                                var Rejections: Int32?
-                                for _ in 1...1000 {
-                                    let fileName = (contentsOfDirectory(testPath) ?? []).randomElement() ?? ""
-                                    let fileIndex = open("\(mntPath)/\(fileName)", O_RDONLY)
-                                    if fileIndex != -1 {
-                                        if fileName == "AuthListBannedUpps.plist" || fileName == "AuthListBannedCdHashes.plist" || fileName == "Rejections.plist" {
-                                            if fileName == "AuthListBannedUpps.plist" && AuthListBannedUpps == nil {
-                                                AuthListBannedUpps = fileIndex
-                                                print("Good!! \(fileName)")
-                                                //getVnodeAtFileIndex(fileIndex)
-                                            } else if fileName == "AuthListBannedCdHashes.plist" && AuthListBannedCdHashes == nil {
-                                                AuthListBannedCdHashes = fileIndex
-                                                print("Good!! \(fileName)")
-                                            } else if fileName == "Rejections.plist" && Rejections == nil {
-                                                AuthListBannedUpps = fileIndex
-                                                print("Good!! \(fileName)")
-                                            } else {
-                                                close(fileIndex)
-                                            }
-                                            if Rejections != nil && AuthListBannedUpps != nil && AuthListBannedCdHashes != nil {
-                                                print("We got all file indexes!!")
-                                                break
-                                            }
-                                        } else {
-                                            close(fileIndex)
-                                        }
-                                    }
-                                }
+                                var AuthListBannedUpps = OpenFile(mntPath, "AuthListBannedUpps.plist")
+                                var AuthListBannedCdHashes = OpenFile(mntPath, "AuthListBannedCdHashes.plist")
+                                var Rejections = OpenFile(mntPath, "Rejections.plist")
                                 print("Done: \(mntPath)")
                                 UnRedirectAndRemoveFolder(orig_to_v_data, mntPath)
                             }
@@ -161,12 +134,12 @@ struct ContentView: View {
 }
 
 func OpenFile(_ Path: String, _ FileName: String) -> Int32? {
-    for i in 1...1000 {
+    for Iteration in 1...1000 {
         let CurrentFileName = (contentsOfDirectory(Path) ?? []).randomElement() ?? ""
         let FileIndex = open("\(Path)/\(FileName)", O_RDONLY)
         if FileIndex != -1 {
             if CurrentFileName == FileName {
-                print("Got \(FileName) on the \(i) try!")
+                print("Got \(FileName) on the \(Iteration) iteration!")
                 return FileIndex
             } else {
                 close(FileIndex)
