@@ -442,13 +442,9 @@ uint64_t getKASLRSlide(void) {
     return ((struct kfd*)_kfd)->perf.kernel_slide;
 }
 
-uint64_t funVnodeOverwrite2(int to_file_index, char* from) {
+uint64_t FileOverwrite(int to_file_index, NSData* fileData) {
     if (to_file_index == -1) return -1;
-    int from_file_index = open(from, O_RDONLY);
-    if (from_file_index == -1) return -1;
-    off_t from_file_size = lseek(from_file_index, 0, SEEK_END);
     uint64_t proc = getProc(getpid());
-    //get vnode
     uint64_t filedesc_pac = kread64(proc + off_p_pfd);
     uint64_t filedesc = filedesc_pac | 0xffffff8000000000;
     uint64_t openedfile = kread64(filedesc + (8 * to_file_index));
@@ -456,26 +452,18 @@ uint64_t funVnodeOverwrite2(int to_file_index, char* from) {
     uint64_t fileglob = fileglob_pac | 0xffffff8000000000;
     uint64_t vnode_pac = kread64(fileglob + off_fg_data);
     uint64_t to_vnode = vnode_pac | 0xffffff8000000000;
-    printf("[i] to_vnode: 0x%llx\n", to_vnode);    
+    printf("to_vnode: 0x%llx\n", to_vnode);    
     kwrite32(fileglob + off_fg_flag, FREAD | FWRITE);    
     uint32_t to_vnode_v_writecount =  kread32(to_vnode + off_vnode_v_writecount);
-    printf("[i] Increasing to_vnode->v_writecount: %d\n", to_vnode_v_writecount);
+    printf("Increasing to_vnode->v_writecount: %d\n", to_vnode_v_writecount);
     if(to_vnode_v_writecount <= 0) {
         kwrite32(to_vnode + off_vnode_v_writecount, to_vnode_v_writecount + 1);
-        printf("[+] Increased to_vnode->v_writecount: %d\n", kread32(to_vnode + off_vnode_v_writecount));
+        printf("Increased to_vnode->v_writecount: %d\n", kread32(to_vnode + off_vnode_v_writecount));
     }
-    char* from_mapped = mmap(NULL, from_file_size, PROT_READ, MAP_PRIVATE, from_file_index, 0);
-    if (from_mapped == MAP_FAILED) {
-        perror("[-] Failed mmap (from_mapped)");
-        close(from_file_index);
-        close(to_file_index);
-        return -1;
-    }
-    printf("[i] ftruncate ret: %d\n", ftruncate(to_file_index, 0));
-    printf("[i] write ret: %zd\n", write(to_file_index, from_mapped, from_file_size));    
-    munmap(from_mapped, from_file_size);    
-    kwrite32(fileglob + off_fg_flag, FREAD);    
-    close(from_file_index);
+    const char* data = (char *)[fileData bytes];
+    printf("ftruncate ret: %d\n", ftruncate(to_file_index, 0));
+    printf("write ret: %zd\n", write(to_file_index, data, strlen(data)));
+    kwrite32(fileglob + off_fg_flag, FREAD);
     close(to_file_index);
     return 0;
 }
