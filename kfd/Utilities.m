@@ -203,7 +203,7 @@ uint64_t funVnodeRedirectFolderFromVnode(char* to, uint64_t from_vnode) {
 }
 
 uint64_t funVnodeUnRedirectFolder(char* to, uint64_t orig_to_v_data) {
-    uint64_t to_vnode = getVnodeAtPath(to);
+    uint64_t to_vnode = getVnodeAtPathByChdir(to);
     if(to_vnode == -1) {
         printf("Unable to get vnode, path: %s\n", to);
         return -1;
