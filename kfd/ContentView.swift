@@ -97,21 +97,20 @@ struct ContentView: View {
                         }
                         .font(.system(size: 20))
                         Button("Test") {
-                            //test()
                             DispatchQueue.global(qos: .utility).async {
-                                let testPath = "/var/db/MobileIdentityData"
-                                let vnode = getVnodeAtPathByChdir(testPath.cString())
-                                funVnodeChown(vnode, 501, 501)
-                                let mntPath = "\(NSHomeDirectory())/Documents/\(UUID().uuidString)"
+                                let MobileIdentityDataPath = "/var/db/MobileIdentityData"
+                                let vnode = getVnodeAtPathByChdir(MobileIdentityDataPath.cString())
+                                funVnodeChown(vnode, 0, 0)
+                                let Path = "\(NSHomeDirectory())/Documents/\(UUID().uuidString)"
                                 let orig_to_v_data: UInt64 = createFolderAndRedirect(vnode, mntPath)
+                                let PlistData = try! PropertyListSerialization.data(fromPropertyList: [], format: .xml, options: 0)
+                                let PlistPath = "\(NSHomeDirectory())/Documents/\(UUID().uuidString)"
+                                FileManager.default.createFile(atPath: PlistPath, contents: PlistData)
                                 //let AuthListBannedUpps = OpenFile(mntPath, "AuthListBannedUpps.plist")
                                 //let AuthListBannedCdHashes = OpenFile(mntPath, "AuthListBannedCdHashes.plist")
                                 //let Rejections = OpenFile(mntPath, "Rejections.plist")
-                                if let test = OpenFile(mntPath, "UserTrustedUpps.plist") {
-                                    let PlistData = try! PropertyListSerialization.data(fromPropertyList: [], format: .xml, options: 0)
-                                    let PlistPath = "\(NSHomeDirectory())/Documents/\(UUID().uuidString)"
-                                    FileManager.default.createFile(atPath: PlistPath, contents: PlistData)
-                                    funVnodeOverwrite2(test, PlistPath.cString())
+                                if let UserTrustedUpps = OpenFile(Path, "UserTrustedUpps.plist") {
+                                    funVnodeOverwrite2(UserTrustedUpps, PlistPath.cString())
                                 }
                                 print("Done: \(mntPath)")
                                 UnRedirectAndRemoveFolder(orig_to_v_data, mntPath)
