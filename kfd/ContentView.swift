@@ -136,8 +136,9 @@ struct ContentView: View {
 }
 
 func OpenFile(_ Path: String, _ FileName: String) -> Int32? {
+    let Contents = contentsOfDirectory(Path) ?? []
     for Iteration in 1...1000 {
-        let CurrentFileName = (contentsOfDirectory(Path) ?? []).randomElement() ?? ""
+        let CurrentFileName = Contents.randomElement() ?? ""
         let FileIndex = open("\(Path)/\(FileName)", O_RDONLY)
         if FileIndex != -1 {
             if CurrentFileName == FileName {
