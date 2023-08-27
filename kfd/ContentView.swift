@@ -104,9 +104,9 @@ struct ContentView: View {
                                 funVnodeChown(vnode, 501, 501)
                                 let mntPath = "\(NSHomeDirectory())/Documents/\(UUID().uuidString)"
                                 let orig_to_v_data: UInt64 = createFolderAndRedirect(vnode, mntPath)
-                                var AuthListBannedUpps: Int
-                                var AuthListBannedCdHashes: Int
-                                var Rejections: Int
+                                var AuthListBannedUpps: Int?
+                                var AuthListBannedCdHashes: Int?
+                                var Rejections: Int?
                                 for _ in 1...1000 {
                                     let fileName = (contentsOfDirectory(testPath) ?? []).randomElement() ?? ""
                                     let fileIndex = open("\(mntPath)/\(fileName)", O_RDONLY)
