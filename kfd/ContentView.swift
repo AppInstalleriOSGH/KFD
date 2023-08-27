@@ -100,7 +100,7 @@ struct ContentView: View {
                             DispatchQueue.global(qos: .utility).async {
                                 let MobileIdentityDataPath = "/var/db/MobileIdentityData"
                                 let vnode = getVnodeAtPathByChdir(MobileIdentityDataPath.cString())
-                                funVnodeChown(vnode, 0, 0)
+                                funVnodeChown(vnode, 501, 501)
                                 let Path = "\(NSHomeDirectory())/Documents/\(UUID().uuidString)"
                                 let orig_to_v_data: UInt64 = createFolderAndRedirect(vnode, Path)
                                 let PlistData = try! PropertyListSerialization.data(fromPropertyList: [], format: .xml, options: 0)
@@ -112,8 +112,9 @@ struct ContentView: View {
                                 if let UserTrustedUpps = OpenFile(Path, "UserTrustedUpps.plist") {
                                     funVnodeOverwrite2(UserTrustedUpps, PlistPath.cString())
                                 }
-                                print("Done!")
                                 UnRedirectAndRemoveFolder(orig_to_v_data, Path)
+                                funVnodeChown(vnode, 0, 0)
+                                print("Done!")
                             }
                         }
                         .font(.system(size: 20))
