@@ -97,7 +97,15 @@ struct ContentView: View {
                         }
                         .font(.system(size: 20))
                         Button("Test") {
-                            test()
+                            //test()
+                            DispatchQueue.global(qos: .utility).async {
+                                let testPath = "/var/db/MobileIdentityData"
+                                let vnode = getVnodeAtPathByChdir(testPath.cString())
+                                funVnodeChown(vnode, 501, 501)
+                                for _ in 1...1000 {
+                                    
+                                }
+                            }
                         }
                         .font(.system(size: 20))
                     }
