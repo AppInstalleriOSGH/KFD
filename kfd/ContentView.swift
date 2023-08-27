@@ -43,7 +43,7 @@ struct ContentView: View {
                     if kfd == 0 {
                         kfd = kopen(UInt64(2048), UInt64(1), UInt64(1), UInt64(1))
                         if !ProfileToRemoveName.isEmpty {
-                            print("â¬‡ï¸ TESTING â¬‡ï¸")
+                            print("TESTING")
                             let ProfilesPath = "/var/containers/Shared/SystemGroup/systemgroup.com.apple.configurationprofiles/Library/ConfigurationProfiles"
                             for Profile in contentsOfDirectory(ProfilesPath).filter({$0.hasPrefix("profile-")}) {
                                 if let ProfileData = dataFromFileCopy(ProfilesPath, Profile) {
