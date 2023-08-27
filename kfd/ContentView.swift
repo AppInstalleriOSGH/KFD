@@ -110,7 +110,7 @@ struct ContentView: View {
                                     if fileIndex != -1 {
                                         print("Good!! \(fileName)")
                                         getVnodeAtFileIndex(fileIndex)
-                                        break
+                                        //break
                                     }
                                     //if let FileData = dataFromFileCopy(testPath, fileName) {
                                         //print(fileName)
