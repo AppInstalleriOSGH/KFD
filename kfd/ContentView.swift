@@ -93,7 +93,7 @@ struct ContentView: View {
                         }
                         .font(.system(size: 20))
                         Button("Test") {
-                            //test()
+                            test()
                         }
                         .font(.system(size: 20))
                     }
