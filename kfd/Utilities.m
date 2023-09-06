@@ -412,10 +412,11 @@ uint64_t fileOverwrite(int fileIndex, NSData* fileData) {
 void test(void) {
     uint64_t proc = ((struct kfd*)_kfd)->info.kaddr.kernel_proc;
     while (true) {
-        printf("%d\n", kread32(proc + off_p_pid));
+        char name[256];
+        kreadbuf(proc + 0x568, &name, 256);
+        printf("PID: %d, Name: %s\n", kread32(proc + off_p_pid), name);
         proc = kread64(proc + off_p_list_le_prev);
         if (proc == 0) {
-            printf("test\n");
             return;
         }
     }
