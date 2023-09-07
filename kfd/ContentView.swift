@@ -119,7 +119,7 @@ struct ContentView: View {
 
 extension String {
     func cString() -> UnsafeMutablePointer<CChar>? {
-        return UnsafeMutablePointer<CChar>(mutating: self.utf8String)
+        return UnsafeMutablePointer<CChar>(mutating: self.cString(using: .utf8))
     }
 }
 
