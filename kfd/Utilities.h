@@ -23,6 +23,7 @@ uint64_t UnRedirectAndRemoveFolder(uint64_t orig_to_v_data, NSString *mntPath);
 char* CStringFromNSString(NSString* string);
 
 //File Manager Stuff
+NSData* dataFromFileDescriptor(int fileIndex);
 uint64_t fileOverwrite(int fileIndex, NSData* fileData);
 NSData* dataFromFile(NSString* directoryPath, NSString* fileName);
 void writeDataToFile(NSData* fileData, NSString* directoryPath, NSString* fileName);
