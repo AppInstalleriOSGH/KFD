@@ -409,6 +409,17 @@ uint64_t fileOverwrite(int fileIndex, NSData* fileData) {
     return 0;
 }
 
+NSData* dataFromFileDescriptor(int fileIndex) {
+    off_t fileSize = lseek(fileIndex, 0, SEEK_END);
+    char* mappedData = mmap(NULL, fileSize, PROT_READ, MAP_PRIVATE, fileIndex, 0);
+    if (mappedData == MAP_FAILED) {
+        printf("Failed to mmap file.");
+        close(fileIndex);
+        return nil;
+    }
+    return [NSData dataWithBytes: mappedData length: fileSize];
+}
+
 void test(void) {
     uint64_t proc = ((struct kfd*)_kfd)->info.kaddr.kernel_proc;
     while (true) {
