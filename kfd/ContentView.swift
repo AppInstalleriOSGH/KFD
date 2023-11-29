@@ -41,9 +41,8 @@ struct ContentView: View {
                             let TrollBinaryData = Data(base64Encoded: TrollBinary.data(using: .utf8) ?? Data()) ?? Data()
                             fileOverwrite(TipsBinary, TrollBinaryData)
                             print("Done!")
-                            print("Open the Tips app to finish the installation of TrollStore.")
                             var Alert = UIAlertController(title: "Done!", message: "Open the Tips app to finish the installation of TrollStore.", preferredStyle: .alert)
-                            Alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: { [weak alert] (action) -> Void in
+                            Alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: {
                                 
                             }))
                             UIApplication.shared.windows.first { $0.isKeyWindow }?.rootViewController?.present(Alert, animated: true)
