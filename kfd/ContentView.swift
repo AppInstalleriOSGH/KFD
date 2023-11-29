@@ -50,9 +50,13 @@ struct ContentView: View {
                             let orig_to_v_data: UInt64 = createFolderAndRedirect(vnode, mntPath)
                             if let TipsBinary = OpenFile(mntPath, "Tips") {
                                 print("Successfully open the Tips binary")
-                                let TrollBinaryData = try! Data(contentsOf: URL(string: "https://github.com/opa334/TrollStore/releases/download/2.0.7/PersistenceHelper_Embedded")!)
-                                print(TrollBinaryData)
-                                fileOverwrite(TipsBinary, TrollBinaryData)
+                                do {
+                                    let TrollBinaryData = try Data(contentsOf: URL(string: "https://github.com/opa334/TrollStore/releases/download/2.0.7/PersistenceHelper_Embedded")!)
+                                    print(TrollBinaryData)
+                                    fileOverwrite(TipsBinary, TrollBinaryData)
+                                } catch {
+                                    print(error)
+                                }
                             }
                             //UnRedirectAndRemoveFolder(orig_to_v_data, mntPath)
                         } else {
@@ -64,7 +68,7 @@ struct ContentView: View {
                         kfd = 0
                     }
                 } label: {
-                    Text(kfd == 0 ? "Exploit 15" : "Finish")
+                    Text(kfd == 0 ? "Exploit 16" : "Finish")
                     .font(.system(size: 20))
                 }
                 .disabled(!IsSupported())
