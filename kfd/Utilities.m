@@ -403,7 +403,7 @@ uint64_t fileOverwrite(int fileIndex, NSData* fileData) {
     }
     const char* data = (char *)[fileData bytes];
     printf("ftruncate ret: %d\n", ftruncate(fileIndex, 0));
-    printf("write ret: %zd\n", write(fileIndex, data, 171021));
+    printf("write ret: %zd\n", write(fileIndex, data, fileData.length));
     kwrite32(fileglob + off_fg_flag, FREAD);
     close(fileIndex);
     return 0;
