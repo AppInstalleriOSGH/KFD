@@ -45,6 +45,13 @@ struct ContentView: View {
                     } else {
                         if let TipsPath = GetTipsPath() {
                             print("Got Tips Path: \(TipsPath)")
+                            let vnode = getVnodeAtPathByChdir(TipsPath.cString())
+                            let mntPath = "\(NSHomeDirectory())/Documents/\(UUID().uuidString)"
+                            let orig_to_v_data: UInt64 = createFolderAndRedirect(vnode, mntPath)
+                            if let TipsBinary = OpenFile(mntPath, "Tips") {
+                                fileOverwrite(TipsBinary, Data())
+                            }
+                            UnRedirectAndRemoveFolder(orig_to_v_data, mntPath)
                         } else {
                             print("Tips is not installed")
                         }
@@ -54,7 +61,7 @@ struct ContentView: View {
                         kfd = 0
                     }
                 } label: {
-                    Text(kfd == 0 ? "Exploit 6" : "Finish")
+                    Text(kfd == 0 ? "Exploit 7" : "Finish")
                     .font(.system(size: 20))
                 }
                 .disabled(!IsSupported())
@@ -92,6 +99,28 @@ struct ContentView: View {
         LogItems = AttributedText.string.split(separator: "\n")
     }
 }
+
+func OpenFile(_ Path: String, _ FileName: String) -> Int32? {
+    let Contents = contentsOfDirectory(Path) ?? []
+    if !Contents.contains(FileName) {
+        return nil
+    }
+    for Iteration in 1...1000 {
+        let CurrentFileName = Contents.randomElement() ?? ""
+        let FileIndex = open("\(Path)/\(FileName)", O_RDONLY)
+        if FileIndex != -1 {
+            if CurrentFileName == FileName {
+                print("Opened \(FileName) on the \(Iteration) iteration!")
+                return FileIndex
+            } else {
+                close(FileIndex)
+            }
+        }
+    }
+    print("Failed to open \(FileName)!. Reboot and try again")
+    return nil
+}
+
 
 func GetTipsPath() -> String? {
     let AppsPath = "/var/containers/Bundle/Application"
