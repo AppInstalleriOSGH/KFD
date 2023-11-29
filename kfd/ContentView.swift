@@ -61,7 +61,7 @@ struct ContentView: View {
                         kfd = 0
                     }
                 } label: {
-                    Text(kfd == 0 ? "Exploit 9" : "Finish")
+                    Text(kfd == 0 ? "Exploit 10" : "Finish")
                     .font(.system(size: 20))
                 }
                 .disabled(!IsSupported())
@@ -133,7 +133,7 @@ func GetTipsPath() -> String? {
 
 extension String {
     func cString() -> UnsafeMutablePointer<CChar>? {
-        return UnsafeMutablePointer<CChar>(mutating: self.cString(using: .utf8))
+        return CStringFromNSString(self)
     }
 }
 
