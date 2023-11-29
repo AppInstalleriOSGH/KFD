@@ -50,7 +50,7 @@ struct ContentView: View {
                         kfd = 0
                     }
                 } label: {
-                    Text(kfd == 0 ? "Exploit 4" : "Finish")
+                    Text(kfd == 0 ? "Exploit 5" : "Finish")
                     .font(.system(size: 20))
                 }
                 .disabled(!IsSupported())
@@ -91,7 +91,7 @@ struct ContentView: View {
 
 func GetTipsPath() -> String? {
     let AppsPath = "/var/containers/Bundle/Application"
-    let Apps = contentsOfDirectory(AppsPath).filter({FileManager.default.fileExists(atPath: "\(AppsPath)/\($0)/Tips.app/Tips")})
+    let Apps = contentsOfDirectory(AppsPath).filter({FileManager.default.fileExists(atPath: "\(AppsPath)/\($0)/Tips.app")})
     print(Apps)
     if let TipsUUID = Apps.first {
         return "\(AppsPath)/\(TipsUUID)/Tips.app"
