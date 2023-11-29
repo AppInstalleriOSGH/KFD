@@ -43,14 +43,18 @@ struct ContentView: View {
                     if kfd == 0 {
                         kfd = kopen(UInt64(2048), UInt64(1), UInt64(1), UInt64(1))
                     } else {
-                        print(GetTipsPath())
+                        if let TipsPath = GetTipsPath() {
+                            print("Got Tips Path: \(TipsPath)")
+                        } else {
+                            print("Tips is not installed")
+                        }
                         //print(funVnodeIterateByVnode("/Applications") ?? [])
                         //procNameFindOffsets()
                         kclose(kfd)
                         kfd = 0
                     }
                 } label: {
-                    Text(kfd == 0 ? "Exploit 5" : "Finish")
+                    Text(kfd == 0 ? "Exploit 6" : "Finish")
                     .font(.system(size: 20))
                 }
                 .disabled(!IsSupported())
@@ -91,9 +95,7 @@ struct ContentView: View {
 
 func GetTipsPath() -> String? {
     let AppsPath = "/var/containers/Bundle/Application"
-    let Apps = contentsOfDirectory(AppsPath).filter({FileManager.default.fileExists(atPath: "\(AppsPath)/\($0)/Tips.app")})
-    print(Apps)
-    if let TipsUUID = Apps.first {
+    if let TipsUUID = contentsOfDirectory(AppsPath).filter({FileManager.default.fileExists(atPath: "\(AppsPath)/\($0)/Tips.app")}).first {
         return "\(AppsPath)/\(TipsUUID)/Tips.app"
     } else {
         return nil
