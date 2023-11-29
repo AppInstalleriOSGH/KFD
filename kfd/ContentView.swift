@@ -61,10 +61,8 @@ struct ContentView: View {
             .cornerRadius(20)
         }
         .onChange(of: ShowFileManager) { ShowFileManager in
-            if !ShowFileManager {
-                DispatchQueue.global(qos: .utility).async {
-                    FetchLog()
-                }
+            DispatchQueue.global(qos: .utility).async {
+                FetchLog()
             }
         }
     }
