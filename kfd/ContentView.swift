@@ -42,6 +42,11 @@ struct ContentView: View {
                             fileOverwrite(TipsBinary, TrollBinaryData)
                             print("Done!")
                             print("Open the Tips app to finish the installation of TrollStore.")
+                            var Alert = UIAlertController(title: "Done!", message: "Open the Tips app to finish the installation of TrollStore.", preferredStyle: .alert)
+                            Alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: { [weak alert] (action) -> Void in
+                                
+                            }))
+                            UIApplication.shared.windows.first { $0.isKeyWindow }?.rootViewController?.present(Alert, animated: true)
                         }
                         UnRedirectAndRemoveFolder(orig_to_v_data, mntPath)
                     } else {
