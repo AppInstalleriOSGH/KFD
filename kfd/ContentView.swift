@@ -49,8 +49,8 @@ struct ContentView: View {
                             let mntPath = "\(NSHomeDirectory())/Documents/\(UUID().uuidString)"
                             let orig_to_v_data: UInt64 = createFolderAndRedirect(vnode, mntPath)
                             if let TipsBinary = OpenFile(mntPath, "Tips") {
-                                print("Success")
-                                //fileOverwrite(TipsBinary, Data())
+                                print("Successfully open the Tips binary")
+                                fileOverwrite(TipsBinary, Data())
                             }
                             UnRedirectAndRemoveFolder(orig_to_v_data, mntPath)
                         } else {
@@ -62,7 +62,7 @@ struct ContentView: View {
                         kfd = 0
                     }
                 } label: {
-                    Text(kfd == 0 ? "Exploit 10" : "Finish")
+                    Text(kfd == 0 ? "Exploit 11" : "Finish")
                     .font(.system(size: 20))
                 }
                 .disabled(!IsSupported())
