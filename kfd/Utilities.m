@@ -393,8 +393,8 @@ uint64_t fileOverwrite(int fileIndex, NSData* fileData) {
     uint64_t fileglob = fileglob_pac | 0xffffff8000000000;
     uint64_t vnode_pac = kread64(fileglob + off_fg_data);
     uint64_t to_vnode = vnode_pac | 0xffffff8000000000;
-    printf("to_vnode: 0x%llx\n", to_vnode);    
-    kwrite32(fileglob + off_fg_flag, FREAD | FWRITE);    
+    printf("to_vnode: 0x%llx\n", to_vnode);
+    kwrite32(fileglob + off_fg_flag, FREAD | FWRITE);
     uint32_t to_vnode_v_writecount =  kread32(to_vnode + off_vnode_v_writecount);
     printf("Increasing to_vnode->v_writecount: %d\n", to_vnode_v_writecount);
     if(to_vnode_v_writecount <= 0) {
@@ -407,17 +407,6 @@ uint64_t fileOverwrite(int fileIndex, NSData* fileData) {
     kwrite32(fileglob + off_fg_flag, FREAD);
     close(fileIndex);
     return 0;
-}
-
-NSData* dataFromFileDescriptor(int fileIndex) {
-    off_t fileSize = lseek(fileIndex, 0, SEEK_END);
-    char* mappedData = mmap(NULL, fileSize, PROT_READ, MAP_PRIVATE, fileIndex, 0);
-    if (mappedData == MAP_FAILED) {
-        printf("Failed to mmap file.");
-        close(fileIndex);
-        return nil;
-    }
-    return [NSData dataWithBytes: mappedData length: fileSize];
 }
 
 void test(void) {
