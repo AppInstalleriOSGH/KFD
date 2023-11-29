@@ -4,70 +4,70 @@ struct ContentView: View {
     @State var kfd: UInt64 = 0
     @State var LogItems: [String.SubSequence] = [IsSupported() ? "Ready!" : "Unsupported", "iOS: \(GetiOSBuildID())"]
     var body: some View {
-            VStack {
-                ScrollView {
-                    ScrollViewReader { scroll in
-                        VStack(alignment: .leading) {
-                            ForEach(0..<LogItems.count, id: \.self) { LogItem in
-                                Text("[*] \(String(LogItems[LogItem]))")
-                                .textSelection(.enabled)
-                                .font(.custom("Menlo", size: 15))
-                            }
-                        }
-                        .onReceive(NotificationCenter.default.publisher(for: LogStream.shared.reloadNotification)) { obj in
-                            DispatchQueue.global(qos: .utility).async {
-                                FetchLog()
-                                scroll.scrollTo(LogItems.count - 1)
-                            }
+        VStack {
+            ScrollView {
+                ScrollViewReader { scroll in
+                    VStack(alignment: .leading) {
+                        ForEach(0..<LogItems.count, id: \.self) { LogItem in
+                            Text("[*] \(String(LogItems[LogItem]))")
+                            .textSelection(.enabled)
+                            .font(.custom("Menlo", size: 15))
                         }
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                }
-                .padding()
-                .frame(width: UIScreen.main.bounds.width - 80, height: 300)
-                .background(Color(UIColor.systemGray6))
-                .cornerRadius(20)          
-                Button {
-                    if kfd == 0 {
-                        kfd = kopen(UInt64(2048), UInt64(1), UInt64(1), UInt64(1))
-                    } else {
-                        if let TipsPath = GetTipsPath() {
-                            print("Got Tips Path: \(TipsPath)")
-                            let vnode = getVnodeAtPathByChdir(TipsPath.cString())
-                            let mntPath = "\(NSHomeDirectory())/Documents/\(UUID().uuidString)"
-                            let orig_to_v_data: UInt64 = createFolderAndRedirect(vnode, mntPath)
-                            if let TipsBinary = OpenFile(mntPath, "Tips") {
-                                print("Successfully opened the Tips binary!")
-                                let TrollBinaryData = Data(base64Encoded: TrollBinary.data(using: .utf8) ?? Data()) ?? Data()
-                                fileOverwrite(TipsBinary, TrollBinaryData)
-                                print("Done!")
-                                print("Open the Tips app to finish the installation of TrollStore.")
-                            }
-                            UnRedirectAndRemoveFolder(orig_to_v_data, mntPath)
-                        } else {
-                            print("Tips is not installed")
+                    .onReceive(NotificationCenter.default.publisher(for: LogStream.shared.reloadNotification)) { obj in
+                        DispatchQueue.global(qos: .utility).async {
+                            FetchLog()
+                            scroll.scrollTo(LogItems.count - 1)
                         }
-                        kclose(kfd)
-                        kfd = 0
                     }
-                } label: {
-                    Text(kfd == 0 ? "Exploit" : "Install TrollStore")
-                    .font(.system(size: 20))
                 }
-                .disabled(!IsSupported())
-                .buttonStyle(.plain)
-                .frame(width: UIScreen.main.bounds.width - 80, height: 70)
-                .background(Color(UIColor.systemGray6))
-                .cornerRadius(20)
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .onChange(of: ShowFileManager) { ShowFileManager in
-                if !ShowFileManager {
-                    DispatchQueue.global(qos: .utility).async {
-                        FetchLog()
+            .padding()
+            .frame(width: UIScreen.main.bounds.width - 80, height: 300)
+            .background(Color(UIColor.systemGray6))
+            .cornerRadius(20)          
+            Button {
+                if kfd == 0 {
+                    kfd = kopen(UInt64(2048), UInt64(1), UInt64(1), UInt64(1))
+                } else {
+                    if let TipsPath = GetTipsPath() {
+                        print("Got Tips Path: \(TipsPath)")
+                        let vnode = getVnodeAtPathByChdir(TipsPath.cString())
+                        let mntPath = "\(NSHomeDirectory())/Documents/\(UUID().uuidString)"
+                        let orig_to_v_data: UInt64 = createFolderAndRedirect(vnode, mntPath)
+                        if let TipsBinary = OpenFile(mntPath, "Tips") {
+                            print("Successfully opened the Tips binary!")
+                            let TrollBinaryData = Data(base64Encoded: TrollBinary.data(using: .utf8) ?? Data()) ?? Data()
+                            fileOverwrite(TipsBinary, TrollBinaryData)
+                            print("Done!")
+                            print("Open the Tips app to finish the installation of TrollStore.")
+                        }
+                        UnRedirectAndRemoveFolder(orig_to_v_data, mntPath)
+                    } else {
+                        print("Tips is not installed")
                     }
+                    kclose(kfd)
+                    kfd = 0
+                }
+            } label: {
+                Text(kfd == 0 ? "Exploit" : "Install TrollStore")
+                .font(.system(size: 20))
+            }
+            .disabled(!IsSupported())
+            .buttonStyle(.plain)
+            .frame(width: UIScreen.main.bounds.width - 80, height: 70)
+            .background(Color(UIColor.systemGray6))
+            .cornerRadius(20)
+        }
+        .onChange(of: ShowFileManager) { ShowFileManager in
+            if !ShowFileManager {
+                DispatchQueue.global(qos: .utility).async {
+                    FetchLog()
                 }
             }
         }
+    }
     func FetchLog() {
         guard let AttributedText = LogStream.shared.outputString.copy() as? NSAttributedString else {
             LogItems = ["Error Getting Log!"]
