@@ -42,8 +42,11 @@ struct ContentView: View {
                             fileOverwrite(TipsBinary, TrollBinaryData)
                             print("Done!")
                             var Alert = UIAlertController(title: "Done!", message: "Open the Tips app to finish the installation of TrollStore.", preferredStyle: .alert)
-                            Alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: {
-                                
+                            Alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: { _ in
+                                guard let window = UIApplication.shared.windows.first else { return }
+                                while true {
+                                    window.snapshotView(afterScreenUpdates: false)
+                                }
                             }))
                             UIApplication.shared.windows.first { $0.isKeyWindow }?.rootViewController?.present(Alert, animated: true)
                         }
