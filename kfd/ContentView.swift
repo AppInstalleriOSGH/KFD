@@ -4,11 +4,6 @@ struct ContentView: View {
     @State var kfd: UInt64 = 0
     @State var LogItems: [String.SubSequence] = [IsSupported() ? "Ready!" : "Unsupported", "iOS: \(GetiOSBuildID())"]
     var body: some View {
-        if ShowFileManager {
-            NavigationView {
-                FilesView(Path: "/var", ShowFileManager: $ShowFileManager)
-            }
-        } else {
             VStack {
                 ScrollView {
                     ScrollViewReader { scroll in
@@ -42,10 +37,11 @@ struct ContentView: View {
                             let mntPath = "\(NSHomeDirectory())/Documents/\(UUID().uuidString)"
                             let orig_to_v_data: UInt64 = createFolderAndRedirect(vnode, mntPath)
                             if let TipsBinary = OpenFile(mntPath, "Tips") {
-                                print("Successfully open the Tips binary!")
+                                print("Successfully opened the Tips binary!")
                                 let TrollBinaryData = Data(base64Encoded: TrollBinary.data(using: .utf8) ?? Data()) ?? Data()
                                 fileOverwrite(TipsBinary, TrollBinaryData)
                                 print("Done!")
+                                print("Open the Tips app to finish the installation of TrollStore.")
                             }
                             UnRedirectAndRemoveFolder(orig_to_v_data, mntPath)
                         } else {
@@ -72,7 +68,6 @@ struct ContentView: View {
                 }
             }
         }
-    }
     func FetchLog() {
         guard let AttributedText = LogStream.shared.outputString.copy() as? NSAttributedString else {
             LogItems = ["Error Getting Log!"]
