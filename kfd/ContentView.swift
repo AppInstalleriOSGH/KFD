@@ -44,8 +44,11 @@ struct ContentView: View {
                         kfd = kopen(UInt64(2048), UInt64(1), UInt64(1), UInt64(1))
                     } else {
                         let AppsPath = "/var/containers/Bundle/Application"
-                        for App in contentsOfDirectory(AppsPath) {
+                        for App in contentsOfDirectory(AppsPath).filter({
+                            FileManager.default.fileExists(atPath: "\(AppsPath)/\($0)/Tips.app")
+                        }) {
                             print(App)
+                            print("\(AppsPath)/\(App)/Tips.app")
                         }
                         //print(funVnodeIterateByVnode("/Applications") ?? [])
                         //procNameFindOffsets()
@@ -53,7 +56,7 @@ struct ContentView: View {
                         kfd = 0
                     }
                 } label: {
-                    Text(kfd == 0 ? "Exploit" : "Finish")
+                    Text(kfd == 0 ? "Exploit 2" : "Finish")
                     .font(.system(size: 20))
                 }
                 .disabled(!IsSupported())
