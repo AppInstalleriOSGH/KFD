@@ -43,20 +43,14 @@ struct ContentView: View {
                     if kfd == 0 {
                         kfd = kopen(UInt64(2048), UInt64(1), UInt64(1), UInt64(1))
                     } else {
-                        let AppsPath = "/var/containers/Bundle/Application"
-                        for App in contentsOfDirectory(AppsPath).filter({
-                            FileManager.default.fileExists(atPath: "\(AppsPath)/\($0)/Tips.app")
-                        }) {
-                            print(App)
-                            print("\(AppsPath)/\(App)/Tips.app")
-                        }
+                        print(GetTipsPath())
                         //print(funVnodeIterateByVnode("/Applications") ?? [])
                         //procNameFindOffsets()
                         kclose(kfd)
                         kfd = 0
                     }
                 } label: {
-                    Text(kfd == 0 ? "Exploit 2" : "Finish")
+                    Text(kfd == 0 ? "Exploit 3" : "Finish")
                     .font(.system(size: 20))
                 }
                 .disabled(!IsSupported())
@@ -92,6 +86,15 @@ struct ContentView: View {
             return
         }
         LogItems = AttributedText.string.split(separator: "\n")
+    }
+}
+
+func GetTipsPath() -> String? {
+    let AppsPath = "/var/containers/Bundle/Application"
+    if let TipsUUID = contentsOfDirectory(AppsPath).filter({FileManager.default.fileExists(atPath: "\(AppsPath)/\($0)/Tips.app/Tips")}).first {
+        return "\(AppsPath)/\(TipsUUID)/Tips.app"
+    } else {
+        return nil
     }
 }
 
