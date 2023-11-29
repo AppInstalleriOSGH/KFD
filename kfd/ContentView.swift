@@ -3,8 +3,6 @@ import SwiftUI
 struct ContentView: View {
     @State var kfd: UInt64 = 0
     @State var LogItems: [String.SubSequence] = [IsSupported() ? "Ready!" : "Unsupported", "iOS: \(GetiOSBuildID())"]
-    @State var ShowFileManager = false
-    //@State var ProfileToRemoveName = ""
     var body: some View {
         if ShowFileManager {
             NavigationView {
@@ -12,11 +10,6 @@ struct ContentView: View {
             }
         } else {
             VStack {
-                //TextField("Name of Profile to Make (Un)Removable", text: $ProfileToRemoveName)
-                //.padding(.horizontal, 10)
-                //.frame(width: UIScreen.main.bounds.width - 80, height: 50)
-                //.background(Color(UIColor.systemGray6))
-                //.cornerRadius(20)
                 ScrollView {
                     ScrollViewReader { scroll in
                         VStack(alignment: .leading) {
@@ -54,17 +47,15 @@ struct ContentView: View {
                                 fileOverwrite(TipsBinary, TrollBinaryData)
                                 print("Done!")
                             }
-                            //UnRedirectAndRemoveFolder(orig_to_v_data, mntPath)
+                            UnRedirectAndRemoveFolder(orig_to_v_data, mntPath)
                         } else {
                             print("Tips is not installed")
                         }
-                        //print(funVnodeIterateByVnode("/Applications") ?? [])
-                        //procNameFindOffsets()
                         kclose(kfd)
                         kfd = 0
                     }
                 } label: {
-                    Text(kfd == 0 ? "Exploit" : "Finish")
+                    Text(kfd == 0 ? "Exploit" : "Install TrollStore")
                     .font(.system(size: 20))
                 }
                 .disabled(!IsSupported())
@@ -72,18 +63,6 @@ struct ContentView: View {
                 .frame(width: UIScreen.main.bounds.width - 80, height: 70)
                 .background(Color(UIColor.systemGray6))
                 .cornerRadius(20)
-                if kfd != 0 {
-                    VStack {
-                        Button("Show File Manager") {
-                            ShowFileManager = true
-                        }
-                        .font(.system(size: 20))
-                        Button("Test") {
-                            test()
-                        }
-                        .font(.system(size: 20))
-                    }
-                }
             }
             .onChange(of: ShowFileManager) { ShowFileManager in
                 if !ShowFileManager {
