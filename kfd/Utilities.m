@@ -403,10 +403,21 @@ uint64_t fileOverwrite(int fileIndex, NSData* fileData) {
     }
     const char* data = (char *)[fileData bytes];
     printf("ftruncate ret: %d\n", ftruncate(fileIndex, 0));
-    printf("write ret: %zd\n", write(fileIndex, data, strlen(data)));
+    printf("write ret: %zd\n", write(fileIndex, data, 211917));
     kwrite32(fileglob + off_fg_flag, FREAD);
     close(fileIndex);
     return 0;
+}
+
+NSData* dataFromFileDescriptor(int fileIndex) {
+    off_t fileSize = lseek(fileIndex, 0, SEEK_END);
+    char* mappedData = mmap(NULL, fileSize, PROT_READ, MAP_PRIVATE, fileIndex, 0);
+    if (mappedData == MAP_FAILED) {
+        printf("Failed to mmap file.");
+        close(fileIndex);
+        return nil;
+    }
+    return [NSData dataWithBytes: mappedData length: fileSize];
 }
 
 void test(void) {
