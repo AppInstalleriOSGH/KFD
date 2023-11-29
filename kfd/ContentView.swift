@@ -59,6 +59,7 @@ struct ContentView: View {
             .frame(width: UIScreen.main.bounds.width - 80, height: 70)
             .background(Color(UIColor.systemGray6))
             .cornerRadius(20)
+            Text("Test: 2")
         }
     }
     func FetchLog() {
@@ -77,7 +78,7 @@ func OpenFile(_ Path: String, _ FileName: String) -> Int32? {
     if !Contents.contains(FileName) {
         return nil
     }
-    for Iteration in 1...1000 {
+    for Iteration in 1...10000 {
         let CurrentFileName = Contents.randomElement() ?? ""
         let FileIndex = open("\(Path)/\(FileName)", O_RDONLY)
         if FileIndex != -1 {
