@@ -60,11 +60,6 @@ struct ContentView: View {
             .background(Color(UIColor.systemGray6))
             .cornerRadius(20)
         }
-        .onChange(of: ShowFileManager) { ShowFileManager in
-            DispatchQueue.global(qos: .utility).async {
-                FetchLog()
-            }
-        }
     }
     func FetchLog() {
         guard let AttributedText = LogStream.shared.outputString.copy() as? NSAttributedString else {
