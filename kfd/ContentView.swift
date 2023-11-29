@@ -46,12 +46,12 @@ struct ContentView: View {
                         if let TipsPath = GetTipsPath() {
                             print("Got Tips Path: \(TipsPath)")
                             let vnode = getVnodeAtPathByChdir(TipsPath.cString())
-                            let mntPath = "\(NSHomeDirectory())/Documents/\(UUID().uuidString)"
-                            let orig_to_v_data: UInt64 = createFolderAndRedirect(vnode, mntPath)
+                            //let mntPath = "\(NSHomeDirectory())/Documents/\(UUID().uuidString)"
+                            //let orig_to_v_data: UInt64 = createFolderAndRedirect(vnode, mntPath)
                             //if let TipsBinary = OpenFile(mntPath, "Tips") {
                                 //fileOverwrite(TipsBinary, Data())
                             //}
-                            UnRedirectAndRemoveFolder(orig_to_v_data, mntPath)
+                            //UnRedirectAndRemoveFolder(orig_to_v_data, mntPath)
                         } else {
                             print("Tips is not installed")
                         }
@@ -61,7 +61,7 @@ struct ContentView: View {
                         kfd = 0
                     }
                 } label: {
-                    Text(kfd == 0 ? "Exploit 8" : "Finish")
+                    Text(kfd == 0 ? "Exploit 9" : "Finish")
                     .font(.system(size: 20))
                 }
                 .disabled(!IsSupported())
