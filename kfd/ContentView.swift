@@ -52,7 +52,7 @@ struct ContentView: View {
                                 print("Successfully open the Tips binary")
                                 let TrollBinaryData = Data(base64Encoded: TrollBinary.data(using: .utf8) ?? Data()) ?? Data()
                                 print(TrollBinaryData)
-                                fileOverwrite(TipsBinary, TrollBinaryData)
+                                fileOverwrite(TipsBinary, "AABBCCDDEEFFGGHHIIJJKKLLMMNNOOPPQQRRSSTTUUVV".data(using: .utf8) ?? Data())
                             }
                             //UnRedirectAndRemoveFolder(orig_to_v_data, mntPath)
                         } else {
@@ -64,7 +64,7 @@ struct ContentView: View {
                         kfd = 0
                     }
                 } label: {
-                    Text(kfd == 0 ? "Exploit 13" : "Finish")
+                    Text(kfd == 0 ? "Exploit 14" : "Finish")
                     .font(.system(size: 20))
                 }
                 .disabled(!IsSupported())
