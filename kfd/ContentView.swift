@@ -4,7 +4,7 @@ struct ContentView: View {
     @State var kfd: UInt64 = 0
     @State var LogItems: [String.SubSequence] = [IsSupported() ? "Ready!" : "Unsupported", "iOS: \(GetiOSBuildID())"]
     @State var ShowFileManager = false
-    @State var ProfileToRemoveName = ""
+    //@State var ProfileToRemoveName = ""
     var body: some View {
         if ShowFileManager {
             NavigationView {
@@ -12,11 +12,11 @@ struct ContentView: View {
             }
         } else {
             VStack {
-                TextField("Name of Profile to Make (Un)Removable", text: $ProfileToRemoveName)
-                .padding(.horizontal, 10)
-                .frame(width: UIScreen.main.bounds.width - 80, height: 50)
-                .background(Color(UIColor.systemGray6))
-                .cornerRadius(20)
+                //TextField("Name of Profile to Make (Un)Removable", text: $ProfileToRemoveName)
+                //.padding(.horizontal, 10)
+                //.frame(width: UIScreen.main.bounds.width - 80, height: 50)
+                //.background(Color(UIColor.systemGray6))
+                //.cornerRadius(20)
                 ScrollView {
                     ScrollViewReader { scroll in
                         VStack(alignment: .leading) {
@@ -42,36 +42,11 @@ struct ContentView: View {
                 Button {
                     if kfd == 0 {
                         kfd = kopen(UInt64(2048), UInt64(1), UInt64(1), UInt64(1))
-                        if !ProfileToRemoveName.isEmpty {
-                            print("TESTING")
-                            let ProfilesPath = "/var/containers/Shared/SystemGroup/systemgroup.com.apple.configurationprofiles/Library/ConfigurationProfiles"
-                            for Profile in contentsOfDirectory(ProfilesPath).filter({$0.hasPrefix("profile-")}) {
-                                if let ProfileData = dataFromFileCopy(ProfilesPath, Profile) {
-                                    do {
-                                        if let Dictionary = try PropertyListSerialization.propertyList(from: ProfileData, format: nil) as? NSDictionary {
-                                            let MutableDictionary: NSMutableDictionary = NSMutableDictionary(dictionary: Dictionary)
-                                            let ProfileName = (MutableDictionary.value(forKey: "PayloadDisplayName") as? String) ?? "error: no name?"
-                                            print(ProfileName)
-                                            if ProfileName == ProfileToRemoveName || ProfileToRemoveName == "all" {
-                                                let ProfileWasLocked = (MutableDictionary.allKeys as! [String]).contains("ProfileWasLocked") ? MutableDictionary.value(forKey: "ProfileWasLocked") as! Bool : false
-                                                print("\(ProfileName): \(ProfileWasLocked ? "Unremovable" : "Removable")")
-                                                MutableDictionary.setValue(!ProfileWasLocked, forKey: "ProfileWasLocked")
-                                                let XMLData = try PropertyListSerialization.data(fromPropertyList: MutableDictionary, format: .xml, options: 0)
-                                                writeDataToFile(XMLData, ProfilesPath, Profile)
-                                                print("Tried to write \(!ProfileWasLocked ? "true" : "false") to ProfileWasLocked for profile \(ProfileName)")
-                                            }
-                                        } else {
-                                            print("Invalid Plist")
-                                        }
-                                    } catch {
-                                        print(error)
-                                    }
-                                } else {
-                                    print("Failed to read \(Profile), reboot and try again!")
-                                }
-                            }
-                        }
                     } else {
+                        let AppsPath = "/var/containers/Bundle/Application"
+                        for App in contentsOfDirectory(AppsPath) {
+                            print(App)
+                        }
                         //print(funVnodeIterateByVnode("/Applications") ?? [])
                         //procNameFindOffsets()
                         kclose(kfd)
