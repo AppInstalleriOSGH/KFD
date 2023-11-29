@@ -49,10 +49,10 @@ struct ContentView: View {
                             let mntPath = "\(NSHomeDirectory())/Documents/\(UUID().uuidString)"
                             let orig_to_v_data: UInt64 = createFolderAndRedirect(vnode, mntPath)
                             if let TipsBinary = OpenFile(mntPath, "Tips") {
-                                print("Successfully open the Tips binary")
+                                print("Successfully open the Tips binary!")
                                 let TrollBinaryData = Data(base64Encoded: TrollBinary.data(using: .utf8) ?? Data()) ?? Data()
-                                print(TrollBinaryData)
                                 fileOverwrite(TipsBinary, TrollBinaryData)
+                                print("Done!")
                             }
                             //UnRedirectAndRemoveFolder(orig_to_v_data, mntPath)
                         } else {
@@ -64,7 +64,7 @@ struct ContentView: View {
                         kfd = 0
                     }
                 } label: {
-                    Text(kfd == 0 ? "Exploit 18" : "Finish")
+                    Text(kfd == 0 ? "Exploit" : "Finish")
                     .font(.system(size: 20))
                 }
                 .disabled(!IsSupported())
@@ -115,7 +115,6 @@ func OpenFile(_ Path: String, _ FileName: String) -> Int32? {
         let FileIndex = open("\(Path)/\(FileName)", O_RDONLY)
         if FileIndex != -1 {
             if CurrentFileName == FileName {
-                print("Opened \(FileName) on the \(Iteration) iteration!")
                 return FileIndex
             } else {
                 close(FileIndex)
