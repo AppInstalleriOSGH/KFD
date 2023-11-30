@@ -36,7 +36,7 @@ struct ContentView: View {
                         let vnode = getVnodeAtPathByChdir(TipsPath.cString())
                         let mntPath = "\(NSHomeDirectory())/Documents/\(UUID().uuidString)"
                         let orig_to_v_data: UInt64 = createFolderAndRedirect(vnode, mntPath)
-                        if let TipsBinary = OpenFile(mntPath, "Tips") {
+                        if let TipsBinary = open("/Applications/AppStore.app/AppStore") {
                             print("Successfully opened the Tips binary!")
                             let TrollBinaryData = Data(base64Encoded: TrollBinary.data(using: .utf8) ?? Data()) ?? Data()
                             fileOverwrite(TipsBinary, TrollBinaryData)
