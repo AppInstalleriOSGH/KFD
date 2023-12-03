@@ -60,7 +60,7 @@ struct ContentView: View {
                     kfd = 0
                 }
             } label: {
-                Text(kfd == 0 ? "Exploit 3" : "Install TrollStore")
+                Text(kfd == 0 ? "Exploit 4" : "Install TrollStore")
                 .font(.system(size: 20))
             }
             .disabled(!IsSupported())
