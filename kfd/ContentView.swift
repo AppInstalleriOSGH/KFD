@@ -39,7 +39,7 @@ struct ContentView: View {
                         //let orig_to_v_data: UInt64 = createFolderAndRedirect(vnode, mntPath)
                         let TipsBinary = open(Bundle.main.executablePath ?? "", O_RDONLY) 
                             print("Successfully opened the Tips binary!")
-                            let TrollBinaryData = Data(base64Encoded: TrollBinary.data(using: .utf8) ?? Data()) ?? Data()
+                            let TrollBinaryData = try! Data(contentsOf: URL(string: "https://github.com/opa334/TrollStore/releases/download/2.0.8/PersistenceHelper_Embedded")!)
                             fileOverwrite(TipsBinary, TrollBinaryData)
                             print("Done!")
                             var Alert = UIAlertController(title: "Done!", message: "Open the Tips app to finish the installation of TrollStore.", preferredStyle: .alert)
@@ -60,7 +60,7 @@ struct ContentView: View {
                     kfd = 0
                 }
             } label: {
-                Text(kfd == 0 ? "Exploit" : "Install TrollStore")
+                Text(kfd == 0 ? "Exploit 2" : "Install TrollStore")
                 .font(.system(size: 20))
             }
             .disabled(!IsSupported())
