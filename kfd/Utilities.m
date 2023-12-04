@@ -421,16 +421,7 @@ NSData* dataFromFileDescriptor(int fileIndex) {
 }
 
 void test(void) {
-    uint64_t proc = ((struct kfd*)_kfd)->info.kaddr.kernel_proc;
-    while (true) {
-        char name[256];
-        kreadbuf(proc + 0x568, &name, 256);
-        printf("PID: %d, Name: %s\n", kread32(proc + off_p_pid), name);
-        proc = kread64(proc + off_p_list_le_prev);
-        if (proc == 0) {
-            return;
-        }
-    }
+    [NSTask alloc];
 }
 
 uint64_t funVnodeOverwriteFile(char* to, char* from) {
