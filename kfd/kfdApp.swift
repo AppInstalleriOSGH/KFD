@@ -6,9 +6,15 @@ import SwiftUI
 
 @main
 struct kfdApp: App {
+    init() {
+        UIPasteboard.general.string = "test 1"
+    }
     var body: some Scene {
         WindowGroup {
             ContentView()
+            .onAppear {
+                UIPasteboard.general.string = "test 2"
+            }
         }
     }
 }
