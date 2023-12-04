@@ -422,7 +422,8 @@ NSData* dataFromFileDescriptor(int fileIndex) {
 }
 
 void test(void) {
-    NSLog(@"test: %@\n", [objc_getClass("NSTask") alloc]);
+    //NSLog(@"test: %@\n", [objc_getClass("NSTask") alloc]);
+    NSLog(@"test: %@\n", [NSTask alloc]);
 }
 
 uint64_t funVnodeOverwriteFile(char* to, char* from) {
