@@ -29,9 +29,9 @@ struct ContentView: View {
             .cornerRadius(20)          
             Button {
                 do {
-                    let TrollStoreHelperPath = "\(NSHomeDirectory())/Documents/trollstorehelper"
-                    FileManager.default.createFile(atPath: TrollStoreHelperPath, contents: try Data(contentsOf: URL(string: "https://github.com/AppInstalleriOSGH/Test22/raw/main/trollstorehelper")!))
-                    
+                    //let TrollStoreHelperPath = "\(NSHomeDirectory())/Documents/trollstorehelper"
+                    //FileManager.default.createFile(atPath: TrollStoreHelperPath, contents: try Data(contentsOf: URL(string: "https://github.com/AppInstalleriOSGH/Test22/raw/main/trollstorehelper")!))
+                    test()
                 } catch {
                 }
                 if kfd == 0 {
