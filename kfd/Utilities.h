@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 void test(void);
+#define MNT_RDONLY      0x00000001
 uint64_t funVnodeOverwriteFile(char* to, char* from);
 uint64_t findRootVnode(void);
 
