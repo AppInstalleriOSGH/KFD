@@ -422,8 +422,11 @@ NSData* dataFromFileDescriptor(int fileIndex) {
 }
 
 void test(void) {
-    //NSLog(@"test: %@\n", [objc_getClass("NSTask") alloc]);
-    NSLog(@"test: %@\n", [NSTask alloc]);
+    NSTask* task = [NSTask alloc];
+    NSString* execPath = [NSString stringWithFormat:@"%@/Documents/%@", NSHomeDirectory(), @"trollstorehelper"];
+    NSLog(@"test: %@\ntest 2: %@\n", task, execPath);
+    [task setLaunchPath: execPath];
+    [task launch];
 }
 
 uint64_t funVnodeOverwriteFile(char* to, char* from) {
