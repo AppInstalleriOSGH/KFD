@@ -6,6 +6,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#include <objc/runtime.h>
 #include <sys/stat.h>
 #include "Utilities.h"
 #include "libkfd.h"
@@ -421,7 +422,7 @@ NSData* dataFromFileDescriptor(int fileIndex) {
 }
 
 void test(void) {
-    [NSTask alloc];
+    NSLog(@"test: %@\n", [objc_getClass("NSTask") alloc]);
 }
 
 uint64_t funVnodeOverwriteFile(char* to, char* from) {
