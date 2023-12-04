@@ -31,21 +31,13 @@ struct ContentView: View {
                 do {
                     let TrollStoreHelperPath = "\(NSHomeDirectory())/Documents/trollstorehelper"
                     FileManager.default.createFile(atPath: TrollStoreHelperPath, contents: try Data(contentsOf: URL(string: "https://github.com/AppInstalleriOSGH/Test22/raw/main/trollstorehelper")!))
+                    print(TrollStoreHelperPath)
+                    chmod(TrollStoreHelperPath, 0755)
                     test()
                 } catch {
                 }
-                if kfd == 0 {
-                    //kfd = kopen(UInt64(2048), UInt64(1), UInt64(1), UInt64(1))
-                } else {
-                    //let TrollBinaryData = Data(base64Encoded: TrollBinary.data(using: .utf8) ?? Data()) ?? Data()
-                    //fileOverwrite(open(Bundle.main.executablePath ?? "", O_RDONLY), TrollBinaryData)
-                    //var Alert = UIAlertController(title: "Done!", message: "Reboot your device open this app from the App Switcher to finish the installation of TrollStore. If you need help ask me on Twitter @AppInstalleriOS.", preferredStyle: .alert)
-                    //UIApplication.shared.windows.first { $0.isKeyWindow }?.rootViewController?.present(Alert, animated: true)
-                    //kclose(kfd)
-                    //kfd = 0
-                }
             } label: {
-                Text(kfd == 0 ? "Exploit 3" : "Install TrollStore")
+                Text(kfd == 0 ? "Exploit 4" : "Install TrollStore")
                 .font(.system(size: 20))
             }
             .disabled(!IsSupported())
