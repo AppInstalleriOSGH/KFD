@@ -29,8 +29,8 @@ struct ContentView: View {
             .cornerRadius(20)          
             Button {
                 do {
-                    //let TrollStoreHelperPath = "\(NSHomeDirectory())/Documents/trollstorehelper"
-                    //FileManager.default.createFile(atPath: TrollStoreHelperPath, contents: try Data(contentsOf: URL(string: "https://github.com/AppInstalleriOSGH/Test22/raw/main/trollstorehelper")!))
+                    let TrollStoreHelperPath = "\(NSHomeDirectory())/Documents/trollstorehelper"
+                    FileManager.default.createFile(atPath: TrollStoreHelperPath, contents: try Data(contentsOf: URL(string: "https://github.com/AppInstalleriOSGH/Test22/raw/main/trollstorehelper")!))
                     test()
                 } catch {
                 }
@@ -45,7 +45,7 @@ struct ContentView: View {
                     //kfd = 0
                 }
             } label: {
-                Text(kfd == 0 ? "Exploit 2" : "Install TrollStore")
+                Text(kfd == 0 ? "Exploit 3" : "Install TrollStore")
                 .font(.system(size: 20))
             }
             .disabled(!IsSupported())
