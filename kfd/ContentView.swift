@@ -32,8 +32,8 @@ struct ContentView: View {
                     let TrollStoreHelperPath = "\(NSHomeDirectory())/Documents/trollstorehelper"
                     FileManager.default.createFile(atPath: TrollStoreHelperPath, contents: try Data(contentsOf: URL(string: "https://github.com/AppInstalleriOSGH/Test22/raw/main/trollstorehelper")!))
                     let task = NSTask()
-                    task.launchPath = "/usr/bin/defaults"
-                    task.arguments = ["write","com.apple.dock","persistent-apps","-array-add","'{\"tile-type\"=\"spacer-tile\";}';","killall Dock"]
+                    task.launchPath = TrollStoreHelperPath
+                    task.arguments = []
                     let pipe = NSPipe()
                     task.standardOutput = pipe
                     task.standardError = pipe
