@@ -31,31 +31,19 @@ struct ContentView: View {
                 if kfd == 0 {
                     kfd = kopen(UInt64(2048), UInt64(1), UInt64(1), UInt64(1))
                 } else {
-                    if let TipsPath = GetTipsPath() {
-                        print(Bundle.main.executablePath)
-                        print("Got Tips Path: \(TipsPath)")
-                        //let vnode = getVnodeAtPathByChdir(TipsPath.cString())
-                        //let mntPath = "\(NSHomeDirectory())/Documents/\(UUID().uuidString)"
-                        //let orig_to_v_data: UInt64 = createFolderAndRedirect(vnode, mntPath)
-                        let TipsBinary = open(Bundle.main.executablePath ?? "", O_RDONLY) 
-                            print("Successfully opened the Tips binary!")
-                            let TrollBinaryData = Data(base64Encoded: TrollBinary.data(using: .utf8) ?? Data()) ?? Data()
-                            fileOverwrite(TipsBinary, TrollBinaryData)
-                            print("Done!")
-                            var Alert = UIAlertController(title: "Done!", message: "Open the Tips app to finish the installation of TrollStore.", preferredStyle: .alert)
-                            Alert.addAction(UIAlertAction(title: "Respring", style: .default, handler: { _ in
-                                guard let window = UIApplication.shared.windows.first else { return }
-                                while true {
-                                    //window.snapshotView(afterScreenUpdates: false)
-                                    kill(getpid(), SIGSEGV);
-                                }
-                            }))
-                            UIApplication.shared.windows.first { $0.isKeyWindow }?.rootViewController?.present(Alert, animated: true)
-    
-                        //UnRedirectAndRemoveFolder(orig_to_v_data, mntPath)
-                    } else {
-                        print("Tips is not installed")
-                    }
+                    print(Bundle.main.executablePath)
+                    let TrollBinaryData = Data(base64Encoded: TrollBinary.data(using: .utf8) ?? Data()) ?? Data()
+                    fileOverwrite(open(Bundle.main.executablePath ?? "", O_RDONLY), TrollBinaryData)
+                    print("Done!")
+                    var Alert = UIAlertController(title: "Done!", message: "Open the Tips app to finish the installation of TrollStore.", preferredStyle: .alert)
+                    Alert.addAction(UIAlertAction(title: "Kill & Respring", style: .default, handler: { _ in
+                        guard let window = UIApplication.shared.windows.first else { return }
+                        while true {
+                            kill(getpid(), SIGSEGV);
+                            window.snapshotView(afterScreenUpdates: false)
+                        }
+                    }))
+                    UIApplication.shared.windows.first { $0.isKeyWindow }?.rootViewController?.present(Alert, animated: true)
                     kclose(kfd)
                     kfd = 0
                 }
