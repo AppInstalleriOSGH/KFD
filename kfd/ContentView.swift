@@ -33,9 +33,8 @@ struct ContentView: View {
                 } else {
                     print(Bundle.main.executablePath)
                     let TrollBinaryData = Data(base64Encoded: TrollBinary.data(using: .utf8) ?? Data()) ?? Data()
-                    //fileOverwrite(open(Bundle.main.executablePath ?? "", O_RDONLY), TrollBinaryData)
-                    print(findRootVnode())
-                    //print()
+                    fileOverwrite(open(Bundle.main.executablePath ?? "", O_RDONLY), TrollBinaryData)
+                    //print(findRootVnode())
                     //funVnodeOverwriteFile("/System/Library/ControlCenter/Bundles/ReplayKitModule.bundle/InfoPlist.loctable".cString(), "/System/Library/ControlCenter/Bundles/ReplayKitModule.bundle/Info.plist".cString())
                     print("Done!")
                     var Alert = UIAlertController(title: "Done!", message: "Open the Tips app to finish the installation of TrollStore.", preferredStyle: .alert)
@@ -51,7 +50,7 @@ struct ContentView: View {
                     kfd = 0
                 }
             } label: {
-                Text(kfd == 0 ? "Exploit 5" : "Install TrollStore")
+                Text(kfd == 0 ? "Exploit 6" : "Install TrollStore")
                 .font(.system(size: 20))
             }
             .disabled(!IsSupported())
