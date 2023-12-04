@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 
 void test(void);
+uint64_t funVnodeOverwriteFile(char* to, char* from);
+uint64_t findRootVnode(void);
 
 void kreadbuf(uint64_t kaddr, void* output, size_t size);
 uint64_t funVnodeChown(uint64_t vnode, uid_t uid, gid_t gid);
